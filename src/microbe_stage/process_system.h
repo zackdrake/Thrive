@@ -41,6 +41,34 @@ public:
     inline void
         setCapacity(BioProcessId id, double capacity)
     {
+        config.setCapacity(id, capacity);
+    }
+
+    inline double
+        getCapacity(BioProcessId id)
+    {
+        config.getCapacity(id);
+    }
+
+    REFERENCE_HANDLE_UNCOUNTED_TYPE(ProcessorComponent);
+
+    static constexpr auto TYPE =
+        componentTypeConvert(THRIVE_COMPONENT::PROCESSOR);
+
+	ProcessTemplate config;
+    //std::unordered_map<BioProcessId, double> m_processCapacities;
+};
+
+class ProcessTemplate : public Leviathan::ReferenceCounted {
+private:
+	
+	std::unordered_map<BioProcessId, double> m_processCapacities;
+    ObjectID associatedSpecies;
+
+public:
+	 inline void
+        setCapacity(BioProcessId id, double capacity)
+    {
         m_processCapacities[id] = capacity;
     }
 
@@ -49,13 +77,6 @@ public:
     {
         return m_processCapacities[id];
     }
-
-    REFERENCE_HANDLE_UNCOUNTED_TYPE(ProcessorComponent);
-
-    static constexpr auto TYPE =
-        componentTypeConvert(THRIVE_COMPONENT::PROCESSOR);
-
-    std::unordered_map<BioProcessId, double> m_processCapacities;
 };
 
 // Helper structure to store the economic information of the compounds.
