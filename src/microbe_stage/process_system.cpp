@@ -17,22 +17,23 @@ using namespace thrive;
 ProcessorComponent::ProcessorComponent() : Leviathan::Component(TYPE) {}
 
 ProcessorComponent::ProcessorComponent(ProcessorComponent&& other) noexcept :
-    Leviathan::Component(TYPE),
-    m_processCapacities(std::move(other.m_processCapacities))
+    Leviathan::Component(TYPE)
 {}
 // ------------------------------------ //
 ProcessorComponent&
     ProcessorComponent::operator=(const ProcessorComponent& other)
 {
-    m_processCapacities = other.m_processCapacities;
-    return *this;
+    //m_processCapacities = other.m_processCapacities;
+    configuration = other.configuration;
+	return *this;
 }
 
 ProcessorComponent&
     ProcessorComponent::operator=(ProcessorComponent&& other) noexcept
 {
-    m_processCapacities = std::move(other.m_processCapacities);
-    return *this;
+    //m_processCapacities = std::move(other.m_processCapacities);
+    configuration = std::move(other.configuration);
+	return *this;
 }
 
 // ------------------------------------ //
@@ -171,7 +172,7 @@ void
             compoundData.price = 0;
         }
 
-        for(const auto& process : processor.m_processCapacities) {
+        for(const auto& process : processor.configuration->getProcessTable()) {
             const BioProcessId processId = process.first;
             const double processCapacity = process.second;
 

@@ -21,52 +21,17 @@ class GameWorld;
 
 namespace thrive {
 
-class CellStageWorld;
-
-//! \brief Specifies what processes a cell can perform
-//! \todo To reduce duplication and excess memory usage the processes should
-//! be moved to a new class ProcessConfiguration
-//! which would be ReferenceCounted and shared
-//! `ProcessConfiguration::pointer m_processes`
-class ProcessorComponent : public Leviathan::Component {
-public:
-    ProcessorComponent();
-    ProcessorComponent(ProcessorComponent&& other) noexcept;
-
-    ProcessorComponent&
-        operator=(const ProcessorComponent& other);
-    ProcessorComponent&
-        operator=(ProcessorComponent&& other) noexcept;
-
-    inline void
-        setCapacity(BioProcessId id, double capacity)
-    {
-        config.setCapacity(id, capacity);
-    }
-
-    inline double
-        getCapacity(BioProcessId id)
-    {
-        config.getCapacity(id);
-    }
-
-    REFERENCE_HANDLE_UNCOUNTED_TYPE(ProcessorComponent);
-
-    static constexpr auto TYPE =
-        componentTypeConvert(THRIVE_COMPONENT::PROCESSOR);
-
-	ProcessTemplate config;
-    //std::unordered_map<BioProcessId, double> m_processCapacities;
-};
-
+// A container class for the actual process list
+// Has one instance for every species, and the processor components for
+// both the species component and every microbe
+// that's a member of the species has a shared reference
 class ProcessTemplate : public Leviathan::ReferenceCounted {
 private:
-	
-	std::unordered_map<BioProcessId, double> m_processCapacities;
+    std::unordered_map<BioProcessId, double> m_processCapacities;
     ObjectID associatedSpecies;
 
 public:
-	 inline void
+    inline void
         setCapacity(BioProcessId id, double capacity)
     {
         m_processCapacities[id] = capacity;
@@ -77,6 +42,12 @@ public:
     {
         return m_processCapacities[id];
     }
+
+    inline std::unordered_map<BioProcessId, double>
+        getProcessTable()
+    {
+        return m_processCapacities;
+	}
 };
 
 // Helper structure to store the economic information of the compounds.
@@ -122,6 +93,46 @@ public:
     static constexpr auto TYPE =
         componentTypeConvert(THRIVE_COMPONENT::COMPOUND_BAG);
 };
+
+class CellStageWorld;
+
+//! \brief Specifies what processes a cell can perform
+//! \todo To reduce duplication and excess memory usage the processes should
+//! be moved to a new class ProcessConfiguration
+//! which would be ReferenceCounted and shared
+//! `ProcessConfiguration::pointer m_processes`
+class ProcessorComponent : public Leviathan::Component {
+public:
+    ProcessorComponent();
+    ProcessorComponent(ProcessorComponent&& other) noexcept;
+
+    ProcessorComponent&
+        operator=(const ProcessorComponent& other);
+    ProcessorComponent&
+        operator=(ProcessorComponent&& other) noexcept;
+
+    inline void
+        setCapacity(BioProcessId id, double capacity)
+    {
+        configuration->setCapacity(id, capacity);
+    }
+
+    inline double
+        getCapacity(BioProcessId id)
+    {
+        return configuration->getCapacity(id);
+    }
+
+    REFERENCE_HANDLE_UNCOUNTED_TYPE(ProcessorComponent);
+
+    static constexpr auto TYPE =
+        componentTypeConvert(THRIVE_COMPONENT::PROCESSOR);
+
+    ProcessTemplate* configuration;
+    // std::unordered_map<BioProcessId, double> m_processCapacities;
+};
+
+
 
 class ProcessSystem
     : public Leviathan::System<
