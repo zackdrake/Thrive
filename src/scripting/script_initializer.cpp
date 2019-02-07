@@ -472,6 +472,36 @@ bool
     return true;
 }
 
+//! Register Miscellaneous helper objects that components use, like the
+//! ProcessTemplate Class
+bool
+    registerComponentSupport(asIScriptEngine* engine)
+{
+    if(engine->RegisterObjectType("ProcessTemplate", 0, asOBJ_REF) < 0) {
+        ANGELSCRIPT_REGISTERFAIL;
+    }
+
+	if(engine->RegisterObjectMethod("ProcessTemplate", 
+		"void setCapacity(BioProcessId id, double capacity)", 
+		asMETHOD(ProcessTemplate, setCapacity), asCALL_THISCALL) < 0) {
+        ANGELSCRIPT_REGISTERFAIL;
+    }
+
+	if(engine->RegisterObjectMethod("ProcessTemplate",
+           "double getCapacity(BioProcessId id)",
+           asMETHOD(ProcessTemplate, getCapacity), asCALL_THISCALL) < 0) {
+        ANGELSCRIPT_REGISTERFAIL;
+    }
+
+	/*if(engine->RegisterObjectMethod("ProcessTemplate",
+           "std::unordered_map<BioProcessId, double> getProcessTable()",
+           asMETHOD(ProcessTemplate, getProcessTable), asCALL_THISCALL) < 0) {
+        ANGELSCRIPT_REGISTERFAIL;
+    }*/
+
+    return true;  
+}
+
 bool
     bindThriveComponentTypes(asIScriptEngine* engine)
 {
@@ -1239,6 +1269,8 @@ bool
            "MicrobeEditorWorld", 0, asOBJ_REF | asOBJ_NOCOUNT) < 0) {
         ANGELSCRIPT_REGISTERFAIL;
     }
+    if(!registerComponentSupport(engine))
+        return false;
 
     if(!bindThriveComponentTypes(engine))
         return false;
