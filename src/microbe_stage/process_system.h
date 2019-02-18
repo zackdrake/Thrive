@@ -31,6 +31,7 @@ private:
     ObjectID associatedSpecies;
 
 public:
+
     inline void
         setCapacity(BioProcessId id, double capacity)
     {

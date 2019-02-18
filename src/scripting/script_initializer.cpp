@@ -477,9 +477,7 @@ bool
 bool
     registerComponentSupport(asIScriptEngine* engine)
 {
-    if(engine->RegisterObjectType("ProcessTemplate", 0, asOBJ_REF) < 0) {
-        ANGELSCRIPT_REGISTERFAIL;
-    }
+	ANGELSCRIPT_REGISTER_REF_TYPE("ProcessTemplate", ProcessTemplate);
 
 	if(engine->RegisterObjectMethod("ProcessTemplate", 
 		"void setCapacity(BioProcessId id, double capacity)", 
