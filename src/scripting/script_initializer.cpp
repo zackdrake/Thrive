@@ -491,6 +491,12 @@ bool
         ANGELSCRIPT_REGISTERFAIL;
     }
 
+	if(engine->RegisterObjectBehaviour("ProcessTemplate", asBEHAVE_FACTORY,
+           "ProcessTemplate@ createNewTemplate(ObjectID species)",
+		asFUNCTION(createNewTemplate), asCALL_THISCALL)) {
+        ANGELSCRIPT_REGISTERFAIL;
+    }
+
 	/*if(engine->RegisterObjectMethod("ProcessTemplate",
            "std::unordered_map<BioProcessId, double> getProcessTable()",
            asMETHOD(ProcessTemplate, getProcessTable), asCALL_THISCALL) < 0) {

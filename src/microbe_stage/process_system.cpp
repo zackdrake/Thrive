@@ -13,6 +13,17 @@
 #include <Entities/GameWorld.h>
 
 using namespace thrive;
+ 
+	ProcessTemplate::ProcessTemplate(ObjectID species)
+{
+    associatedSpecies = species;
+}
+
+ProcessTemplate&
+    thrive::createNewTemplate(ObjectID species)
+{
+    return *new ProcessTemplate(species);
+}
 
 ProcessorComponent::ProcessorComponent() : Leviathan::Component(TYPE) {}
 
@@ -23,17 +34,17 @@ ProcessorComponent::ProcessorComponent(ProcessorComponent&& other) noexcept :
 ProcessorComponent&
     ProcessorComponent::operator=(const ProcessorComponent& other)
 {
-    //m_processCapacities = other.m_processCapacities;
+    // m_processCapacities = other.m_processCapacities;
     configuration = other.configuration;
-	return *this;
+    return *this;
 }
 
 ProcessorComponent&
     ProcessorComponent::operator=(ProcessorComponent&& other) noexcept
 {
-    //m_processCapacities = std::move(other.m_processCapacities);
+    // m_processCapacities = std::move(other.m_processCapacities);
     configuration = std::move(other.configuration);
-	return *this;
+    return *this;
 }
 
 // ------------------------------------ //
@@ -338,3 +349,5 @@ void
         }
     }
 }
+
+
