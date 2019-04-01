@@ -25,6 +25,8 @@ ProcessTemplate&
     return *new ProcessTemplate(species);
 }
 
+//ProcessTemplate::operator=()
+
 ProcessorComponent::ProcessorComponent() : Leviathan::Component(TYPE) {}
 
 ProcessorComponent::ProcessorComponent(ProcessorComponent&& other) noexcept :

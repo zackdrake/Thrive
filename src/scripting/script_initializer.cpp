@@ -493,7 +493,7 @@ bool
 
 	if(engine->RegisterObjectBehaviour("ProcessTemplate", asBEHAVE_FACTORY,
            "ProcessTemplate@ createNewTemplate(ObjectID species)",
-		asFUNCTION(createNewTemplate), asCALL_THISCALL)) {
+		asFUNCTION(createNewTemplate), asCALL_CDECL_OBJFIRST)) {
         ANGELSCRIPT_REGISTERFAIL;
     }
 

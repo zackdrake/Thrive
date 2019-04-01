@@ -27,7 +27,8 @@ namespace thrive {
 // that's a member of the species has a shared reference
 class ProcessTemplate : public Leviathan::ReferenceCounted {
 private:
-    std::unordered_map<BioProcessId, double> m_processCapacities;
+    std::unordered_map<BioProcessId, double>
+         m_processCapacities;
     ObjectID associatedSpecies;
 
 public:
