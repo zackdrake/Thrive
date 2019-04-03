@@ -20,7 +20,7 @@ using namespace thrive;
 }
 
 ProcessTemplate&
-    thrive::createNewTemplate(ObjectID species)
+    ProcessTemplate::createNewTemplate(ObjectID species)
 {
     return *new ProcessTemplate(species);
 }

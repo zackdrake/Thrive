@@ -35,6 +35,10 @@ public:
 
 	ProcessTemplate(ObjectID species);
 	
+	// Factory function for ProcessTemplate Class
+    static ProcessTemplate&
+        createNewTemplate(ObjectID species);
+
     inline void
         setCapacity(BioProcessId id, double capacity)
     {
@@ -58,10 +62,6 @@ public:
         return associatedSpecies;
 	}
 };
-
-// Factory function for ProcessTemplate Class
-ProcessTemplate& 
-    createNewTemplate(ObjectID species);
 
 // Helper structure to store the economic information of the compounds.
 struct CompoundData {
