@@ -44,30 +44,15 @@ CompoundCloudComponent::CompoundCloudComponent(CompoundCloudSystem& owner,
         throw std::runtime_error(
             "CompoundCloudComponent needs at least one Compound type");
 
+    const Compound* aux[] = {first, second, third, fourth};
+
     // Read data
-    m_color1 =
-        Ogre::Vector4(first->colour.r, first->colour.g, first->colour.b, 1.0f);
-    m_compoundId1 = first->id;
-
-    if(second) {
-
-        m_compoundId2 = second->id;
-        m_color2 = Ogre::Vector4(
-            second->colour.r, second->colour.g, second->colour.b, 1.0f);
-    }
-
-    if(third) {
-
-        m_compoundId3 = third->id;
-        m_color3 = Ogre::Vector4(
-            third->colour.r, third->colour.g, third->colour.b, 1.0f);
-    }
-
-    if(fourth) {
-
-        m_compoundId4 = fourth->id;
-        m_color4 = Ogre::Vector4(
-            fourth->colour.r, fourth->colour.g, fourth->colour.b, 1.0f);
+    for(unsigned int i = 0; i < CLOUDS_IN_ONE; i++) {
+        if(aux[i]) {
+            clouds[i].id = aux[i]->id;
+            clouds[i].color = Ogre::Vector4(
+                aux[i]->colour.r, aux[i]->colour.g, aux[i]->colour.b, 1.0f);
+        }
     }
 }
 
@@ -114,17 +99,13 @@ void
 }
 
 // ------------------------------------ //
-CompoundCloudComponent::SLOT
+unsigned int
     CompoundCloudComponent::getSlotForCompound(CompoundId compound)
 {
-    if(compound == m_compoundId1)
-        return SLOT::FIRST;
-    if(compound == m_compoundId2)
-        return SLOT::SECOND;
-    if(compound == m_compoundId3)
-        return SLOT::THIRD;
-    if(compound == m_compoundId4)
-        return SLOT::FOURTH;
+    for(unsigned int i = 0; i < CLOUDS_IN_ONE; i++) {
+        if(compound == clouds[i].id)
+            return i;
+    }
 
     throw std::runtime_error("This cloud doesn't contain the used CompoundId");
 }
@@ -132,14 +113,11 @@ CompoundCloudComponent::SLOT
 bool
     CompoundCloudComponent::handlesCompound(CompoundId compound)
 {
-    if(compound == m_compoundId1)
-        return true;
-    if(compound == m_compoundId2)
-        return true;
-    if(compound == m_compoundId3)
-        return true;
-    if(compound == m_compoundId4)
-        return true;
+    for(unsigned int i = 0; i < CLOUDS_IN_ONE; i++) {
+        if(compound == clouds[i].id)
+            return true;
+    }
+
     return false;
 }
 // ------------------------------------ //
@@ -149,18 +127,7 @@ void
         size_t x,
         size_t y)
 {
-    // TODO: this check isn't even very good so it can be removed once this is
-    // debugged
-    if(x >= m_density1.size() || y >= m_density1[0].size())
-        throw std::runtime_error(
-            "CompoundCloudComponent coordinates out of range");
-
-    switch(getSlotForCompound(compound)) {
-    case SLOT::FIRST: m_density1[x][y] += dens; break;
-    case SLOT::SECOND: m_density2[x][y] += dens; break;
-    case SLOT::THIRD: m_density3[x][y] += dens; break;
-    case SLOT::FOURTH: m_density4[x][y] += dens; break;
-    }
+    clouds[getSlotForCompound(compound)].density[x][y] += dens;
 }
 
 int
@@ -169,43 +136,14 @@ int
         size_t y,
         float rate)
 {
-    switch(getSlotForCompound(compound)) {
-    case SLOT::FIRST: {
-        int amountToGive = static_cast<int>(m_density1[x][y] * rate);
-        m_density1[x][y] -= amountToGive;
-        if(m_density1[x][y] < 1)
-            m_density1[x][y] = 0;
+    unsigned int slot = getSlotForCompound(compound);
 
-        return amountToGive;
-    }
-    case SLOT::SECOND: {
-        int amountToGive = static_cast<int>(m_density2[x][y] * rate);
-        m_density2[x][y] -= amountToGive;
-        if(m_density2[x][y] < 1)
-            m_density2[x][y] = 0;
+    int amountToGive = static_cast<int>(clouds[slot].density[x][y] * rate);
+    clouds[slot].density[x][y] -= amountToGive;
+    if(clouds[slot].density[x][y] < 1)
+        clouds[slot].density[x][y] = 0;
 
-        return amountToGive;
-    }
-    case SLOT::THIRD: {
-        int amountToGive = static_cast<int>(m_density3[x][y] * rate);
-        m_density3[x][y] -= amountToGive;
-        if(m_density3[x][y] < 1)
-            m_density3[x][y] = 0;
-
-        return amountToGive;
-    }
-    case SLOT::FOURTH: {
-        int amountToGive = static_cast<int>(m_density4[x][y] * rate);
-        m_density4[x][y] -= amountToGive;
-        if(m_density4[x][y] < 1)
-            m_density4[x][y] = 0;
-
-        return amountToGive;
-    }
-    }
-
-    LEVIATHAN_ASSERT(false, "Shouldn't get here");
-    return -1;
+    return amountToGive;
 }
 
 int
@@ -214,27 +152,7 @@ int
         size_t y,
         float rate)
 {
-    switch(getSlotForCompound(compound)) {
-    case SLOT::FIRST: {
-        int amountToGive = static_cast<int>(m_density1[x][y] * rate);
-        return amountToGive;
-    }
-    case SLOT::SECOND: {
-        int amountToGive = static_cast<int>(m_density2[x][y] * rate);
-        return amountToGive;
-    }
-    case SLOT::THIRD: {
-        int amountToGive = static_cast<int>(m_density3[x][y] * rate);
-        return amountToGive;
-    }
-    case SLOT::FOURTH: {
-        int amountToGive = static_cast<int>(m_density4[x][y] * rate);
-        return amountToGive;
-    }
-    }
-
-    LEVIATHAN_ASSERT(false, "Shouldn't get here");
-    return -1;
+    return clouds[getSlotForCompound(compound)].density[x][y] * rate;
 }
 
 void
@@ -242,30 +160,15 @@ void
         size_t y,
         std::vector<std::tuple<CompoundId, float>>& result)
 {
-    if(m_compoundId1 != NULL_COMPOUND) {
-        const auto amount = m_density1[x][y];
-        if(amount > 0)
-            result.emplace_back(m_compoundId1, amount);
-    }
-
-    if(m_compoundId2 != NULL_COMPOUND) {
-        const auto amount = m_density2[x][y];
-        if(amount > 0)
-            result.emplace_back(m_compoundId2, amount);
-    }
-
-    if(m_compoundId3 != NULL_COMPOUND) {
-        const auto amount = m_density3[x][y];
-        if(amount > 0)
-            result.emplace_back(m_compoundId3, amount);
-    }
-
-    if(m_compoundId4 != NULL_COMPOUND) {
-        const auto amount = m_density4[x][y];
-        if(amount > 0)
-            result.emplace_back(m_compoundId4, amount);
+    for(const auto& cloudData : clouds) {
+        if(cloudData.id != NULL_COMPOUND) {
+            const auto amount = cloudData.density[x][y];
+            if(amount > 0)
+                result.emplace_back(cloudData.id, amount);
+        }
     }
 }
+
 // ------------------------------------ //
 void
     CompoundCloudComponent::recycleToPosition(const Float3& newPosition)
@@ -277,39 +180,13 @@ void
         m_sceneNode->setPosition(
             m_position.X, CLOUD_Y_COORDINATE, m_position.Z);
 
-    // Clear data. Maybe there is a faster way
-    if(m_compoundId1 != NULL_COMPOUND) {
-        for(size_t x = 0; x < m_density1.size(); ++x) {
-            for(size_t y = 0; y < m_density1[x].size(); ++y) {
-                m_density1[x][y] = 0;
-                m_oldDens1[x][y] = 0;
-            }
-        }
-    }
-
-    if(m_compoundId2 != NULL_COMPOUND) {
-        for(size_t x = 0; x < m_density2.size(); ++x) {
-            for(size_t y = 0; y < m_density2[x].size(); ++y) {
-                m_density2[x][y] = 0;
-                m_oldDens2[x][y] = 0;
-            }
-        }
-    }
-
-    if(m_compoundId3 != NULL_COMPOUND) {
-        for(size_t x = 0; x < m_density3.size(); ++x) {
-            for(size_t y = 0; y < m_density3[x].size(); ++y) {
-                m_density3[x][y] = 0;
-                m_oldDens3[x][y] = 0;
-            }
-        }
-    }
-
-    if(m_compoundId4 != NULL_COMPOUND) {
-        for(size_t x = 0; x < m_density4.size(); ++x) {
-            for(size_t y = 0; y < m_density4[x].size(); ++y) {
-                m_density4[x][y] = 0;
-                m_oldDens4[x][y] = 0;
+    for(auto& cloudData : clouds) {
+        if(cloudData.id != NULL_COMPOUND) {
+            for(size_t x = 0; x < cloudData.density.size(); ++x) {
+                for(size_t y = 0; y < cloudData.density[x].size(); ++y) {
+                    cloudData.density[x][y] = 0;
+                    cloudData.oldDensity[x][y] = 0;
+                }
             }
         }
     }
@@ -822,7 +699,7 @@ void
                 if(((pos - requiredPos).HAddAbs() < Leviathan::EPSILON)) {
 
                     // Check that the group of the cloud is correct
-                    if(groupType == iter->second->getCompoundId1()) {
+                    if(groupType == iter->second->clouds[0].id) {
                         hasCloud = true;
                         break;
                     }
@@ -839,7 +716,7 @@ void
                 ++checkReposition) {
 
                 if(m_tooFarAwayClouds[checkReposition] &&
-                    m_tooFarAwayClouds[checkReposition]->getCompoundId1() ==
+                    m_tooFarAwayClouds[checkReposition]->clouds[0].id ==
                         groupType) {
 
                     // Found a candidate
@@ -911,29 +788,13 @@ void
         Ogre::SceneManager* scene)
 {
     // All the densities
-    if(cloud.m_compoundId1 != NULL_COMPOUND) {
-        cloud.m_density1.resize(CLOUD_SIMULATION_WIDTH,
-            std::vector<float>(CLOUD_SIMULATION_HEIGHT, 0));
-        cloud.m_oldDens1.resize(CLOUD_SIMULATION_WIDTH,
-            std::vector<float>(CLOUD_SIMULATION_HEIGHT, 0));
-    }
-    if(cloud.m_compoundId2 != NULL_COMPOUND) {
-        cloud.m_density2.resize(CLOUD_SIMULATION_WIDTH,
-            std::vector<float>(CLOUD_SIMULATION_HEIGHT, 0));
-        cloud.m_oldDens2.resize(CLOUD_SIMULATION_WIDTH,
-            std::vector<float>(CLOUD_SIMULATION_HEIGHT, 0));
-    }
-    if(cloud.m_compoundId3 != NULL_COMPOUND) {
-        cloud.m_density3.resize(CLOUD_SIMULATION_WIDTH,
-            std::vector<float>(CLOUD_SIMULATION_HEIGHT, 0));
-        cloud.m_oldDens3.resize(CLOUD_SIMULATION_WIDTH,
-            std::vector<float>(CLOUD_SIMULATION_HEIGHT, 0));
-    }
-    if(cloud.m_compoundId4 != NULL_COMPOUND) {
-        cloud.m_density4.resize(CLOUD_SIMULATION_WIDTH,
-            std::vector<float>(CLOUD_SIMULATION_HEIGHT, 0));
-        cloud.m_oldDens4.resize(CLOUD_SIMULATION_WIDTH,
-            std::vector<float>(CLOUD_SIMULATION_HEIGHT, 0));
+    for(auto& cloudData : cloud.clouds) {
+        if(cloudData.id != NULL_COMPOUND) {
+            cloudData.density.resize(CLOUD_SIMULATION_WIDTH,
+                std::vector<float>(CLOUD_SIMULATION_HEIGHT, 0));
+            cloudData.oldDensity.resize(CLOUD_SIMULATION_WIDTH,
+                std::vector<float>(CLOUD_SIMULATION_HEIGHT, 0));
+        }
     }
 
     cloud.m_initialized = true;
@@ -975,14 +836,10 @@ void
     pass->setFragmentProgram("CompoundCloud_PS");
 
     // Set colour parameter //
-    pass->getFragmentProgramParameters()->setNamedConstant(
-        "cloudColour1", cloud.m_color1);
-    pass->getFragmentProgramParameters()->setNamedConstant(
-        "cloudColour2", cloud.m_color2);
-    pass->getFragmentProgramParameters()->setNamedConstant(
-        "cloudColour3", cloud.m_color3);
-    pass->getFragmentProgramParameters()->setNamedConstant(
-        "cloudColour4", cloud.m_color4);
+    for(unsigned int i = 0; i < CLOUDS_IN_ONE; i++) {
+        pass->getFragmentProgramParameters()->setNamedConstant(
+            "cloudColour" + std::to_string(i + 1), cloud.clouds[i].color);
+    }
 
     // The perlin noise texture needs to be tileable. We can't do tricks with
     // the cloud's position
@@ -1079,29 +936,14 @@ void
     // The diffusion rate seems to have a bigger effect
 
     // Compound clouds move from area of high concentration to area of low.
-    if(cloud.m_compoundId1 != NULL_COMPOUND) {
-        diffuse(0.007f, cloud.m_oldDens1, cloud.m_density1, renderTime);
-        // Move the compound clouds about the velocity field.
-        advect(
-            cloud.m_oldDens1, cloud.m_density1, renderTime, fluidSystem, pos);
-    }
-    if(cloud.m_compoundId2 != NULL_COMPOUND) {
-        diffuse(0.007f, cloud.m_oldDens2, cloud.m_density2, renderTime);
-        // Move the compound clouds about the velocity field.
-        advect(
-            cloud.m_oldDens2, cloud.m_density2, renderTime, fluidSystem, pos);
-    }
-    if(cloud.m_compoundId3 != NULL_COMPOUND) {
-        diffuse(0.007f, cloud.m_oldDens3, cloud.m_density3, renderTime);
-        // Move the compound clouds about the velocity field.
-        advect(
-            cloud.m_oldDens3, cloud.m_density3, renderTime, fluidSystem, pos);
-    }
-    if(cloud.m_compoundId4 != NULL_COMPOUND) {
-        diffuse(0.007f, cloud.m_oldDens4, cloud.m_density4, renderTime);
-        // Move the compound clouds about the velocity field.
-        advect(
-            cloud.m_oldDens4, cloud.m_density4, renderTime, fluidSystem, pos);
+    for(auto& cloudData : cloud.clouds) {
+        if(cloudData.id != NULL_COMPOUND) {
+            diffuse(
+                0.007f, cloudData.oldDensity, cloudData.density, renderTime);
+            // Move the compound clouds about the velocity field.
+            advect(cloudData.oldDensity, cloudData.density, renderTime,
+                fluidSystem, pos);
+        }
     }
 
     // No graphics check
@@ -1139,22 +981,16 @@ void
     // B - 0
     // A - 3
 
-    if(cloud.m_compoundId1 == NULL_COMPOUND)
+    const unsigned int indices[] = {2, 1, 0, 3};
+
+    if(cloud.clouds[0].id == NULL_COMPOUND)
         LEVIATHAN_ASSERT(false, "cloud with not even the first compound");
 
-    // First density. R goes to channel 2 (see above for the mapping)
-    fillCloudChannel(cloud.m_density1, 2, rowBytes, pDest);
-
-    // Second. G - 1
-    if(cloud.m_compoundId2 != NULL_COMPOUND)
-        fillCloudChannel(cloud.m_density2, 1, rowBytes, pDest);
-    // Etc. B - 0
-    if(cloud.m_compoundId3 != NULL_COMPOUND)
-        fillCloudChannel(cloud.m_density3, 0, rowBytes, pDest);
-
-    // A - 3
-    if(cloud.m_compoundId4 != NULL_COMPOUND)
-        fillCloudChannel(cloud.m_density4, 3, rowBytes, pDest);
+    for(unsigned int i = 0; i < CLOUDS_IN_ONE; i++) {
+        if(cloud.clouds[i].id != NULL_COMPOUND)
+            fillCloudChannel(
+                cloud.clouds[i].density, indices[i], rowBytes, pDest);
+    }
 
     // Unlock the pixel buffer.
     pixelBuffer->unlock();

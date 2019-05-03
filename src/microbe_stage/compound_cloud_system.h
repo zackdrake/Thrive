@@ -12,6 +12,7 @@
 #include <OgreMesh.h>
 #include <OgreVector2.h>
 
+#include <array>
 #include <vector>
 
 
@@ -167,6 +168,23 @@ entities
 
 */
 
+struct CloudData {
+    //! \brief The compound id.
+    //! \note NULL_COMPOUND means that this cloud doesn't have that slot filled
+    CompoundId id = NULL_COMPOUND;
+
+    //! The color of the compound cloud.
+    //! Every used channel must have alpha of 1. The others have alpha 0 so that
+    //! they don't need to be worried about affecting the resulting colours
+    Ogre::Vector4 color = Ogre::Vector4(0, 0, 0, 0);
+
+    /// The 2D array that contains the current compound clouds and those from
+    /// last frame.
+    //! \todo switch to a single dimensional vector as this vector of vectors is
+    //! not the most efficient
+    std::vector<std::vector<float>> density;
+    std::vector<std::vector<float>> oldDensity;
+};
 
 /**
  * @brief Compound clouds that flow in the environment
@@ -178,8 +196,6 @@ class CompoundCloudComponent : public Leviathan::Component {
     friend class CompoundAbsorberSystem;
 
 public:
-    enum class SLOT { FIRST, SECOND, THIRD, FOURTH };
-
     //! \brief Creates a cloud with the specified compound types and colour
     //!
     //! Set not used ones to null. At least first must be not null
@@ -196,7 +212,7 @@ public:
         Release(Ogre::SceneManager* scene);
 
     //! \returns Index for CompoundId or throws if not found
-    SLOT
+    unsigned int
         getSlotForCompound(CompoundId compound);
 
     //! \returns True if CompoundId is in this cloud
@@ -226,27 +242,6 @@ public:
             size_t y,
             std::vector<std::tuple<CompoundId, float>>& result);
 
-    CompoundId
-        getCompoundId1() const
-    {
-        return m_compoundId1;
-    }
-    CompoundId
-        getCompoundId2() const
-    {
-        return m_compoundId2;
-    }
-    CompoundId
-        getCompoundId3() const
-    {
-        return m_compoundId3;
-    }
-    CompoundId
-        getCompoundId4() const
-    {
-        return m_compoundId4;
-    }
-
     auto
         getPosition() const
     {
@@ -266,6 +261,11 @@ public:
     static constexpr auto TYPE =
         componentTypeConvert(THRIVE_COMPONENT::COMPOUND_CLOUD);
 
+	// Contains the data for all the 4 clouds.
+	// It's public because test require it to be public.
+	// TODO: make protected again.
+    std::array<CloudData, CLOUDS_IN_ONE> clouds;
+
 protected:
     // Now each cloud has it's own plane that it renders onto
     Ogre::Item* m_compoundCloudsPlane = nullptr;
@@ -284,20 +284,6 @@ protected:
     //! Y is ignored and replaced with CLOUD_Y_COORDINATE
     Float3 m_position = Float3(0, 0, 0);
 
-    /// The 2D array that contains the current compound clouds and those from
-    /// last frame.
-    //! \todo switch to a single dimensional vector as this vector of vectors is
-    //! not the most efficient
-    std::vector<std::vector<float>> m_density1;
-    std::vector<std::vector<float>> m_density2;
-    std::vector<std::vector<float>> m_density3;
-    std::vector<std::vector<float>> m_density4;
-
-    std::vector<std::vector<float>> m_oldDens1;
-    std::vector<std::vector<float>> m_oldDens2;
-    std::vector<std::vector<float>> m_oldDens3;
-    std::vector<std::vector<float>> m_oldDens4;
-
     //! The 3x3 grid of density tiles around this cloud for moving compounds
     //! between them
     //! \todo This isn't implemented
@@ -305,21 +291,6 @@ protected:
     CompoundCloudComponent* m_rightCloud = nullptr;
     CompoundCloudComponent* m_lowerCloud = nullptr;
     CompoundCloudComponent* m_upperCloud = nullptr;
-
-    //! The color of the compound cloud.
-    //! Every used channel must have alpha of 1. The others have alpha 0 so that
-    //! they don't need to be worried about affecting the resulting colours
-    Ogre::Vector4 m_color1 = Ogre::Vector4(0, 0, 0, 0);
-    Ogre::Vector4 m_color2 = Ogre::Vector4(0, 0, 0, 0);
-    Ogre::Vector4 m_color3 = Ogre::Vector4(0, 0, 0, 0);
-    Ogre::Vector4 m_color4 = Ogre::Vector4(0, 0, 0, 0);
-
-    //! \brief The compound id.
-    //! \note NULL_COMPOUND means that this cloud doesn't have that slot filled
-    CompoundId m_compoundId1 = NULL_COMPOUND;
-    CompoundId m_compoundId2 = NULL_COMPOUND;
-    CompoundId m_compoundId3 = NULL_COMPOUND;
-    CompoundId m_compoundId4 = NULL_COMPOUND;
 
     //! Used to report destruction
     //! \todo This can be removed once there is a proper clear method available

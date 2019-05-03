@@ -298,9 +298,9 @@ auto
 
         if(counts.find(stream.str()) == counts.end()) {
             counts.insert(std::make_pair(stream.str(),
-                std::vector<CompoundId>{cloud->getCompoundId1()}));
+                std::vector<CompoundId>{cloud->clouds[0].id}));
         } else {
-            counts[stream.str()].push_back(cloud->getCompoundId1());
+            counts[stream.str()].push_back(cloud->clouds[0].id);
         }
     }
 
@@ -366,7 +366,7 @@ auto
 
             if(cloud->getPosition() == pos) {
 
-                CAPTURE(cloud->getCompoundId1(), pos, cloudFirstTypes);
+                CAPTURE(cloud->clouds[0].id, pos, cloudFirstTypes);
 
                 bool matched = false;
 
@@ -375,7 +375,7 @@ auto
                     targetTypeIndex < cloudFirstTypes.size();
                     ++targetTypeIndex) {
 
-                    if(cloud->getCompoundId1() ==
+                    if(cloud->clouds[0].id ==
                         cloudFirstTypes[targetTypeIndex]) {
 
                         // Position check
@@ -577,12 +577,12 @@ TEST_CASE_METHOD(CloudManagerTestsFixture,
         if(cloud->getPosition() != Float3(0, 0, 0))
             continue;
 
-        if(cloudFirstTypes[0] == cloud->getCompoundId1()) {
+        if(cloudFirstTypes[0] == cloud->clouds[0].id) {
 
             CHECK(!cloudGroup1AtOrigin);
             cloudGroup1AtOrigin = cloud;
 
-        } else if(cloudFirstTypes[1] == cloud->getCompoundId1()) {
+        } else if(cloudFirstTypes[1] == cloud->clouds[0].id) {
 
             CHECK(!cloudGroup2AtOrigin);
             cloudGroup2AtOrigin = cloud;

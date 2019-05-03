@@ -225,23 +225,12 @@ void
                         // Absorb all of the 4 compounds that can be in a cloud
                         // entity
 
-                        const auto id1 = compoundCloud->getCompoundId1();
-                        const auto id2 = compoundCloud->getCompoundId2();
-                        const auto id3 = compoundCloud->getCompoundId3();
-                        const auto id4 = compoundCloud->getCompoundId4();
-
-                        if(id1 != NULL_COMPOUND &&
-                            absorber.canAbsorbCompound(id1))
-                            absorbFromCloud(compoundCloud, id1, absorber, x, y);
-                        if(id2 != NULL_COMPOUND &&
-                            absorber.canAbsorbCompound(id2))
-                            absorbFromCloud(compoundCloud, id2, absorber, x, y);
-                        if(id3 != NULL_COMPOUND &&
-                            absorber.canAbsorbCompound(id3))
-                            absorbFromCloud(compoundCloud, id3, absorber, x, y);
-                        if(id4 != NULL_COMPOUND &&
-                            absorber.canAbsorbCompound(id4))
-                            absorbFromCloud(compoundCloud, id4, absorber, x, y);
+                        for(auto& cloudData : compoundCloud->clouds) {
+                            if(cloudData.id != NULL_COMPOUND &&
+                                absorber.canAbsorbCompound(cloudData.id))
+                                absorbFromCloud(compoundCloud, cloudData.id,
+                                    absorber, x, y);
+                        }
                     }
                 }
             }
