@@ -10,10 +10,11 @@ Compound::Compound(size_t id,
     bool isCloud,
     bool isUseful,
     bool isEnvironmental,
+    float viscosity,
     Ogre::ColourValue colour) :
     RegistryType(id, name),
     isCloud(isCloud), isUseful(isUseful), isEnvironmental(isEnvironmental),
-    colour(colour)
+    viscosity(viscosity), colour(colour)
 {}
 
 Compound::Compound(Json::Value value)
@@ -22,6 +23,8 @@ Compound::Compound(Json::Value value)
     isCloud = value["isCloud"].asBool();
     isUseful = value["isUseful"].asBool();
     isEnvironmental = value["isEnvironmental"].asBool();
+    viscosity = value["viscosity"].asFloat();
+
     // Setting the cloud colour.
     float r = value["colour"]["r"].asFloat();
     float g = value["colour"]["g"].asFloat();

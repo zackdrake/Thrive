@@ -52,6 +52,7 @@ CompoundCloudComponent::CompoundCloudComponent(CompoundCloudSystem& owner,
             clouds[i].id = aux[i]->id;
             clouds[i].color = Ogre::Vector4(
                 aux[i]->colour.r, aux[i]->colour.g, aux[i]->colour.b, 1.0f);
+            clouds[i].viscosity = aux[i]->viscosity;
         }
     }
 }
@@ -938,11 +939,9 @@ void
     // Compound clouds move from area of high concentration to area of low.
     for(auto& cloudData : cloud.clouds) {
         if(cloudData.id != NULL_COMPOUND) {
-            diffuse(
-                0.007f, cloudData.oldDensity, cloudData.density, renderTime);
+            diffuse(0.007f, cloudData, renderTime);
             // Move the compound clouds about the velocity field.
-            advect(cloudData.oldDensity, cloudData.density, renderTime,
-                fluidSystem, pos);
+            advect(cloudData, renderTime, fluidSystem, pos);
         }
     }
 
@@ -1024,32 +1023,30 @@ void
 }
 
 void
-    CompoundCloudSystem::diffuse(float diffRate,
-        std::vector<std::vector<float>>& oldDens,
-        const std::vector<std::vector<float>>& density,
-        int dt)
+    CompoundCloudSystem::diffuse(float diffRate, CloudData& cloudData, int dt)
 {
     float a = dt * diffRate;
     for(int x = 1; x < CLOUD_SIMULATION_WIDTH - 1; x++) {
         for(int y = 1; y < CLOUD_SIMULATION_HEIGHT - 1; y++) {
-            oldDens[x][y] = density[x][y] * (1 - a) +
-                            (oldDens[x - 1][y] + oldDens[x + 1][y] +
-                                oldDens[x][y - 1] + oldDens[x][y + 1]) *
-                                a / 4;
+            cloudData.oldDensity[x][y] = cloudData.density[x][y] * (1 - a) +
+                                         (cloudData.oldDensity[x - 1][y] +
+                                             cloudData.oldDensity[x + 1][y] +
+                                             cloudData.oldDensity[x][y - 1] +
+                                             cloudData.oldDensity[x][y + 1]) *
+                                             a / 4;
         }
     }
 }
 
 void
-    CompoundCloudSystem::advect(const std::vector<std::vector<float>>& oldDens,
-        std::vector<std::vector<float>>& density,
+    CompoundCloudSystem::advect(CloudData& cloudData,
         int dt,
         FluidSystem& fluidSystem,
         Float2 pos)
 {
     for(int x = 0; x < CLOUD_SIMULATION_WIDTH; x++) {
         for(int y = 0; y < CLOUD_SIMULATION_HEIGHT; y++) {
-            density[x][y] = 0;
+            cloudData.density[x][y] = 0;
         }
     }
 
@@ -1057,13 +1054,10 @@ void
     // the next cloud (instead of not handling them here)
     for(size_t x = 1; x < CLOUD_SIMULATION_WIDTH - 1; x++) {
         for(size_t y = 1; y < CLOUD_SIMULATION_HEIGHT - 1; y++) {
-            if(oldDens[x][y] > 1) {
-                constexpr float viscosity =
-                    0.0525f; // TODO: give each cloud a viscosity value in the
-                             // JSON file and use it instead.
+            if(cloudData.oldDensity[x][y] > 1) {
                 Float2 velocity = fluidSystem.getVelocityAt(
-                                      pos + Float2(x, y) * CLOUD_RESOLUTION) *
-                                  viscosity;
+                                      pos + Float2(x, y) * CLOUD_RESOLUTION) /
+                                  cloudData.viscosity;
 
                 float dx = x + dt * velocity.X;
                 float dy = y + dt * velocity.Y;
@@ -1081,10 +1075,14 @@ void
                 float t1 = dy - y0;
                 float t0 = 1.0f - t1;
 
-                density[x0][y0] += oldDens[x][y] * s0 * t0;
-                density[x0][y1] += oldDens[x][y] * s0 * t1;
-                density[x1][y0] += oldDens[x][y] * s1 * t0;
-                density[x1][y1] += oldDens[x][y] * s1 * t1;
+                cloudData.density[x0][y0] +=
+                    cloudData.oldDensity[x][y] * s0 * t0;
+                cloudData.density[x0][y1] +=
+                    cloudData.oldDensity[x][y] * s0 * t1;
+                cloudData.density[x1][y0] +=
+                    cloudData.oldDensity[x][y] * s1 * t0;
+                cloudData.density[x1][y1] +=
+                    cloudData.oldDensity[x][y] * s1 * t1;
             }
         }
     }

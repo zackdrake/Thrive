@@ -184,6 +184,10 @@ struct CloudData {
     //! not the most efficient
     std::vector<std::vector<float>> density;
     std::vector<std::vector<float>> oldDensity;
+
+	float viscosity = 19.0f;
+
+	// Should i just store a Compound*?
 };
 
 /**
@@ -261,9 +265,9 @@ public:
     static constexpr auto TYPE =
         componentTypeConvert(THRIVE_COMPONENT::COMPOUND_CLOUD);
 
-	// Contains the data for all the 4 clouds.
-	// It's public because test require it to be public.
-	// TODO: make protected again.
+    // Contains the data for all the 4 clouds.
+    // It's public because test require it to be public.
+    // TODO: make protected again.
     std::array<CloudData, CLOUDS_IN_ONE> clouds;
 
 protected:
@@ -484,14 +488,10 @@ private:
             uint8_t* pDest);
 
     void
-        diffuse(float diffRate,
-            std::vector<std::vector<float>>& oldDens,
-            const std::vector<std::vector<float>>& density,
-            int dt);
+        diffuse(float diffRate, CloudData& cloudData, int dt);
 
     void
-        advect(const std::vector<std::vector<float>>& oldDens,
-            std::vector<std::vector<float>>& density,
+        advect(CloudData& cloudData,
             int dt,
             FluidSystem& fluidSystem,
             Float2 pos);

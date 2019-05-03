@@ -5,6 +5,7 @@
         "isCloud": false,
         "isUseful": true,
         "isEnvironmental": false,
+        "viscosity": 19,
         "colour": {
             "r": 0.235,
             "g": 0.627,
@@ -18,6 +19,7 @@
         "isCloud": true,
         "isUseful": true,
         "isEnvironmental": false,
+        "viscosity": 19,
         "colour": {
             "r": 1.0,
             "g": 0.4,
@@ -31,6 +33,7 @@
         "isCloud": true,
         "isUseful": true,
         "isEnvironmental": false,
+        "viscosity": 19,
         "colour": {
             "r": 0.8,
             "g": 0.4,
@@ -44,6 +47,7 @@
         "isCloud": true,
         "isUseful": false,
         "isEnvironmental": false,
+        "viscosity": 19,
         "colour": {
             "r": 0.6,
             "g": 0.7,
@@ -57,6 +61,7 @@
         "isCloud": true,
         "isUseful": false,
         "isEnvironmental": false,
+        "viscosity": 19,
         "colour": {
             "r": 0.9,
             "g": 0.9,
@@ -70,6 +75,7 @@
         "isCloud": false,
         "isUseful": true,
         "isEnvironmental": false,
+        "viscosity": 19,
         "colour": {
             "r": 0.078,
             "g": 0.0,
@@ -83,6 +89,7 @@
         "isCloud": true,
         "isUseful": false,
         "isEnvironmental": false,
+        "viscosity": 19,
         "colour": {
             "r": 0.28,
             "g": 0.098,
@@ -96,6 +103,7 @@
         "isCloud": false,
         "isUseful": true,
         "isEnvironmental": true,
+        "viscosity": 19,
         "colour": {
             "r": 0.0,
             "g": 0.0,
@@ -109,6 +117,7 @@
         "isCloud": false,
         "isUseful": true,
         "isEnvironmental": true,
+        "viscosity": 19,
         "colour": {
             "r": 1.0,
             "g": 0.0,
@@ -122,6 +131,7 @@
         "isCloud": false,
         "isUseful": true,
         "isEnvironmental": true,
+        "viscosity": 19,
         "colour": {
             "r": 1.0,
             "g": 0.0,
