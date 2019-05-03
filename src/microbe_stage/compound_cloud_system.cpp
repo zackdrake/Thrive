@@ -791,10 +791,12 @@ void
     // All the densities
     for(auto& cloudData : cloud.clouds) {
         if(cloudData.id != NULL_COMPOUND) {
-            cloudData.density.resize(CLOUD_SIMULATION_WIDTH,
-                std::vector<float>(CLOUD_SIMULATION_HEIGHT, 0));
-            cloudData.oldDensity.resize(CLOUD_SIMULATION_WIDTH,
-                std::vector<float>(CLOUD_SIMULATION_HEIGHT, 0));
+            for(size_t x = 0; x < cloudData.density.size(); ++x) {
+                for(size_t y = 0; y < cloudData.density[x].size(); ++y) {
+                    cloudData.density[x][y] = 0;
+                    cloudData.oldDensity[x][y] = 0;
+                }
+            }
         }
     }
 
@@ -988,7 +990,7 @@ void
     for(unsigned int i = 0; i < CLOUDS_IN_ONE; i++) {
         if(cloud.clouds[i].id != NULL_COMPOUND)
             fillCloudChannel(
-                cloud.clouds[i].density, indices[i], rowBytes, pDest);
+                cloud.clouds[i], indices[i], rowBytes, pDest);
     }
 
     // Unlock the pixel buffer.
@@ -996,22 +998,20 @@ void
 }
 
 void
-    CompoundCloudSystem::fillCloudChannel(
-        const std::vector<std::vector<float>>& density,
+    CompoundCloudSystem::fillCloudChannel(const CloudData& cloudData,
         size_t index,
         size_t rowBytes,
         uint8_t* pDest)
 {
-    const auto height = density[0].size();
-    for(size_t j = 0; j < height; j++) {
-        for(size_t i = 0; i < density.size(); i++) {
+    for(size_t i = 0; i < cloudData.density.size(); i++) {
+        for(size_t j = 0; j < cloudData.density[i].size(); j++) {
 
             // This formula smoothens the cloud density so that we get gradients
             // of transparency.
             // TODO: move this to the shaders for better performance (we would
             // need to pass a float instead of a byte).
-            int intensity =
-                static_cast<int>(255 * 2 * std::atan(0.003f * density[i][j]));
+            int intensity = static_cast<int>(
+                255 * 2 * std::atan(0.003f * cloudData.density[i][j]));
 
             // This is the same clamping code as in the old version
             intensity = std::clamp(intensity, 0, 255);

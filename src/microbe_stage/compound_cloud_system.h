@@ -180,14 +180,16 @@ struct CloudData {
 
     /// The 2D array that contains the current compound clouds and those from
     /// last frame.
-    //! \todo switch to a single dimensional vector as this vector of vectors is
-    //! not the most efficient
-    std::vector<std::vector<float>> density;
-    std::vector<std::vector<float>> oldDensity;
+    std::array<std::array<float, CLOUD_SIMULATION_HEIGHT>,
+        CLOUD_SIMULATION_WIDTH>
+        density;
+    std::array<std::array<float, CLOUD_SIMULATION_HEIGHT>,
+        CLOUD_SIMULATION_WIDTH>
+        oldDensity;
 
-	float viscosity = 19.0f;
+    float viscosity = 19.0f;
 
-	// Should i just store a Compound*?
+    // Should i just store a Compound*?
 };
 
 /**
@@ -482,7 +484,7 @@ private:
             Ogre::SceneManager* scene);
 
     void
-        fillCloudChannel(const std::vector<std::vector<float>>& density,
+        fillCloudChannel(const CloudData& cloudData,
             size_t index,
             size_t rowBytes,
             uint8_t* pDest);
