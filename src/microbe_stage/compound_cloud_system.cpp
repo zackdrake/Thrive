@@ -431,12 +431,10 @@ bool
     CompoundCloudSystem::cloudContainsPosition(const Float3& cloudPosition,
         const Float3& worldPosition)
 {
-    if(worldPosition.X < cloudPosition.X - CLOUD_WIDTH ||
-        worldPosition.X >= cloudPosition.X + CLOUD_WIDTH ||
-        worldPosition.Z < cloudPosition.Z - CLOUD_HEIGHT ||
-        worldPosition.Z >= cloudPosition.Z + CLOUD_HEIGHT)
-        return false;
-    return true;
+    return !(worldPosition.X < cloudPosition.X - CLOUD_WIDTH ||
+             worldPosition.X >= cloudPosition.X + CLOUD_WIDTH ||
+             worldPosition.Z < cloudPosition.Z - CLOUD_HEIGHT ||
+             worldPosition.Z >= cloudPosition.Z + CLOUD_HEIGHT);
 }
 
 bool
@@ -445,12 +443,10 @@ bool
         const Float3& worldPosition,
         float radius)
 {
-    if(worldPosition.X + radius < cloudPosition.X - CLOUD_WIDTH ||
-        worldPosition.X - radius >= cloudPosition.X + CLOUD_WIDTH ||
-        worldPosition.Z + radius < cloudPosition.Z - CLOUD_HEIGHT ||
-        worldPosition.Z - radius >= cloudPosition.Z + CLOUD_HEIGHT)
-        return false;
-    return true;
+    return !(worldPosition.X + radius < cloudPosition.X - CLOUD_WIDTH ||
+             worldPosition.X - radius >= cloudPosition.X + CLOUD_WIDTH ||
+             worldPosition.Z + radius < cloudPosition.Z - CLOUD_HEIGHT ||
+             worldPosition.Z - radius >= cloudPosition.Z + CLOUD_HEIGHT);
 }
 
 std::tuple<size_t, size_t>
@@ -697,7 +693,7 @@ void
                 const auto pos = iter->second->m_position;
                 // An exact check might work but just to be safe slight
                 // inaccuracy is allowed here
-                if(((pos - requiredPos).HAddAbs() < Leviathan::EPSILON)) {
+                if((pos - requiredPos).HAddAbs() < Leviathan::EPSILON) {
 
                     // Check that the group of the cloud is correct
                     if(groupType == iter->second->clouds[0].id) {
@@ -758,22 +754,17 @@ void
         size_t startIndex)
 {
     auto entity = world.CreateEntity();
-    Compound* first =
-        startIndex < m_cloudTypes.size() ? &m_cloudTypes[startIndex] : nullptr;
 
-    Compound* second = startIndex + 1 < m_cloudTypes.size() ?
-                           &m_cloudTypes[startIndex + 1] :
-                           nullptr;
+    Compound* aux[CLOUDS_IN_ONE];
 
-    Compound* third = startIndex + 2 < m_cloudTypes.size() ?
-                          &m_cloudTypes[startIndex + 2] :
-                          nullptr;
+    for(unsigned int i = 0; i < CLOUDS_IN_ONE; i++) {
+        aux[i] = startIndex + i < m_cloudTypes.size() ?
+                     &m_cloudTypes[startIndex + i] :
+                     nullptr;
+    }
 
-    Compound* fourth = startIndex + 3 < m_cloudTypes.size() ?
-                           &m_cloudTypes[startIndex + 3] :
-                           nullptr;
     CompoundCloudComponent& cloud = world.Create_CompoundCloudComponent(
-        entity, *this, first, second, third, fourth);
+        entity, *this, aux[0], aux[1], aux[2], aux[3]);
     m_managedClouds[entity] = &cloud;
 
     // Set correct position
@@ -989,8 +980,7 @@ void
 
     for(unsigned int i = 0; i < CLOUDS_IN_ONE; i++) {
         if(cloud.clouds[i].id != NULL_COMPOUND)
-            fillCloudChannel(
-                cloud.clouds[i], indices[i], rowBytes, pDest);
+            fillCloudChannel(cloud.clouds[i], indices[i], rowBytes, pDest);
     }
 
     // Unlock the pixel buffer.
