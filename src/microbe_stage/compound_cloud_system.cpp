@@ -550,7 +550,7 @@ void
 
 void
     CompoundCloudSystem::setUpCloudLinks(
-        std::unordered_map<std::pair<Int2, CompoundId>, CompoundCloudComponent*>& clouds)
+        std::map<std::pair<Int2, CompoundId>, CompoundCloudComponent*>& clouds)
 {
     for(auto& [index, cloudComponent] : clouds) {
         const Int2 tile = index.first;
@@ -616,7 +616,7 @@ void
 void
     CompoundCloudSystem::applyNewCloudPositioning()
 {
-    std::unordered_map<std::pair<Int2, CompoundId>, CompoundCloudComponent*> clouds;
+    std::map<std::pair<Int2, CompoundId>, CompoundCloudComponent*> clouds;
 
     // Calculate the new positions
     const auto requiredCloudPositions{

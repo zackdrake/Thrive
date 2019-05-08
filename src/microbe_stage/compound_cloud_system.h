@@ -510,7 +510,7 @@ private:
 
     void
         CompoundCloudSystem::setUpCloudLinks(
-            std::unordered_map<std::pair<Int2, CompoundId>, CompoundCloudComponent*>&
+            std::map<std::pair<Int2, CompoundId>, CompoundCloudComponent*>&
                 clouds);
     void
         CompoundCloudSystem::addCloudDensity(
