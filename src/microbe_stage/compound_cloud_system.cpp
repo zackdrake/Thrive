@@ -549,12 +549,30 @@ void
 }
 
 void
+    CompoundCloudSystem::setUpCloudLinks(
+        std::unordered_map<std::pair<Int2, CompoundId>, CompoundCloudComponent*>& clouds)
+{
+    for(auto& [index, cloudComponent] : clouds) {
+        const Int2 tile = index.first;
+        const CompoundId groupId = index.second;
+
+        cloudComponent->m_upperCloud =
+            tile.Y == -1 ? nullptr : clouds[{tile + Int2(0, -1), groupId}];
+        cloudComponent->m_lowerCloud =
+            tile.Y == 1 ? nullptr : clouds[{tile + Int2(0, 1), groupId}];
+        cloudComponent->m_leftCloud =
+            tile.X == -1 ? nullptr : clouds[{tile + Int2(0, -1), groupId}];
+        cloudComponent->m_rightCloud =
+            tile.X == 1 ? nullptr : clouds[{tile + Int2(0, 1), groupId}];
+    }
+}
+
+void
     CompoundCloudSystem::doSpawnCycle(CellStageWorld& world,
         const Float3& playerPos)
 {
     // Initial spawning if everything is empty
     if(m_managedClouds.empty()) {
-
         m_cloudGridCenter = Float3(0, 0, 0);
 
         const auto requiredCloudPositions{
@@ -564,9 +582,11 @@ void
 
             // All positions
             for(const auto& pos : requiredCloudPositions) {
-                _spawnCloud(world, pos, i);
+                _spawnCloud(world, pos.second, i);
             }
         }
+
+        applyNewCloudPositioning();
     }
     // This rounds up to the nearest multiple of 4,
     // divides that by 4 and multiplies by 9 to get all the clouds we have
@@ -596,6 +616,8 @@ void
 void
     CompoundCloudSystem::applyNewCloudPositioning()
 {
+    std::unordered_map<std::pair<Int2, CompoundId>, CompoundCloudComponent*> clouds;
+
     // Calculate the new positions
     const auto requiredCloudPositions{
         calculateGridPositions(m_cloudGridCenter)};
@@ -614,10 +636,9 @@ void
     // All clouds that aren't at one of the requiredCloudPositions needs to
     // be moved. Also only one from each cloud group needs to be at each
     // position
-    for(auto iter = m_managedClouds.begin(); iter != m_managedClouds.end();
-        ++iter) {
+    for(const auto& [id, cloudComponent] : m_managedClouds) {
 
-        const auto pos = iter->second->m_position;
+        const auto pos = cloudComponent->m_position;
 
         bool matched = false;
 
@@ -628,32 +649,11 @@ void
 
             // An exact check might work but just to be safe slight
             // inaccuracy is allowed here
-            if((pos - requiredPos).HAddAbs() < Leviathan::EPSILON) {
-
-                // TODO: this is probably not needed and can be removed
-                // // It also has to be the only cloud with the first
-                // // compound id that it has (this is used to filter out
-                // // multiple clouds of a group being at some position)
-                // bool duplicate = false;
-
-                // const auto toCheckID = iter->second->getCompoundId1();
-
-                // for(auto iter2 = m_managedClouds.begin();
-                //     iter2 != m_managedClouds.end(); ++iter2) {
-
-                //     if(iter == iter2)
-                //         continue;
-
-                //     if(toCheckID == iter2->second->getCompoundId1()) {
-                //         duplicate = true;
-                //         break;
-                //     }
-                // }
-
-                // if(!duplicate) {
+            if((pos - requiredPos.second).HAddAbs() < Leviathan::EPSILON) {
+                clouds[{requiredPos.first, cloudComponent->clouds[0].id}] =
+                    cloudComponent;
                 matched = true;
                 break;
-                //}
             }
         }
 
@@ -666,7 +666,7 @@ void
                 break;
             }
 
-            m_tooFarAwayClouds[farAwayIndex++] = iter->second;
+            m_tooFarAwayClouds[farAwayIndex++] = cloudComponent;
         }
     }
 
@@ -687,13 +687,14 @@ void
 
             const auto& requiredPos = requiredCloudPositions[i];
 
+			// Didn't we just do all this?
             for(auto iter = m_managedClouds.begin();
                 iter != m_managedClouds.end(); ++iter) {
 
                 const auto pos = iter->second->m_position;
                 // An exact check might work but just to be safe slight
                 // inaccuracy is allowed here
-                if((pos - requiredPos).HAddAbs() < Leviathan::EPSILON) {
+                if((pos - requiredPos.second).HAddAbs() < Leviathan::EPSILON) {
 
                     // Check that the group of the cloud is correct
                     if(groupType == iter->second->clouds[0].id) {
@@ -718,7 +719,10 @@ void
 
                     // Found a candidate
                     m_tooFarAwayClouds[checkReposition]->recycleToPosition(
-                        requiredPos);
+                        requiredPos.second);
+                    clouds[{requiredPos.first,
+                        m_tooFarAwayClouds[checkReposition]->clouds[0].id}] =
+                        m_tooFarAwayClouds[checkReposition];
 
                     // Set to null to skip on next scan
                     m_tooFarAwayClouds[checkReposition] = nullptr;
@@ -746,6 +750,8 @@ void
                 "clouds, a cloud that should have been moved wasn't moved");
         }
     }
+
+    setUpCloudLinks(clouds);
 }
 
 void
@@ -930,11 +936,11 @@ void
     // The diffusion rate seems to have a bigger effect
 
     // Compound clouds move from area of high concentration to area of low.
-    for(auto& cloudData : cloud.clouds) {
-        if(cloudData.id != NULL_COMPOUND) {
-            diffuse(0.007f, cloudData, renderTime);
+    for(unsigned int slot = 0; slot < cloud.clouds.size(); slot++) {
+        if(cloud.clouds[slot].id != NULL_COMPOUND) {
+            diffuse(0.007f, cloud, slot, renderTime);
             // Move the compound clouds about the velocity field.
-            advect(cloudData, renderTime, fluidSystem, pos);
+            advect(cloud, slot, renderTime, fluidSystem, pos);
         }
     }
 
@@ -1013,27 +1019,61 @@ void
 }
 
 void
-    CompoundCloudSystem::diffuse(float diffRate, CloudData& cloudData, int dt)
+    CompoundCloudSystem::diffuse(float diffRate,
+        CompoundCloudComponent& cloudComponent,
+        unsigned int slot,
+        int dt)
 {
     float a = dt * diffRate;
-    for(int x = 1; x < CLOUD_SIMULATION_WIDTH - 1; x++) {
-        for(int y = 1; y < CLOUD_SIMULATION_HEIGHT - 1; y++) {
-            cloudData.oldDensity[x][y] = cloudData.density[x][y] * (1 - a) +
-                                         (cloudData.oldDensity[x - 1][y] +
-                                             cloudData.oldDensity[x + 1][y] +
-                                             cloudData.oldDensity[x][y - 1] +
-                                             cloudData.oldDensity[x][y + 1]) *
-                                             a / 4;
+    CloudData& cloudData = cloudComponent.clouds[slot];
+
+    for(int x = 0; x < CLOUD_SIMULATION_WIDTH; x++) {
+        for(int y = 0; y < CLOUD_SIMULATION_HEIGHT; y++) {
+            float upperDensity = 0.0f;
+            if(y > 0)
+                upperDensity = cloudData.oldDensity[x][y - 1];
+            else if(cloudComponent.m_upperCloud)
+                upperDensity = cloudComponent.m_upperCloud->clouds[slot]
+                                   .oldDensity[x][CLOUD_SIMULATION_HEIGHT - 1];
+
+            float lowerDensity = 0.0f;
+            if(y < CLOUD_SIMULATION_HEIGHT - 1)
+                lowerDensity = cloudData.oldDensity[x][y + 1];
+            else if(cloudComponent.m_lowerCloud)
+                lowerDensity =
+                    cloudComponent.m_lowerCloud->clouds[slot].oldDensity[x][0];
+
+            float leftDensity = 0.0f;
+            if(x > 0)
+                leftDensity = cloudData.oldDensity[x - 1][y];
+            else if(cloudComponent.m_leftCloud)
+                leftDensity = cloudComponent.m_leftCloud->clouds[slot]
+                                  .oldDensity[CLOUD_SIMULATION_WIDTH - 1][y];
+
+            float rightDensity = 0.0f;
+            if(x < CLOUD_SIMULATION_WIDTH - 1)
+                rightDensity = cloudData.oldDensity[x + 1][y];
+            else if(cloudComponent.m_rightCloud)
+                rightDensity =
+                    cloudComponent.m_rightCloud->clouds[slot].oldDensity[0][y];
+
+            cloudData.oldDensity[x][y] =
+                cloudData.density[x][y] * (1 - a) +
+                (upperDensity + lowerDensity + leftDensity + rightDensity) * a /
+                    4;
         }
     }
 }
 
 void
-    CompoundCloudSystem::advect(CloudData& cloudData,
+    CompoundCloudSystem::advect(CompoundCloudComponent& cloudComponent,
+        unsigned int slot,
         int dt,
         FluidSystem& fluidSystem,
         Float2 pos)
 {
+    CloudData& cloudData = cloudComponent.clouds[slot];
+
     for(int x = 0; x < CLOUD_SIMULATION_WIDTH; x++) {
         for(int y = 0; y < CLOUD_SIMULATION_HEIGHT; y++) {
             cloudData.density[x][y] = 0;
@@ -1042,8 +1082,8 @@ void
 
     // TODO: this is probably the place to move the compounds on the edges into
     // the next cloud (instead of not handling them here)
-    for(size_t x = 1; x < CLOUD_SIMULATION_WIDTH - 1; x++) {
-        for(size_t y = 1; y < CLOUD_SIMULATION_HEIGHT - 1; y++) {
+    for(size_t x = 0; x < CLOUD_SIMULATION_WIDTH; x++) {
+        for(size_t y = 0; y < CLOUD_SIMULATION_HEIGHT; y++) {
             if(cloudData.oldDensity[x][y] > 1) {
                 Float2 velocity = fluidSystem.getVelocityAt(
                                       pos + Float2(x, y) * CLOUD_RESOLUTION) /
@@ -1065,15 +1105,50 @@ void
                 float t1 = dy - y0;
                 float t0 = 1.0f - t1;
 
-                cloudData.density[x0][y0] +=
-                    cloudData.oldDensity[x][y] * s0 * t0;
-                cloudData.density[x0][y1] +=
-                    cloudData.oldDensity[x][y] * s0 * t1;
-                cloudData.density[x1][y0] +=
-                    cloudData.oldDensity[x][y] * s1 * t0;
-                cloudData.density[x1][y1] +=
-                    cloudData.oldDensity[x][y] * s1 * t1;
+                addCloudDensity(cloudComponent, slot, x0, y0,
+                    cloudData.oldDensity[x][y] * s0 * t0);
+                addCloudDensity(cloudComponent, slot, x0, y1,
+                    cloudData.oldDensity[x][y] * s0 * t1);
+                addCloudDensity(cloudComponent, slot, x1, y0,
+                    cloudData.oldDensity[x][y] * s1 * t0);
+                addCloudDensity(cloudComponent, slot, x1, y1,
+                    cloudData.oldDensity[x][y] * s1 * t1);
             }
         }
     }
+}
+
+// TODO: come out with a less convoluted method of doing this.
+void
+    CompoundCloudSystem::addCloudDensity(CompoundCloudComponent& cloudComponent,
+        unsigned int slot,
+        int x,
+        int y,
+        float value)
+{
+    CompoundCloudComponent* xComponent = &cloudComponent;
+    if(x < 0) {
+        x = CLOUD_SIMULATION_WIDTH - 1;
+        xComponent = cloudComponent.m_leftCloud;
+    } else if(x >= CLOUD_SIMULATION_WIDTH) {
+        x = 0;
+        xComponent = cloudComponent.m_rightCloud;
+    }
+
+    if(!xComponent)
+        return;
+
+    CompoundCloudComponent* yComponent = xComponent;
+    if(y < 0) {
+        y = CLOUD_SIMULATION_HEIGHT - 1;
+        yComponent = xComponent->m_upperCloud;
+    } else if(y >= CLOUD_SIMULATION_HEIGHT) {
+        y = 0;
+        yComponent = xComponent->m_lowerCloud;
+    }
+
+    if(!yComponent)
+        return;
+
+    yComponent->clouds[slot].density[x][y] += value;
 }

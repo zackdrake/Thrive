@@ -417,33 +417,39 @@ public:
     static inline auto
         calculateGridPositions(const Float3& center)
     {
-        return std::array<Float3, 9>{
+        return std::array<std::pair<Int2, Float3>, 9>{
             // Center
-            center,
+            std::make_pair(Int2(0, 0), center),
 
             // Top left
-            center + Float3(-CLOUD_WIDTH * 2, 0, -CLOUD_HEIGHT * 2),
+            std::make_pair(Int2(-1, -1),
+                center + Float3(-CLOUD_WIDTH * 2, 0, -CLOUD_HEIGHT * 2)),
 
             // Up
-            center + Float3(0, 0, -CLOUD_HEIGHT * 2),
+            std::make_pair(
+                Int2(0, -1), center + Float3(0, 0, -CLOUD_HEIGHT * 2)),
 
             // Top right
-            center + Float3(CLOUD_WIDTH * 2, 0, -CLOUD_HEIGHT * 2),
+            std::make_pair(Int2(1, -1),
+                center + Float3(CLOUD_WIDTH * 2, 0, -CLOUD_HEIGHT * 2)),
 
             // Left
-            center + Float3(-CLOUD_WIDTH * 2, 0, 0),
+            std::make_pair(
+                Int2(-1, 0), center + Float3(-CLOUD_WIDTH * 2, 0, 0)),
 
             // Right
-            center + Float3(CLOUD_WIDTH * 2, 0, 0),
+            std::make_pair(Int2(1, 0), center + Float3(CLOUD_WIDTH * 2, 0, 0)),
 
             // Bottom left
-            center + Float3(-CLOUD_WIDTH * 2, 0, CLOUD_HEIGHT * 2),
+            std::make_pair(Int2(-1, 1),
+                center + Float3(-CLOUD_WIDTH * 2, 0, CLOUD_HEIGHT * 2)),
 
             // Down
-            center + Float3(0, 0, CLOUD_HEIGHT * 2),
+            std::make_pair(Int2(0, 1), center + Float3(0, 0, CLOUD_HEIGHT * 2)),
 
             // Bottom right
-            center + Float3(CLOUD_WIDTH * 2, 0, CLOUD_HEIGHT * 2),
+            std::make_pair(Int2(1, 1),
+                center + Float3(CLOUD_WIDTH * 2, 0, CLOUD_HEIGHT * 2)),
         };
     }
 
@@ -490,13 +496,29 @@ private:
             uint8_t* pDest);
 
     void
-        diffuse(float diffRate, CloudData& cloudData, int dt);
+        diffuse(float diffRate,
+            CompoundCloudComponent& cloudComponent,
+            unsigned int slot,
+            int dt);
 
     void
-        advect(CloudData& cloudData,
+        advect(CompoundCloudComponent& cloudComponent,
+            unsigned int slot,
             int dt,
             FluidSystem& fluidSystem,
             Float2 pos);
+
+    void
+        CompoundCloudSystem::setUpCloudLinks(
+            std::unordered_map<std::pair<Int2, CompoundId>, CompoundCloudComponent*>&
+                clouds);
+    void
+        CompoundCloudSystem::addCloudDensity(
+            CompoundCloudComponent& cloudComponent,
+            unsigned int slot,
+            int x,
+            int y,
+            float value);
 
 private:
     //! This system now spawns these entities when it needs them
