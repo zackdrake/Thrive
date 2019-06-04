@@ -561,9 +561,9 @@ void
         cloudComponent->m_lowerCloud =
             tile.Y == 1 ? nullptr : clouds[{tile + Int2(0, 1), groupId}];
         cloudComponent->m_leftCloud =
-            tile.X == -1 ? nullptr : clouds[{tile + Int2(0, -1), groupId}];
+            tile.X == -1 ? nullptr : clouds[{tile + Int2(-1, 0), groupId}];
         cloudComponent->m_rightCloud =
-            tile.X == 1 ? nullptr : clouds[{tile + Int2(0, 1), groupId}];
+            tile.X == 1 ? nullptr : clouds[{tile + Int2(1, 0), groupId}];
     }
 }
 
