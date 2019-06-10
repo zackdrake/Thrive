@@ -687,7 +687,7 @@ void
 
             const auto& requiredPos = requiredCloudPositions[i];
 
-			// Didn't we just do all this?
+            // Didn't we just do all this?
             for(auto iter = m_managedClouds.begin();
                 iter != m_managedClouds.end(); ++iter) {
 
@@ -1092,9 +1092,6 @@ void
                 float dx = x + dt * velocity.X;
                 float dy = y + dt * velocity.Y;
 
-                dx = std::clamp(dx, 0.5f, CLOUD_SIMULATION_WIDTH - 1.5f);
-                dy = std::clamp(dy, 0.5f, CLOUD_SIMULATION_HEIGHT - 1.5f);
-
                 const int x0 = static_cast<int>(dx);
                 const int x1 = x0 + 1;
                 const int y0 = static_cast<int>(dy);
@@ -1128,27 +1125,28 @@ void
 {
     CompoundCloudComponent* xComponent = &cloudComponent;
     if(x < 0) {
-        x = CLOUD_SIMULATION_WIDTH - 1;
         xComponent = cloudComponent.m_leftCloud;
     } else if(x >= CLOUD_SIMULATION_WIDTH) {
-        x = 0;
         xComponent = cloudComponent.m_rightCloud;
     }
 
     if(!xComponent)
         return;
 
+    x = (x + CLOUD_SIMULATION_WIDTH) % CLOUD_SIMULATION_WIDTH;
+
+
     CompoundCloudComponent* yComponent = xComponent;
     if(y < 0) {
-        y = CLOUD_SIMULATION_HEIGHT - 1;
         yComponent = xComponent->m_upperCloud;
     } else if(y >= CLOUD_SIMULATION_HEIGHT) {
-        y = 0;
         yComponent = xComponent->m_lowerCloud;
     }
 
     if(!yComponent)
         return;
+
+    y = (y + CLOUD_SIMULATION_HEIGHT) % CLOUD_SIMULATION_HEIGHT;
 
     yComponent->clouds[slot].density[x][y] += value;
 }
