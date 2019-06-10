@@ -1031,31 +1031,31 @@ void
         for(int y = 0; y < CLOUD_SIMULATION_HEIGHT; y++) {
             float upperDensity = 0.0f;
             if(y > 0)
-                upperDensity = cloudData.oldDensity[x][y - 1];
+                upperDensity = cloudData.density[x][y - 1];
             else if(cloudComponent.m_upperCloud)
                 upperDensity = cloudComponent.m_upperCloud->clouds[slot]
-                                   .oldDensity[x][CLOUD_SIMULATION_HEIGHT - 1];
+                                   .density[x][CLOUD_SIMULATION_HEIGHT - 1];
 
             float lowerDensity = 0.0f;
             if(y < CLOUD_SIMULATION_HEIGHT - 1)
-                lowerDensity = cloudData.oldDensity[x][y + 1];
+                lowerDensity = cloudData.density[x][y + 1];
             else if(cloudComponent.m_lowerCloud)
                 lowerDensity =
-                    cloudComponent.m_lowerCloud->clouds[slot].oldDensity[x][0];
+                    cloudComponent.m_lowerCloud->clouds[slot].density[x][0];
 
             float leftDensity = 0.0f;
             if(x > 0)
-                leftDensity = cloudData.oldDensity[x - 1][y];
+                leftDensity = cloudData.density[x - 1][y];
             else if(cloudComponent.m_leftCloud)
                 leftDensity = cloudComponent.m_leftCloud->clouds[slot]
-                                  .oldDensity[CLOUD_SIMULATION_WIDTH - 1][y];
+                                  .density[CLOUD_SIMULATION_WIDTH - 1][y];
 
             float rightDensity = 0.0f;
             if(x < CLOUD_SIMULATION_WIDTH - 1)
-                rightDensity = cloudData.oldDensity[x + 1][y];
+                rightDensity = cloudData.density[x + 1][y];
             else if(cloudComponent.m_rightCloud)
                 rightDensity =
-                    cloudComponent.m_rightCloud->clouds[slot].oldDensity[0][y];
+                    cloudComponent.m_rightCloud->clouds[slot].density[0][y];
 
             cloudData.oldDensity[x][y] =
                 cloudData.density[x][y] * (1 - a) +
