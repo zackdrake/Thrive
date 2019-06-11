@@ -481,9 +481,7 @@ private:
             size_t startIndex);
 
     void
-        processCloud(CompoundCloudComponent& cloud,
-            int renderTime,
-            FluidSystem& fluidSystem);
+        processCloud(CompoundCloudComponent& cloud);
 
     void
         initializeCloud(CompoundCloudComponent& cloud,
@@ -502,11 +500,15 @@ private:
             int dt);
 
     void
+        clearDensity(
+            CompoundCloudComponent& cloudComponent,
+            unsigned int slot);
+
+    void
         advect(CompoundCloudComponent& cloudComponent,
             unsigned int slot,
             int dt,
-            FluidSystem& fluidSystem,
-            Float2 pos);
+            FluidSystem& fluidSystem);
 
     void
         CompoundCloudSystem::setUpCloudLinks(

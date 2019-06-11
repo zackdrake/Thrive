@@ -537,6 +537,22 @@ void
 
     doSpawnCycle(world, position);
 
+    const int slowedDownRenderTime = renderTime / 10;
+
+    for(unsigned int slot = 0; slot < CLOUDS_IN_ONE; slot++) {
+        for(auto& value : m_managedClouds)
+            if(value.second->clouds[slot].id != NULL_COMPOUND)
+                diffuse(0.007f, *value.second, slot, slowedDownRenderTime);
+        for(auto& value : m_managedClouds)
+            if(value.second->clouds[slot].id != NULL_COMPOUND)
+                clearDensity(*value.second, slot);
+        for(auto& value : m_managedClouds)
+            if(value.second->clouds[slot].id != NULL_COMPOUND)
+                // Move the compound clouds about the velocity field.
+                advect(*value.second, slot, slowedDownRenderTime,
+                    world.GetFluidSystem());
+    }
+
     for(auto& value : m_managedClouds) {
 
         if(!value.second->m_initialized) {
@@ -544,7 +560,7 @@ void
                                     "it didn't initialize");
         }
 
-        processCloud(*value.second, renderTime, world.GetFluidSystem());
+        processCloud(*value.second);
     }
 }
 
@@ -925,25 +941,8 @@ void
 }
 // ------------------------------------ //
 void
-    CompoundCloudSystem::processCloud(CompoundCloudComponent& cloud,
-        int renderTime,
-        FluidSystem& fluidSystem)
+    CompoundCloudSystem::processCloud(CompoundCloudComponent& cloud)
 {
-    // Try to slow things down (doesn't seem to work great)
-    renderTime /= 10;
-    Float2 pos(cloud.m_position.X, cloud.m_position.Z);
-
-    // The diffusion rate seems to have a bigger effect
-
-    // Compound clouds move from area of high concentration to area of low.
-    for(unsigned int slot = 0; slot < cloud.clouds.size(); slot++) {
-        if(cloud.clouds[slot].id != NULL_COMPOUND) {
-            diffuse(0.007f, cloud, slot, renderTime);
-            // Move the compound clouds about the velocity field.
-            advect(cloud, slot, renderTime, fluidSystem, pos);
-        }
-    }
-
     // No graphics check
     if(!cloud.m_texture)
         return;
@@ -1066,19 +1065,26 @@ void
 }
 
 void
-    CompoundCloudSystem::advect(CompoundCloudComponent& cloudComponent,
-        unsigned int slot,
-        int dt,
-        FluidSystem& fluidSystem,
-        Float2 pos)
+    CompoundCloudSystem::clearDensity(CompoundCloudComponent& cloudComponent,
+        unsigned int slot)
 {
     CloudData& cloudData = cloudComponent.clouds[slot];
 
-    for(int x = 0; x < CLOUD_SIMULATION_WIDTH; x++) {
-        for(int y = 0; y < CLOUD_SIMULATION_HEIGHT; y++) {
-            cloudData.density[x][y] = 0;
+    for(size_t i = 0; i < cloudData.density.size(); i++) {
+        for(size_t j = 0; j < cloudData.density[i].size(); j++) {
+            cloudData.density[i][j] = 0.0f;
         }
     }
+}
+
+void
+    CompoundCloudSystem::advect(CompoundCloudComponent& cloudComponent,
+        unsigned int slot,
+        int dt,
+        FluidSystem& fluidSystem)
+{
+    CloudData& cloudData = cloudComponent.clouds[slot];
+    Float2 pos(cloudComponent.m_position.X, cloudComponent.m_position.Z);
 
     // TODO: this is probably the place to move the compounds on the edges into
     // the next cloud (instead of not handling them here)
@@ -1115,7 +1121,7 @@ void
     }
 }
 
-// TODO: come out with a less convoluted method of doing this.
+// TODO: come up with a less convoluted method of doing this.
 void
     CompoundCloudSystem::addCloudDensity(CompoundCloudComponent& cloudComponent,
         unsigned int slot,
