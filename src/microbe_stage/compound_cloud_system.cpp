@@ -1098,10 +1098,10 @@ void
                 float dx = x + dt * velocity.X;
                 float dy = y + dt * velocity.Y;
 
-				// What even is this?
-                const int x0 = static_cast<int>(dx);
+				// TODO: make this more symmetric.
+                const int x0 = static_cast<int>(std::floor(dx));
                 const int x1 = x0 + 1;
-                const int y0 = static_cast<int>(dy);
+                const int y0 = static_cast<int>(std::floor(dy));
                 const int y1 = y0 + 1;
 
                 float s1 = std::abs(dx - x0);
