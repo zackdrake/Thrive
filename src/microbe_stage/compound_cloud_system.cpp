@@ -1098,14 +1098,15 @@ void
                 float dx = x + dt * velocity.X;
                 float dy = y + dt * velocity.Y;
 
+				// What even is this?
                 const int x0 = static_cast<int>(dx);
                 const int x1 = x0 + 1;
                 const int y0 = static_cast<int>(dy);
                 const int y1 = y0 + 1;
 
-                float s1 = dx - x0;
+                float s1 = std::abs(dx - x0);
                 float s0 = 1.0f - s1;
-                float t1 = dy - y0;
+                float t1 = std::abs(dy - y0);
                 float t0 = 1.0f - t1;
 
                 addCloudDensity(cloudComponent, slot, x0, y0,
