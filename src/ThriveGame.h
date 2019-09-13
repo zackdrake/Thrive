@@ -86,6 +86,9 @@ public:
     void
         killPlayerCellClicked();
 
+	void
+        patchButtonClicked();
+
     void
         exitToMenuClicked();
 

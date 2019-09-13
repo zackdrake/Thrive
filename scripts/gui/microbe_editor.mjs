@@ -136,6 +136,27 @@ export function setupMicrobeEditor(){
     document.getElementById("Redo").addEventListener("click",
         onRedoClicked, true);
 
+    // Top navigation Buttons Clicked
+    document.getElementById("report").addEventListener("click",
+        onPatchReportClicked, true);
+    document.getElementById("patch").addEventListener("click",
+        onPatchReportClicked, true);
+    document.getElementById("editor").addEventListener("click",
+        onPatchReportClicked, true);
+
+    // Next Button Clicked
+    document.getElementById("next").addEventListener("click",
+        onNextButtonClicked, true);
+
+    // Condition buttons clicked
+    let minusBtnObjects = document.getElementsByClassName("minusBtn");
+
+    for (const element of minusBtnObjects) {
+        element.addEventListener("click",
+            onConditionClicked, true);
+    }
+
+    document.getElementsByClassName("minusBtn");
 
     // All of the organelle buttons
     for(const element of organelleSelectionElements){
@@ -223,9 +244,6 @@ export function setupMicrobeEditor(){
 
 //! Called to enter the editor view
 export function doEnterMicrobeEditor(){
-
-    document.getElementById("topLevelMicrobeStage").style.display = "none";
-    document.getElementById("topLevelMicrobeEditor").style.display = "block";
 
     window.setTimeout(() => {
         // Enable finish button
@@ -337,12 +355,120 @@ function updateGuiButtons(isNucleusPresent){
     }
 }
 
+
+// All panels whitin is possible to navigate
+const panelButtons = ["report", "patch", "editor"];
+let activePanel = "";
+// Where we are in patch Map
+let actualNode = "A0";
+
+// Patch-Report function
+function onPatchReportClicked() {
+    
+    // Fire event
+    if(common.isInEngine()){
+        // Call a function to tell the game to swap to the editor. It
+        // Will notify us when it is done
+        Thrive.patchButtonClicked();
+    } else {
+        // Swap GUI for previewing
+        doEnterMicrobeEditor();
+    }
+
+    document.getElementById("changePatch").style.visibility = "hidden";
+
+    // Avoid click to same panel
+    if(this.id != activePanel) {
+        for(const [i, button] of panelButtons.entries()) {
+        if(button == this.id && this.id != activePanel) {
+            
+            counter = i;
+            activePanel = button;
+
+            document.getElementById( this.id).style.backgroundImage =
+                "url(../../Textures/gui/bevel/topLeftButtonActive.png)";
+            document.getElementById( this.id).style.color = "#112B36";
+            document.getElementById( this.id + "Tab").style.visibility = "visible";
+
+            if(this.id == "editor") {
+                document.getElementById("EditorPanelTop").style.display = "block";
+                document.getElementById("EditorPanelBottom").style.visibility = "visible";
+                document.getElementById("next").style.visibility = "hidden";
+                Thrive.editorButtonClicked();
+            } else if(this.id == "patch") {
+                const type = $("#" + actualNode).attr("data-type");
+                document.getElementById("patchName").innerHTML = type;
+            }
+        } else {
+            document.getElementById(button).style.backgroundImage =
+                "url(../../Textures/gui/bevel/topLeftButton.png)";
+            document.getElementById(button).style.color =  "#FAFCFD";
+            document.getElementById( button + "Tab").style.visibility = "hidden";
+            document.getElementById("EditorPanelTop").style.display = "none";
+            document.getElementById("EditorPanelBottom").style.visibility = "hidden";
+            document.getElementById("next").style.visibility = "visible";
+        }
+    }
+    }
+    
+}
+
+// Patch node click event
+$(".nodeMap").click(function(event) {
+    
+    let links = 0;
+    document.getElementById("changePatch").style.visibility = "hidden";
+    
+    // Where we are where we can go
+    $(".nodeMap").each(function() {
+        if($(this).attr("data-here") == "true") {
+            actualNode = $(this).attr("id");
+            links = $(this).attr("data-link");
+            alert("I'm at: " + actualNode + " and i can go: " + links);
+        }
+    });
+
+    links = links.split("-");
+    for(const link of links ) {
+        if(event.target.id == link) {
+            const type = $(event.target).attr("data-type");
+            document.getElementById("patchName").innerHTML = type;
+            document.getElementById("changePatch").style.visibility = "visible";
+            break;
+        } else {
+            document.getElementById("changePatch").style.visibility = "hidden";
+        }
+    }
+});
+
+
+// Patch Map close button
+function onConditionClicked() {
+    const tab = $(this).attr("data-cond");
+
+    $("#" + tab).animate({"height": "toggle"});
+    $(this).toggleClass("minus");
+    $(this).toggleClass("plus");
+}
+
+
 //! Updates generation points in GUI
 function updateSpeed(speed){
     document.getElementById("speedLabel").textContent =
     speed.toFixed(2);
 }
 
+
+// Next Button clicked
+let counter = 0;
+
+function onNextButtonClicked() {
+    if(counter == 2) {
+        counter = 0;
+    }
+    counter = counter + 1;
+    $( "#" + panelButtons[counter] ).click();
+}
 
 
 function onResumeClickedEditor(){

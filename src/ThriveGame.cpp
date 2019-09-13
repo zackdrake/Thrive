@@ -480,6 +480,11 @@ void
 }
 
 void
+    ThriveGame::patchButtonClicked()
+{
+    m_impl->m_cellStageKeys->setEnabled(false);
+}
+void
     ThriveGame::editorButtonClicked()
 {
     LOG_INFO("Editor button pressed");
