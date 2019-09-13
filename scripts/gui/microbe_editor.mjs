@@ -403,7 +403,7 @@ function onPatchReportClicked() {
             } else {
                 document.getElementById(button).style.backgroundImage =
                     "url(../../Textures/gui/bevel/topLeftButton.png)";
-                document.getElementById(button).style.color =  "#FAFCFD";
+                document.getElementById(button).style.color = "#FAFCFD";
                 document.getElementById( button + "Tab").style.visibility = "hidden";
                 document.getElementById("EditorPanelTop").style.display = "none";
                 document.getElementById("EditorPanelBottom").style.visibility = "hidden";

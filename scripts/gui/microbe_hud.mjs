@@ -340,7 +340,7 @@ function onEditorButtonClicked(event){
     document.getElementById("topLevelMicrobeStage").style.display = "none";
     document.getElementById("topLevelMicrobeEditor").style.display = "block";
     $( "#report" ).click();
- 
+
 
     event.stopPropagation();
     common.playButtonPressSound();
