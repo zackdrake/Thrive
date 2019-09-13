@@ -340,7 +340,7 @@ function onEditorButtonClicked(event){
     document.getElementById("topLevelMicrobeStage").style.display = "none";
     document.getElementById("topLevelMicrobeEditor").style.display = "block";
     $( "#report" ).click();
-    
+ 
 
     event.stopPropagation();
     common.playButtonPressSound();
@@ -405,7 +405,7 @@ function updateHoverInfo(vars){
             const values = vars[key].split(":");
             const img = document.createElement("IMG");
             let src = "../../Textures/gui/bevel/";
-            values[0] = values[0].replace(/\s+/, "")
+            values[0] = values[0].replace(/\s+/, "");
             src = src + values[0];
             src = src + ".png";
 

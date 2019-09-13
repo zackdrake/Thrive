@@ -149,7 +149,7 @@ export function setupMicrobeEditor(){
         onNextButtonClicked, true);
 
     // Condition buttons clicked
-    let minusBtnObjects = document.getElementsByClassName("minusBtn");
+    const minusBtnObjects = document.getElementsByClassName("minusBtn");
 
     for (const element of minusBtnObjects) {
         element.addEventListener("click",
@@ -359,12 +359,13 @@ function updateGuiButtons(isNucleusPresent){
 // All panels whitin is possible to navigate
 const panelButtons = ["report", "patch", "editor"];
 let activePanel = "";
+
 // Where we are in patch Map
 let actualNode = "A0";
 
 // Patch-Report function
 function onPatchReportClicked() {
-    
+
     // Fire event
     if(common.isInEngine()){
         // Call a function to tell the game to swap to the editor. It
@@ -380,45 +381,44 @@ function onPatchReportClicked() {
     // Avoid click to same panel
     if(this.id != activePanel) {
         for(const [i, button] of panelButtons.entries()) {
-        if(button == this.id && this.id != activePanel) {
-            
-            counter = i;
-            activePanel = button;
+            if(button == this.id && this.id != activePanel) {
 
-            document.getElementById( this.id).style.backgroundImage =
-                "url(../../Textures/gui/bevel/topLeftButtonActive.png)";
-            document.getElementById( this.id).style.color = "#112B36";
-            document.getElementById( this.id + "Tab").style.visibility = "visible";
+                counter = i;
+                activePanel = button;
 
-            if(this.id == "editor") {
-                document.getElementById("EditorPanelTop").style.display = "block";
-                document.getElementById("EditorPanelBottom").style.visibility = "visible";
-                document.getElementById("next").style.visibility = "hidden";
-                Thrive.editorButtonClicked();
-            } else if(this.id == "patch") {
-                const type = $("#" + actualNode).attr("data-type");
-                document.getElementById("patchName").innerHTML = type;
+                document.getElementById( this.id).style.backgroundImage =
+                    "url(../../Textures/gui/bevel/topLeftButtonActive.png)";
+                document.getElementById( this.id).style.color = "#112B36";
+                document.getElementById( this.id + "Tab").style.visibility = "visible";
+
+                if(this.id == "editor") {
+                    document.getElementById("EditorPanelTop").style.display = "block";
+                    document.getElementById("EditorPanelBottom").style.visibility = "visible";
+                    document.getElementById("next").style.visibility = "hidden";
+                    Thrive.editorButtonClicked();
+                } else if(this.id == "patch") {
+                    const type = $("#" + actualNode).attr("data-type");
+                    document.getElementById("patchName").innerHTML = type;
+                }
+            } else {
+                document.getElementById(button).style.backgroundImage =
+                    "url(../../Textures/gui/bevel/topLeftButton.png)";
+                document.getElementById(button).style.color =  "#FAFCFD";
+                document.getElementById( button + "Tab").style.visibility = "hidden";
+                document.getElementById("EditorPanelTop").style.display = "none";
+                document.getElementById("EditorPanelBottom").style.visibility = "hidden";
+                document.getElementById("next").style.visibility = "visible";
             }
-        } else {
-            document.getElementById(button).style.backgroundImage =
-                "url(../../Textures/gui/bevel/topLeftButton.png)";
-            document.getElementById(button).style.color =  "#FAFCFD";
-            document.getElementById( button + "Tab").style.visibility = "hidden";
-            document.getElementById("EditorPanelTop").style.display = "none";
-            document.getElementById("EditorPanelBottom").style.visibility = "hidden";
-            document.getElementById("next").style.visibility = "visible";
         }
     }
-    }
-    
 }
 
 // Patch node click event
 $(".nodeMap").click(function(event) {
-    
+
     let links = 0;
     document.getElementById("changePatch").style.visibility = "hidden";
-    
+
     // Where we are where we can go
     $(".nodeMap").each(function() {
         if($(this).attr("data-here") == "true") {

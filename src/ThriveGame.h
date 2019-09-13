@@ -86,7 +86,7 @@ public:
     void
         killPlayerCellClicked();
 
-	void
+    void
         patchButtonClicked();
 
     void

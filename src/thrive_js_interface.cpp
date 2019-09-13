@@ -89,16 +89,14 @@ bool
         Owner->SendCustomExtensionMessage(message);
         return true;
 
-	}
-	else if(name == "patchButtonClicked")
-    {
+    } else if(name == "patchButtonClicked") {
         auto message = CefProcessMessage::Create("Custom");
         auto args = message->GetArgumentList();
         args->SetString(0, "patchButtonClicked");
 
         Owner->SendCustomExtensionMessage(message);
         return true;
-       
+
     } else if(name == "finishEditingClicked") {
 
         auto message = CefProcessMessage::Create("Custom");
