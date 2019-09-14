@@ -85,6 +85,10 @@ public:
     void
         patchButtonClicked();
 
+
+    void
+        changePatchButtonClicked();
+
     void
         exitToMenuClicked();
 

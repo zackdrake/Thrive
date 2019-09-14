@@ -499,6 +499,7 @@ div::-webkit-scrollbar-thumb:hover {
   position: absolute;
   right: 50%;
   bottom: 5px;
+  z-index: 2;
 }
 
 #reportTab {
@@ -522,6 +523,15 @@ div::-webkit-scrollbar-thumb:hover {
     2px
     solid rgba(0, 1, 28, 0.6);
   border-radius: 10px;
+}
+
+.selectedNode {
+  animation: pulse 2s infinite;
+  border-color: #e61700;
+}
+
+.hereNode {
+  border-color: #00ab25;
 }
 
 .firstHalf {
@@ -1888,6 +1898,7 @@ div::-webkit-scrollbar-thumb:hover {
 .plus:hover {
   background-image: url("../../Textures/gui/bevel/plusButtonHover.png");
 }
+/* END animation */
 
 
 #circleBars {

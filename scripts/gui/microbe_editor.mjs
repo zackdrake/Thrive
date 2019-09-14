@@ -148,6 +148,10 @@ export function setupMicrobeEditor(){
     document.getElementById("next").addEventListener("click",
         onNextButtonClicked, true);
 
+    // Change patch button clicked
+    document.getElementById("changePatch").addEventListener("click",
+        onChangePatchClicked, true);
+
     // Condition buttons clicked
     const minusBtnObjects = document.getElementsByClassName("minusBtn");
 
@@ -362,6 +366,8 @@ let activePanel = "";
 
 // Where we are in patch Map
 let actualNode = "";
+let newSelectedNode = "";
+let links = "";
 
 // Patch-Report function
 function onPatchReportClicked() {
@@ -398,12 +404,18 @@ function onPatchReportClicked() {
                     Thrive.editorButtonClicked();
                 } else if(this.id == "patch") {
 
+
+                    // Where we are where we can go
+                    $(".nodeMap").each(function() {
+                        if($(this).attr("data-here") == "true") {
+                            actualNode = $(this).attr("id");
+                            $("#" + actualNode).addClass("hereNode");
+                            links = $(this).attr("data-link");
+                        }
+                    });
+
                     if(actualNode == "")
                         actualNode = "A0";
-                    else {
-                        const type = $("#" + actualNode).attr("data-type");
-                        document.getElementById("patchName").innerHTML = type;
-                    }
                 }
             } else {
                 document.getElementById(button).style.backgroundImage =
@@ -418,26 +430,52 @@ function onPatchReportClicked() {
     }
 }
 
+function onChangePatchClicked() {
+    
+    Thrive.changePatchButtonClicked();
+
+    document.getElementById("changePatch").style.visibility = "hidden";
+    $("#" + actualNode).removeClass("hereNode");
+    $("#" + actualNode).data( "data-here", "false" );
+
+    var newHereNode = $("#" + newSelectedNode);
+    newHereNode.addClass("hereNode");
+    newHereNode.data( "data-here" , "true");
+    actualNode = newHereNode.attr("id");
+    links = $("#" + actualNode).attr("data-link");
+
+    // reset selectedNodealert
+    if(document.getElementsByClassName("selectedNode").length != 0) {
+        $(".selectedNode").removeClass("selectedNode");
+    }
+}
+
 // Patch node click event
 $(".nodeMap").click(function(event) {
+    
+    // selected node and reset of change patch button
+    newSelectedNode = event.target.id;
 
-    let links = 0;
-    document.getElementById("changePatch").style.visibility = "hidden";
+    // Update right Panel data
+    // Probably here need to invoke the function that give us all information about
+    // the selecte patch map
 
-    // Where we are where we can go
-    $(".nodeMap").each(function() {
-        if($(this).attr("data-here") == "true") {
-            actualNode = $(this).attr("id");
-            links = $(this).attr("data-link");
-            alert("I'm at: " + actualNode + " and i can go: " + links);
-        }
-    });
-
-    links = links.split("-");
-    for(const link of links ) {
-        if(event.target.id == link) {
-            const type = $(event.target).attr("data-type");
+    const type = $(event.target).attr("data-type");
             document.getElementById("patchName").innerHTML = type;
+
+    // Change border color to highlight the selected node
+    if(newSelectedNode != actualNode) {
+        if(document.getElementsByClassName("selectedNode").length != 0) {
+            $(".selectedNode").removeClass("selectedNode");
+        }
+
+        $("#" + newSelectedNode).addClass("selectedNode");
+    }
+
+    var arrayLinks = links.split("-");
+
+    for(const link of arrayLinks ) {
+        if(event.target.id == link) {
             document.getElementById("changePatch").style.visibility = "visible";
             break;
         } else {

@@ -519,6 +519,9 @@
         </div>
     </div>
     
+    <div id="infoPatch" class="Panel">
+        Patch Name: Pangonian Vents
+        </div>
     <div id="patchTab"> 
         <div class="firstHalf"> <div class="tabTitle">Map </div>
          <svg style="width: 100%; height: 100%; position: absolute; left: 0; top: 0;">
@@ -547,32 +550,32 @@
 
             <div id="nodes">
               <!--tidepool -->
-              <img  class="nodeMap" id="A0" data-link="A1-A2-A3" data-here="true" data-type="Tidepool" src="../../Textures/gui/bevel/tidepool.png" style=" width: 50px; height: 50px; position: absolute; left: 355px; top: 150px;">
+              <img  class="nodeMap" id="A0" data-link="A1" data-here="true" data-type="Tidepool" src="../../Textures/gui/bevel/tidepool.png" style=" width: 50px; height: 50px; position: absolute; left: 355px; top: 150px;">
               
               <!--cave -->
-              <img  class="nodeMap" id="A1" data-link="A0-A2"data-here="false" data-type="Cave" src="../../Textures/gui/bevel/cave.png" style=" width: 50px; height: 50px; position: absolute; left: 355px; top: 220px;">
+              <img  class="nodeMap" id="A1" data-link="A0-A2-A5" data-here="false" data-type="Cave" src="../../Textures/gui/bevel/cave.png" style=" width: 50px; height: 50px; position: absolute; left: 355px; top: 220px;">
 
               <!--tidepool -->
-              <img  class="nodeMap" data-here="false" data-type="Tidepool" src="../../Textures/gui/bevel/tidepool.png" style="width: 50px; height: 50px; position: absolute; left: 285px; top: 220px;">
+              <img  class="nodeMap" id="A2" data-link="A1" data-here="false" data-type="Tidepool" src="../../Textures/gui/bevel/tidepool.png" style="width: 50px; height: 50px; position: absolute; left: 285px; top: 220px;">
 
               <!--Estuary -->
-              <img  class="nodeMap" data-here="false" data-type="Estuary" src="../../Textures/gui/bevel/estuary.png" style="width: 50px; height: 50px; position: absolute; left: 430px; top: 175px;">
-              <img  class="nodeMap" data-here="false" data-type="Estuary" src="../../Textures/gui/bevel/estuary.png" style="width: 50px; height: 50px; position: absolute; left: 490px; top: 175px;">
+              <img  class="nodeMap" id="A3" data-link="A5" data-here="false" data-type="Estuary" src="../../Textures/gui/bevel/estuary.png" style="width: 50px; height: 50px; position: absolute; left: 430px; top: 175px;">
+              <img  class="nodeMap" id="A4" data-link="A5" data-here="false" data-type="Estuary" src="../../Textures/gui/bevel/estuary.png" style="width: 50px; height: 50px; position: absolute; left: 490px; top: 175px;">
 
               <!--shallow -->
-              <img  class="nodeMap" data-here="false" data-type="Shallow" src="../../Textures/gui/bevel/shallow.png" style="width: 50px; height: 50px; position: absolute; left: 457.5px; top: 300px;">
+              <img  class="nodeMap" id="A5"  data-link="A1-A3-A4" data-here="false" data-type="Shallow" src="../../Textures/gui/bevel/shallow.png" style="width: 50px; height: 50px; position: absolute; left: 457.5px; top: 300px;">
               <img  class="nodeMap" data-here="false"  data-type="Shallow" src="../../Textures/gui/bevel/shallow.png" style="width: 50px; height: 50px; position: absolute; left: 260px; top: 300px;">
               
               <!--tidepool tidepool tidepool and estuary-->
-              <div  class=nodeMap style="width: 140px; height: 130px; position: absolute; left: 65px; top: 225px;"> 
-                <img  data-type="Tidepool" src="../../Textures/gui/bevel/tidepool.png" style="width: 50px; height: 50px; position: relative; display: inline-block; margin-left: 5px; margin-right: 5px; margin-top: 5px;">
-                <img  data-type="Tidepool" src="../../Textures/gui/bevel/tidepool.png" style="width: 50px; height: 50px; position: relative; display: inline-block; margin-left: 5px; margin-right: 5px; margin-top: 5px;">
-                <img  data-type="Tidepool" src="../../Textures/gui/bevel/tidepool.png" style="width: 50px; height: 50px; position: relative; display: inline-block; margin-left: 5px; margin-right: 5px; margin-top: 5px;">
-                <img  data-type="Estuary" src="../../Textures/gui/bevel/estuary.png" style="width: 50px; height: 50px; position: relative; display: inline-block; margin-left: 5px; margin-right: 5px; margin-top: 5px;">
+              <div style="width: 150px; height: 130px; position: absolute; left: 55px; top: 225px; border: 3px; border-style:  solid; border-color:  rgba(0, 1, 28, 0.6); border-radius: 10px;"> 
+                <img  class="nodeMap" id="A6" data-link="A7-A8-A9-A5" data-here="false" data-type="Tidepool" src="../../Textures/gui/bevel/tidepool.png" style="width: 50px; height: 50px; position: relative; display: inline-block; margin-left: 5px; margin-right: 5px; margin-top: 5px;">
+                <img  class="nodeMap" id="A7" data-link="A6-A8-A9-A5" data-here="false" data-type="Tidepool" src="../../Textures/gui/bevel/tidepool.png" style="width: 50px; height: 50px; position: relative; display: inline-block; margin-left: 5px; margin-right: 5px; margin-top: 5px;">
+                <img  class="nodeMap" id="A8" data-link="A6-A7-A9-A5" data-here="false" data-type="Tidepool" src="../../Textures/gui/bevel/tidepool.png" style="width: 50px; height: 50px; position: relative; display: inline-block; margin-left: 5px; margin-right: 5px; margin-top: 5px;">
+                <img  class="nodeMap" id="A9" data-link="A6-A7-A8-A5" data-here="false" data-type="Estuary" src="../../Textures/gui/bevel/estuary.png" style="width: 50px; height: 50px; position: relative; display: inline-block; margin-left: 5px; margin-right: 5px; margin-top: 5px;">
               </div>
               
               <!--epipelagic mesopelagic mesopelagic floor -->
-              <div class=nodeMap style="width: 70px; height: 195px; position: absolute; left: 65px; top: 370px;">  
+              <div class=nodeMap style="width: 70px; height: 195px; position: absolute; left: 55px; top: 370px;">  
                 <img  data-type="Epipelagic"  src="../../Textures/gui/bevel/epipelagic.png" style="width: 50px; height: 50px; position: relative; display: inline-block; margin-left: 5px; margin-right: 5px; margin-top: 5px;">
                 <img  data-type="Mesopelagic"  src="../../Textures/gui/bevel/mesopelagic.png" style="width: 50px; height: 50px; position: relative; display: inline-block; margin-left: 5px; margin-right: 5px; margin-top: 5px;">
                 <img  data-type="Mesopelagic Floor" src="../../Textures/gui/bevel/mesopelagicFloor.png" style="width: 50px; height: 50px; position: relative; display: inline-block; margin-left: 5px; margin-right: 5px; margin-top: 5px;">

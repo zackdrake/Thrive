@@ -493,6 +493,12 @@ void
 {
     m_impl->m_cellStageKeys->setEnabled(false);
 }
+
+void
+    ThriveGame::changePatchButtonClicked()
+{
+    LOG_INFO("changing patch...");
+}
 void
     ThriveGame::editorButtonClicked()
 {
