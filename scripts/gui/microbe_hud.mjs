@@ -254,7 +254,10 @@ function openHelp(){
         " you can identify them!",
         "Heres a tip, if your cell is 150 hexes, you can engulf the large iron chunks.",
         "Fun Fact, One of the first playable game-play prototypes was made " +
-        "by our awesome programmer, untrustedlife!"
+        "by our awesome programmer, untrustedlife!",
+        "To be fair, you have to have a very high IQ to understand Thrive." + 
+        " The in-game help is extremely subtle," + 
+        "and without a solid grasp of evolutionary biology most of the gameplay will go over"
     ];
 
 
