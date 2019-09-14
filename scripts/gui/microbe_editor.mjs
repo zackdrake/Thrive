@@ -431,20 +431,20 @@ function onPatchReportClicked() {
 }
 
 function onChangePatchClicked() {
-    
+
     Thrive.changePatchButtonClicked();
 
     document.getElementById("changePatch").style.visibility = "hidden";
     $("#" + actualNode).removeClass("hereNode");
     $("#" + actualNode).data( "data-here", "false" );
 
-    var newHereNode = $("#" + newSelectedNode);
+    const newHereNode = $("#" + newSelectedNode);
     newHereNode.addClass("hereNode");
-    newHereNode.data( "data-here" , "true");
+    newHereNode.data( "data-here", "true");
     actualNode = newHereNode.attr("id");
     links = $("#" + actualNode).attr("data-link");
 
-    // reset selectedNodealert
+    // Reset selectedNode
     if(document.getElementsByClassName("selectedNode").length != 0) {
         $(".selectedNode").removeClass("selectedNode");
     }
@@ -452,8 +452,8 @@ function onChangePatchClicked() {
 
 // Patch node click event
 $(".nodeMap").click(function(event) {
-    
-    // selected node and reset of change patch button
+
+    // Selected node and reset of change patch button
     newSelectedNode = event.target.id;
 
     // Update right Panel data
@@ -461,7 +461,7 @@ $(".nodeMap").click(function(event) {
     // the selecte patch map
 
     const type = $(event.target).attr("data-type");
-            document.getElementById("patchName").innerHTML = type;
+    document.getElementById("patchName").innerHTML = type;
 
     // Change border color to highlight the selected node
     if(newSelectedNode != actualNode) {
@@ -472,7 +472,7 @@ $(".nodeMap").click(function(event) {
         $("#" + newSelectedNode).addClass("selectedNode");
     }
 
-    var arrayLinks = links.split("-");
+    const arrayLinks = links.split("-");
 
     for(const link of arrayLinks ) {
         if(event.target.id == link) {
