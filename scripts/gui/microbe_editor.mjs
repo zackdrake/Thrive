@@ -403,7 +403,7 @@ function onPatchReportClicked() {
                     else {
                         const type = $("#" + actualNode).attr("data-type");
                         document.getElementById("patchName").innerHTML = type;
-                    }  
+                    }
                 }
             } else {
                 document.getElementById(button).style.backgroundImage =
