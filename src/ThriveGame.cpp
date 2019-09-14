@@ -8,7 +8,6 @@
 #include "generated/microbe_editor_world.h"
 #include "main_menu_keypresses.h"
 #include "microbe_stage/microbe_editor_key_handler.h"
-#include "microbe_stage/patch.h"
 #include "microbe_stage/simulation_parameters.h"
 #include "scripting/script_initializer.h"
 #include "thrive_net_handler.h"
@@ -48,7 +47,6 @@ class ThriveGame::Implementation {
 public:
     Implementation(ThriveGame& game) :
         m_game(game), m_playerData("player"),
-        m_patch_manager(std::make_shared<PatchManager>()),
         m_menuKeyPresses(std::make_shared<MainMenuKeyPressListener>()),
         m_globalKeyPresses(std::make_shared<GlobalUtilityKeyHandler>(
             *game.ApplicationConfiguration->GetKeyConfiguration())),
@@ -160,8 +158,6 @@ public:
 
     PlayerData m_playerData;
 
-    std::shared_ptr<PatchManager> m_patch_manager;
-
     std::shared_ptr<CellStageWorld> m_cellStage;
     std::shared_ptr<MicrobeEditorWorld> m_microbeEditor;
 
@@ -262,9 +258,6 @@ void
 void
     ThriveGame::startNewGame()
 {
-    // Used to stop it from clearing entities when rwe restart so species can
-    // spawn.
-    bool restarted = false;
     // To work with instant start, we need to invoke this if we have no cell
     // stage world
     if(!m_postLoadRan) {
@@ -296,11 +289,7 @@ void
                 window1, static_cast<int>(THRIVE_WORLD_TYPE::CELL_STAGE),
                 createPhysicsMaterials(), netSettings));
     } else {
-        restarted = true;
         m_impl->m_cellStage->ClearEntities();
-        // We also need to somehow force stop all the music here.
-        LOG_INFO("ThriveGame: startNewGame called after already created once: "
-                 "Creating new cellstage world");
     }
 
     LEVIATHAN_ASSERT(m_impl->m_cellStage, "Cell stage world creation failed");
@@ -318,12 +307,6 @@ void
     // Allow running without GUI
     if(layer)
         layer->SetInputMode(Leviathan::GUI::INPUT_MODE::Gameplay);
-
-
-    // Clear world //
-    if(restarted == false) {
-        m_impl->m_cellStage->ClearEntities();
-    }
 
     // TODO: unpause, if it was paused
 
@@ -393,15 +376,44 @@ void
     // Set background plane //
     m_impl->createBackgroundItem();
 
-    // Gen species if this is a restart//
-    if(restarted) {
-        ScriptRunningSetup setup("resetWorld");
-        auto returned =
-            ThriveGame::Get()->getMicrobeScripts()->ExecuteOnModule<void>(
-                setup, false, m_impl->m_cellStage.get());
+    // Create a PatchMap (it will also contain the initial species)
+    LOG_INFO("Generating new PatchMap");
 
-        if(returned.Result != SCRIPT_RUN_RESULT::Success)
-            LOG_ERROR("Failed to run script side resetWorld");
+    {
+        ScriptRunningSetup setup("generatePatchMap");
+        auto returned =
+            ThriveGame::Get()->getMicrobeScripts()->ExecuteOnModule<PatchMap*>(
+                setup, false);
+
+        if(returned.Result != SCRIPT_RUN_RESULT::Success) {
+            LOG_ERROR("Failed to run generatePatchMap");
+            return;
+        }
+
+        if(!returned.Value) {
+            LOG_ERROR("generatePatchMap didn't return a patch map");
+            return;
+        }
+
+        // We are keeping a reference to the result
+        returned.Value->AddRef();
+
+        m_impl->m_cellStage->GetPatchManager().setNewMap(
+            PatchMap::WrapPtr(returned.Value));
+    }
+
+    // Make sure the player species exists (a bunch of places rely on it being
+    // named "Default")
+
+    // TODO: it would be nice to make the player species name a
+    // constant or something, other than this magic value
+    auto playerSpecies = m_impl->m_cellStage->GetPatchManager()
+                             .getCurrentMap()
+                             ->findSpeciesByName("Default");
+
+    if(!playerSpecies) {
+        LOG_ERROR("Patch map generation did not generate the default species");
+        return;
     }
 
     // Spawn player //
@@ -415,6 +427,9 @@ void
         LOG_ERROR("Failed to spawn player!");
         return;
     }
+
+    // Apply patch settings
+    m_impl->m_cellStage->GetPatchManager().applyPatchSettings();
 }
 
 void
@@ -442,12 +457,6 @@ CellStageWorld*
     ThriveGame::getCellStage()
 {
     return m_impl->m_cellStage.get();
-}
-
-PatchManager*
-    ThriveGame::getPatchManager()
-{
-    return m_impl->m_patch_manager.get();
 }
 
 PlayerData&
@@ -490,8 +499,17 @@ void
     LOG_INFO("Editor button pressed");
 
     // Fire an event to switch over the GUI
-    Engine::Get()->GetEventHandler()->CallEvent(
-        new Leviathan::GenericEvent("MicrobeEditorEntered"));
+    {
+        auto event =
+            GenericEvent::MakeShared<GenericEvent>("MicrobeEditorEntered");
+
+        auto vars = event->GetVariables();
+
+        vars->Add(std::make_shared<NamedVariableList>("patchMapJSON",
+            new Leviathan::StringBlock("{'todo': 'map here'}")));
+
+        Engine::Get()->GetEventHandler()->CallEvent(event);
+    }
 
     Leviathan::Engine* engine = Engine::GetEngine();
     Leviathan::Window* window1 = engine->GetWindowEntity();
@@ -633,6 +651,9 @@ void
                   setup.Entryfunction);
         return;
     }
+
+    // Apply patch settings
+    m_impl->m_cellStage->GetPatchManager().applyPatchSettings();
 }
 
 void
@@ -650,7 +671,9 @@ void
     } else {
 
         // Clear the world
+        LOG_INFO("Clearing the world before exiting to menu");
         m_impl->m_cellStage->ClearEntities();
+        m_impl->m_microbeEditor->ClearEntities();
     }
 
     // Get proper keys setup
