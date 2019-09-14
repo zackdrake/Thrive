@@ -401,9 +401,8 @@ function onPatchReportClicked() {
                     if(actualNode == "")
                         actualNode = "A0";
                     else {
-
-                    const type = $("#" + actualNode).attr("data-type");
-                    document.getElementById("patchName").innerHTML = type;
+                        const type = $("#" + actualNode).attr("data-type");
+                        document.getElementById("patchName").innerHTML = type;
                     }  
                 }
             } else {
