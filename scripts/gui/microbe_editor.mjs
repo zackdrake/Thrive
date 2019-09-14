@@ -361,7 +361,7 @@ const panelButtons = ["report", "patch", "editor"];
 let activePanel = "";
 
 // Where we are in patch Map
-let actualNode = "A0";
+let actualNode = "";
 
 // Patch-Report function
 function onPatchReportClicked() {
@@ -397,8 +397,14 @@ function onPatchReportClicked() {
                     document.getElementById("next").style.visibility = "hidden";
                     Thrive.editorButtonClicked();
                 } else if(this.id == "patch") {
+
+                    if(actualNode == "")
+                        actualNode = "A0";
+                    else {
+
                     const type = $("#" + actualNode).attr("data-type");
                     document.getElementById("patchName").innerHTML = type;
+                    }  
                 }
             } else {
                 document.getElementById(button).style.backgroundImage =
