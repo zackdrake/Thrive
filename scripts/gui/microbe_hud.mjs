@@ -558,7 +558,7 @@ function onCompressPanelClicked() {
 
     for (const bar of bars) {
         bar.style.display = "inline-block";
-        var w = "";
+        let w = "";
 
         if(panelToChangeId == "compoundsPanel") {
             w = bar.offsetWidth - 150;
@@ -592,7 +592,7 @@ function onCompressPanelClicked() {
 
     for (const bar of bars) {
         bar.style.display = "inline-block";
-        var w = "";
+        let w = "";
 
         if(panelToChangeId == "compoundsPanel") {
             w = bar.offsetWidth - 150;
@@ -624,14 +624,14 @@ function onCompressPanelClicked() {
 function onExpandPanelClicked() {
 
     // If panel is already expand cannot expand again
-    var panelToChangeId = $(this).parent().parent().attr("id");
+    let panelToChangeId = $(this).parent().parent().attr("id");
     var bg = $("#" + panelToChangeId).css("background-image");
     bg = bg.replace('url(','').replace(')','').replace(/\"/gi, "");
     if(bg.includes("Expand"))
         return;
 
     // Determine which panel needs to be compress
-    var panelToChangeId = $(this).parent().parent().attr("id");
+    panelToChangeId = $(this).parent().parent().attr("id");
     var elementToChange = document.getElementById(panelToChangeId);
     var barToChange = "";
     var titleToChange = "";
@@ -673,7 +673,7 @@ function onExpandPanelClicked() {
 
     for (const bar of bars) {
         bar.style.display = "block";
-        var w = "";
+        let w = "";
 
         if(panelToChangeId == "compoundsPanel") {
             w = bar.offsetWidth + 150;
