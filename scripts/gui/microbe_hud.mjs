@@ -511,7 +511,6 @@ function onCompressPanelClicked() {
     // If panel is already compress cannot compress again
     var panelToChangeId = $(this).parent().parent().attr("id");
     var bg = $("#" + panelToChangeId).css('background-image');
-    bg = bg.replace('url(','').replace(')','').replace(/\"/gi, "");
     if(bg.includes("Compress"))
         return;
 
@@ -626,7 +625,6 @@ function onExpandPanelClicked() {
     // If panel is already expand cannot expand again
     let panelToChangeId = $(this).parent().parent().attr("id");
     var bg = $("#" + panelToChangeId).css("background-image");
-    bg = bg.replace('url(','').replace(')','').replace(/\"/gi, "");
     if(bg.includes("Expand"))
         return;
 
