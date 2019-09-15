@@ -497,7 +497,8 @@ void
 void
     ThriveGame::changePatchButtonClicked()
 {
-	// Here should invoked functions to get which patch i was and where i'm going too
+	// Here should invoked functions to get which patch i was and where i'm 
+	// going too
     LOG_INFO("changing patch asap.");
 }
 void

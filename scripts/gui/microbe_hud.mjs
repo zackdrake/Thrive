@@ -520,7 +520,7 @@ function onCompressPanelClicked() {
     let barToChange = "";
     let titleToChange = "";
     let valuesToChange = "";
-    
+
     // Determine the tags that will be changed
     if(panelToChangeId != "environmentPanel") {
         barToChange = "Bar";
