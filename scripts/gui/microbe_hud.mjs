@@ -47,9 +47,21 @@ export function runMicrobeHUDSetup(){
     // Editor button is initially disabled
     document.getElementById("microbeToEditorButton").classList.add("DisabledButton");
 
-    // Compounds Panel buttons
-    document.getElementById("compressPanel").addEventListener("click", onCompressPanelClicked);
-    document.getElementById("expandPanel").addEventListener("click", onExpandPanelClicked);
+    // Compounds eompress Panel button
+    const compressPanels = document.getElementsByClassName("compressPanel");
+
+    for (const element of compressPanels) {
+        element.addEventListener("click",
+            onCompressPanelClicked, true);
+    }
+
+    // Compounds expand Panel button
+    const expandPanels = document.getElementsByClassName("expandPanel");
+
+    for (const element of expandPanels) {
+        element.addEventListener("click",
+            onExpandPanelClicked, true);
+    }
 
     if(common.isInEngine()){
 
@@ -496,29 +508,68 @@ function hideWinText(){
 //! Compress panel function
 function onCompressPanelClicked() {
 
-    document.getElementById("compoundsPanel").style.width = "250px";
-    document.getElementById("compoundsPanel").style.height = "145px";
-    document.getElementById("compoundsPanel").style.backgroundImage =
-        "url('../../Textures/gui/bevel/compoundPanelExpand.png')";
-    document.getElementById("compoundsPanel").style.transition = "0.5s";
+    // If panel is already compress cannot compress again
+    var panelToChangeId = $(this).parent().parent().attr("id");
+    var bg = $("#" + panelToChangeId).css('background-image');
+    bg = bg.replace('url(','').replace(')','').replace(/\"/gi, "");
+    if(bg.includes("Compress"))
+        return;
 
+    // Determine which panel needs to be compress
+    var elementToChange = document.getElementById(panelToChangeId);
+    var barToChange = "";
+    var titleToChange = "";
+    var valuesToChange = "";
+    
+    // Determine the tags that will be changed
+    if(panelToChangeId != "environmentPanel") {
+        barToChange = "Bar";
+        titleToChange = "BarTitle";
+        valuesToChange = "BarValue";
+    } else {
+        barToChange = "EnvironmentBar";
+        titleToChange = "EnvironmentBarTitle";
+        valuesToChange = "EnvironmentBarValue";
+    }
 
-    document.getElementById("compressPanel").style.backgroundImage =
+    // Change Panel dimension and background
+    var h = elementToChange.offsetHeight - 93;
+    elementToChange.style.height = h +"px";
+
+    if(panelToChangeId == "compoundsPanel") {
+        elementToChange.style.backgroundImage =
+            "url('../../Textures/gui/bevel/compoundsPanelCompress.png')";
+    } else {
+        elementToChange.style.backgroundImage =
+            "url('../../Textures/gui/bevel/environmentPanelCompress.png')";
+    }  
+
+    // Change buttons status
+    elementToChange.querySelector(".compressPanel").style.backgroundImage =
         "url('../../Textures/gui/bevel/compressPanelActive.png')";
-    document.getElementById("expandPanel").style.backgroundImage =
+    elementToChange.querySelector(".expandPanel").style.backgroundImage =
         "url('../../Textures/gui/bevel/expandPanel.png')";
 
-    const row1 = document.getElementById("row1");
-    let bars = row1.getElementsByClassName("Bar");
-    let title = row1.getElementsByClassName("BarTitle");
-    let barValues = row1.getElementsByClassName("BarValue");
+    //! ROW 1
+    const row1 = elementToChange.querySelector(".row1");
+    let bars = row1.getElementsByClassName(barToChange);
+    let title = row1.getElementsByClassName(titleToChange);
+    let barValues = row1.getElementsByClassName(valuesToChange);
 
     for (const bar of bars) {
         bar.style.display = "inline-block";
-        bar.style.width = "65px";
+        var w = "";
+
+        if(panelToChangeId == "compoundsPanel") {
+            w = bar.offsetWidth - 150;
+            bar.style.marginLeft = "-25px";
+        } else {
+            w = bar.offsetWidth - 100;
+            bar.style.marginLeft = "0px";
+        }
+        bar.style.width = w + "px";
         bar.style.marginBottom = "0px";
         bar.style.marginTop = "6px";
-        bar.style.marginLeft = "-25px";
     }
 
     for (const tit of title) {
@@ -526,21 +577,33 @@ function onCompressPanelClicked() {
     }
 
     for (const barValue of barValues) {
-        barValue.style.left = "-30px";
+        if(panelToChangeId == "compoundsPanel") {
+            barValue.style.left = "-30px";
+        } else {
+            barValue.style.left = "15px";
+        }
     }
 
     //! ROW 2
-    const row2 = document.getElementById("row2");
-    bars = row2.getElementsByClassName("Bar");
-    title = row2.getElementsByClassName("BarTitle");
-    barValues = row2.getElementsByClassName("BarValue");
+    const row2 = elementToChange.querySelector(".row2");
+    bars = row2.getElementsByClassName(barToChange);
+    title = row2.getElementsByClassName(titleToChange);
+    barValues = row2.getElementsByClassName(valuesToChange);
 
     for (const bar of bars) {
         bar.style.display = "inline-block";
-        bar.style.width = "65px";
+        var w = "";
+
+        if(panelToChangeId == "compoundsPanel") {
+            w = bar.offsetWidth - 150;
+            bar.style.marginLeft = "-25px";
+        } else {
+            w = bar.offsetWidth - 100;
+            bar.style.marginLeft = "0px";
+        }
+        bar.style.width = w + "px";
         bar.style.marginBottom = "0px";
         bar.style.marginTop = "-10px";
-        bar.style.marginLeft = "-25px";
     }
 
     for (const tit of title) {
@@ -548,7 +611,11 @@ function onCompressPanelClicked() {
     }
 
     for (const barValue of barValues) {
-        barValue.style.left = "-30px";
+        if(panelToChangeId == "compoundsPanel") {
+            barValue.style.left = "-30px";
+        } else {
+            barValue.style.left = "15px";
+        }
     }
 }
 
@@ -556,29 +623,68 @@ function onCompressPanelClicked() {
 //! Expand panel function
 function onExpandPanelClicked() {
 
-    document.getElementById("compoundsPanel").style.width = "249px";
-    document.getElementById("compoundsPanel").style.height = "238px";
-    document.getElementById("compoundsPanel").style.backgroundImage =
-        "url('../../Textures/gui/bevel/compoundPanel.png')";
-    document.getElementById("compoundsPanel").style.transition = "0.5s";
+    // If panel is already expand cannot expand again
+    var panelToChangeId = $(this).parent().parent().attr("id");
+    var bg = $("#" + panelToChangeId).css("background-image");
+    bg = bg.replace('url(','').replace(')','').replace(/\"/gi, "");
+    if(bg.includes("Expand"))
+        return;
 
+    // Determine which panel needs to be compress
+    var panelToChangeId = $(this).parent().parent().attr("id");
+    var elementToChange = document.getElementById(panelToChangeId);
+    var barToChange = "";
+    var titleToChange = "";
+    var valuesToChange = "";
 
-    document.getElementById("compressPanel").style.backgroundImage =
+    // Determine the tags that will be changed
+    if(panelToChangeId != "environmentPanel") {
+        barToChange = "Bar";
+        titleToChange = "BarTitle";
+        valuesToChange = "BarValue";
+    } else {
+        barToChange = "EnvironmentBar";
+        titleToChange = "EnvironmentBarTitle";
+        valuesToChange = "EnvironmentBarValue";
+    }
+
+    // Change Panel dimension and background
+    var h = elementToChange.offsetHeight + 93;
+
+    elementToChange.style.height = h +"px";
+    if(panelToChangeId == "compoundsPanel") {
+        elementToChange.style.backgroundImage =
+            "url('../../Textures/gui/bevel/compoundsPanelExpand.png')";
+    } else {
+        elementToChange.style.backgroundImage =
+            "url('../../Textures/gui/bevel/environmentPanelExpand.png')";
+    }
+
+    // Change buttons status
+    elementToChange.querySelector(".compressPanel").style.backgroundImage =
         "url('../../Textures/gui/bevel/compressPanel.png')";
-    document.getElementById("expandPanel").style.backgroundImage =
+    elementToChange.querySelector(".expandPanel").style.backgroundImage =
         "url('../../Textures/gui/bevel/expandPanelActive.png')";
 
-    const row1 = document.getElementById("row1");
-    let bars = row1.getElementsByClassName("Bar");
-    let title = row1.getElementsByClassName("BarTitle");
-    let barValues = row1.getElementsByClassName("BarValue");
+    const row1 = elementToChange.querySelector(".row1");
+    let bars = row1.getElementsByClassName(barToChange);
+    let title = row1.getElementsByClassName(titleToChange);
+    let barValues = row1.getElementsByClassName(valuesToChange);
 
     for (const bar of bars) {
         bar.style.display = "block";
+        var w = "";
+
+        if(panelToChangeId == "compoundsPanel") {
+            w = bar.offsetWidth + 150;
+            bar.style.marginLeft = "20px";
+        } else {
+            w = bar.offsetWidth + 100;
+            bar.style.marginLeft = "20px";
+        }
         bar.style.marginBottom = "4px";
         bar.style.marginTop = "6px";
-        bar.style.marginLeft = "20px";
-        bar.style.width = "215px";
+        bar.style.width = w + "px";
     }
 
     for (const tit of title) {
@@ -586,21 +692,33 @@ function onExpandPanelClicked() {
     }
 
     for (const barValue of barValues) {
-        barValue.style.left = "120px";
+        if(panelToChangeId == "compoundsPanel") {
+            barValue.style.left = "120px";
+        } else {
+            barValue.style.left = "100px";
+        }
     }
 
     //! ROW 2
-    const row2 = document.getElementById("row2");
-    bars = row2.getElementsByClassName("Bar");
-    title = row2.getElementsByClassName("BarTitle");
-    barValues = row2.getElementsByClassName("BarValue");
+    const row2 = elementToChange.querySelector(".row2");
+    bars = row2.getElementsByClassName(barToChange);
+    title = row2.getElementsByClassName(titleToChange);
+    barValues = row2.getElementsByClassName(valuesToChange);
 
     for (const bar of bars) {
         bar.style.display = "block";
-        bar.style.marginLeft = "20px";
+        var w = "";
+
+        if(panelToChangeId == "compoundsPanel") {
+            w = bar.offsetWidth + 150;
+            bar.style.marginLeft = "20px";
+        } else {
+            w = bar.offsetWidth + 100;
+            bar.style.marginLeft = "20px";
+        }
         bar.style.marginBottom = "4px";
         bar.style.marginTop = "6px";
-        bar.style.width = "215px";
+        bar.style.width = w + "px";
     }
 
     for (const tit of title) {
@@ -608,7 +726,11 @@ function onExpandPanelClicked() {
     }
 
     for (const barValue of barValues) {
-        barValue.style.left = "120px";
+        if(panelToChangeId == "compoundsPanel") {
+            barValue.style.left = "120px";
+        } else {
+            barValue.style.left = "100px";
+        }
     }
 }
 

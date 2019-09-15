@@ -194,84 +194,91 @@
      
      <div id="Panels">
     <!-- Environment panel -->
-        <div id="environmentPanel" class="Panel">Environment
+        <div id="environmentPanel" class="Panel">
+          <div id="panelTitle"> Environment  
+            <div  class="compressPanel" src="../../Textures/gui/bevel/compressPanel.png"> </div>
+            <div  class="expandPanel"   src="../../Textures/gui/bevel/expandPanel.png"> </div>
+          </div>
 
-        <!-- Oxygen -->
-          <div class="EnvironmentBar"> 
-            <div class="OxygenBarBackground" id="microbeHUDPlayerOxygenBar">
-              <div class="BarForeground">
-                  <div class="environmentIcon" id="OxygenIcon"></div>
-                  <div class="EnvironmentBarTitle">O₂</div>
-                    <div class="EnvironmentBarValue">
-                      <span id="microbeHUDPlayerOxygen">21%</span>
-                    </div>
+        <div class="row1">
+          <!-- Oxygen -->
+            <div class="EnvironmentBar"> 
+              <div class="OxygenBarBackground" id="microbeHUDPlayerOxygenBar">
+                <div class="BarForeground">
+                    <div class="environmentIcon" id="OxygenIcon"></div>
+                    <div class="EnvironmentBarTitle">O₂</div>
+                      <div class="EnvironmentBarValue">
+                        <span id="microbeHUDPlayerOxygen">21%</span>
+                      </div>
+                </div>
               </div>
-            </div>
+          </div>
+
+          <!-- Carbon Dioxide -->
+            <div class="EnvironmentBar"> 
+              <div class="CO2BarBackground" id="microbeHUDPlayerCO2Bar">
+                <div class="BarForeground">
+                    <div class="environmentIcon" id="CO2Icon"></div>
+                    <div class="EnvironmentBarTitle">CO₂</div>
+                      <div class="EnvironmentBarValue">
+                        <span id="microbeHUDPlayerCO2">9%</span>
+                      </div>
+                </div>
+              </div>
+          </div>
+
+          <!-- Nitrogen -->
+            <div class="EnvironmentBar"> 
+              <div class="NitrogenBarBackground" id="microbeHUDPlayerNitrogenBar">
+                <div class="BarForeground">
+                    <div class="environmentIcon" id="NitrogenIcon"></div>
+                    <div class="EnvironmentBarTitle">N₂</div>
+                      <div class="EnvironmentBarValue">
+                        <span id="microbeHUDPlayerNitrogen">70%</span>
+                      </div>
+                </div>
+              </div>
+          </div>
         </div>
-
-        <!-- Carbon Dioxide -->
-          <div class="EnvironmentBar"> 
-            <div class="CO2BarBackground" id="microbeHUDPlayerCO2Bar">
-              <div class="BarForeground">
-                  <div class="environmentIcon" id="CO2Icon"></div>
-                  <div class="EnvironmentBarTitle">CO₂</div>
-                    <div class="EnvironmentBarValue">
-                      <span id="microbeHUDPlayerCO2">9%</span>
-                    </div>
+        <div class="row2">
+          <!-- Temperature -->
+            <div class="EnvironmentBar"> 
+              <div class="EmptyBarBackground" id="microbeHUDPlayerTempBar">
+                <div class="BarForeground">
+                    <div class="environmentIcon TempIcon"></div>
+                    <div class="EnvironmentBarTitle">Temp.</div>
+                      <div class="EnvironmentBarValue">
+                        <span id="microbeHUDPlayerTemp">55° C</span>
+                      </div>
+                </div>
               </div>
-            </div>
-        </div>
+          </div>
 
-        <!-- Nitrogen -->
-          <div class="EnvironmentBar"> 
-            <div class="NitrogenBarBackground" id="microbeHUDPlayerNitrogenBar">
-              <div class="BarForeground">
-                  <div class="environmentIcon" id="NitrogenIcon"></div>
-                  <div class="EnvironmentBarTitle">N₂</div>
-                    <div class="EnvironmentBarValue">
-                      <span id="microbeHUDPlayerNitrogen">70%</span>
-                    </div>
+          <!-- Light -->
+            <div class="EnvironmentBar"> 
+              <div class="EmptyBarBackground" id="microbeHUDPlayerLightBar">
+                <div class="BarForeground">
+                    <div class="environmentIcon" id="LightIcon"></div>
+                    <div class="EnvironmentBarTitle">Light</div>
+                      <div class="EnvironmentBarValue">
+                        <span id="microbeHUDPlayerLight">80k lux</span>
+                      </div>
+                </div>
               </div>
-            </div>
-        </div>
+          </div>
 
-        <!-- Temperature -->
-          <div class="EnvironmentBar"> 
-            <div class="EmptyBarBackground" id="microbeHUDPlayerTempBar">
-              <div class="BarForeground">
-                  <div class="environmentIcon TempIcon"></div>
-                  <div class="EnvironmentBarTitle">Temp.</div>
-                    <div class="EnvironmentBarValue">
-                      <span id="microbeHUDPlayerTemp">55° C</span>
-                    </div>
+          <!-- Pressure -->
+            <div class="EnvironmentBar"> 
+              <div class="EmptyBarBackground" id="microbeHUDPlayerPressureBar">
+                <div class="BarForeground">
+                    <div class="environmentIcon" id="PressureIcon"></div>
+                    <div class="EnvironmentBarTitle">Press.</div>
+                      <div class="EnvironmentBarValue">
+                        <span id="microbeHUDPlayerPressure">200 kPa</span>
+                      </div>
+                </div>
               </div>
-            </div>
-        </div>
-
-        <!-- Light -->
-          <div class="EnvironmentBar"> 
-            <div class="EmptyBarBackground" id="microbeHUDPlayerLightBar">
-              <div class="BarForeground">
-                  <div class="environmentIcon" id="LightIcon"></div>
-                  <div class="EnvironmentBarTitle">Light</div>
-                    <div class="EnvironmentBarValue">
-                      <span id="microbeHUDPlayerLight">80k lux</span>
-                    </div>
-              </div>
-            </div>
-        </div>
-
-        <!-- Pressure -->
-          <div class="EnvironmentBar"> 
-            <div class="EmptyBarBackground" id="microbeHUDPlayerPressureBar">
-              <div class="BarForeground">
-                  <div class="environmentIcon" id="PressureIcon"></div>
-                  <div class="EnvironmentBarTitle">Press.</div>
-                    <div class="EnvironmentBarValue">
-                      <span id="microbeHUDPlayerPressure">200 kPa</span>
-                    </div>
-              </div>
-            </div>
+          </div>
         </div>
     </div>
 
@@ -279,8 +286,8 @@
       <!-- Compounds panel -->
       <div id="compoundsPanel" class="Panel">
           <div id="panelTitle"> Compounds  
-            <div  id="compressPanel" src="../../Textures/gui/bevel/compressPanel.png"> </div>
-            <div  id="expandPanel"   src="../../Textures/gui/bevel/expandPanel.png"> </div>
+            <div  class="compressPanel" src="../../Textures/gui/bevel/compressPanel.png"> </div>
+            <div  class="expandPanel"   src="../../Textures/gui/bevel/expandPanel.png"> </div>
           </div>
          
           <!-- <\!-- This bar is redundant with the one in the top left box -\-> -->
@@ -290,7 +297,7 @@
           <!-- </div> -->
           
           <!-- Glucose -->
-          <div id="row1">
+          <div class="row1">
             <div class="Bar"> 
                   <div class="BarBackground" id="microbeHUDPlayerGlucoseBar">
                     <div class="BarForeground">
@@ -333,7 +340,7 @@
             </div>
           </div>
 
-           <div id="row2">
+           <div class="row2">
             <!-- Hydrogen Sulfide -->
             <div class="Bar"> 
               <div class="BarBackground" id="microbeHUDPlayerHydrogenSulfideBar">
