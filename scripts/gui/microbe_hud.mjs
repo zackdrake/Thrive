@@ -510,7 +510,8 @@ function onCompressPanelClicked() {
 
     // If panel is already compress cannot compress again
     const panelToChangeId = $(this).parent().parent().attr("id");
-    const bg = $("#" + panelToChangeId).css('background-image');
+    const bg = $("#" + panelToChangeId).css("background-image");
+
     if(bg.includes("Compress"))
         return;
 
@@ -648,7 +649,7 @@ function onExpandPanelClicked() {
     }
 
     // Change Panel dimension and background
-    var h = elementToChange.offsetHeight + 93;
+    const h = elementToChange.offsetHeight + 93;
 
     elementToChange.style.height = h + "px";
     if(panelToChangeId == "compoundsPanel") {
@@ -706,7 +707,7 @@ function onExpandPanelClicked() {
 
     for (const bar of bars) {
         bar.style.display = "block";
-        var w = "";
+        let w = "";
 
         if(panelToChangeId == "compoundsPanel") {
             w = bar.offsetWidth + 150;
