@@ -267,8 +267,8 @@ function openHelp(){
         "Heres a tip, if your cell is 150 hexes, you can engulf the large iron chunks.",
         "Fun Fact, One of the first playable game-play prototypes was made " +
         "by our awesome programmer, untrustedlife!",
-        "To be fair, you have to have a very high IQ to understand Thrive." + 
-        " The in-game help is extremely subtle," + 
+        "To be fair, you have to have a very high IQ to understand Thrive." +
+        " The in-game help is extremely subtle," +
         "and without a solid grasp of evolutionary biology most of the gameplay will go over"
     ];
 
@@ -509,16 +509,16 @@ function hideWinText(){
 function onCompressPanelClicked() {
 
     // If panel is already compress cannot compress again
-    var panelToChangeId = $(this).parent().parent().attr("id");
-    var bg = $("#" + panelToChangeId).css('background-image');
+    const panelToChangeId = $(this).parent().parent().attr("id");
+    const bg = $("#" + panelToChangeId).css('background-image');
     if(bg.includes("Compress"))
         return;
 
     // Determine which panel needs to be compress
-    var elementToChange = document.getElementById(panelToChangeId);
-    var barToChange = "";
-    var titleToChange = "";
-    var valuesToChange = "";
+    const elementToChange = document.getElementById(panelToChangeId);
+    let barToChange = "";
+    let titleToChange = "";
+    let valuesToChange = "";
     
     // Determine the tags that will be changed
     if(panelToChangeId != "environmentPanel") {
@@ -532,8 +532,8 @@ function onCompressPanelClicked() {
     }
 
     // Change Panel dimension and background
-    var h = elementToChange.offsetHeight - 93;
-    elementToChange.style.height = h +"px";
+    const h = elementToChange.offsetHeight - 93;
+    elementToChange.style.height = h + "px";
 
     if(panelToChangeId == "compoundsPanel") {
         elementToChange.style.backgroundImage =
@@ -541,7 +541,7 @@ function onCompressPanelClicked() {
     } else {
         elementToChange.style.backgroundImage =
             "url('../../Textures/gui/bevel/environmentPanelCompress.png')";
-    }  
+    }
 
     // Change buttons status
     elementToChange.querySelector(".compressPanel").style.backgroundImage =
@@ -624,16 +624,17 @@ function onExpandPanelClicked() {
 
     // If panel is already expand cannot expand again
     let panelToChangeId = $(this).parent().parent().attr("id");
-    var bg = $("#" + panelToChangeId).css("background-image");
+    const bg = $("#" + panelToChangeId).css("background-image");
+
     if(bg.includes("Expand"))
         return;
 
     // Determine which panel needs to be compress
     panelToChangeId = $(this).parent().parent().attr("id");
-    var elementToChange = document.getElementById(panelToChangeId);
-    var barToChange = "";
-    var titleToChange = "";
-    var valuesToChange = "";
+    const elementToChange = document.getElementById(panelToChangeId);
+    let barToChange = "";
+    let titleToChange = "";
+    let valuesToChange = "";
 
     // Determine the tags that will be changed
     if(panelToChangeId != "environmentPanel") {
@@ -649,7 +650,7 @@ function onExpandPanelClicked() {
     // Change Panel dimension and background
     var h = elementToChange.offsetHeight + 93;
 
-    elementToChange.style.height = h +"px";
+    elementToChange.style.height = h + "px";
     if(panelToChangeId == "compoundsPanel") {
         elementToChange.style.backgroundImage =
             "url('../../Textures/gui/bevel/compoundsPanelExpand.png')";

@@ -497,8 +497,7 @@ void
 void
     ThriveGame::changePatchButtonClicked()
 {
-	// Here should invoked functions to get which patch i was and where i'm going too
-	// So an event with should be invoked instead of this js->cpp  function.
+// Here should invoked functions to get which patch i was and where i'm going too
     LOG_INFO("changing patch asap.");
 }
 void
