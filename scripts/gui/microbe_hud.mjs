@@ -516,7 +516,7 @@ let h = "";
 function onCompressPanelClicked() {
 
     // If panel is already compress cannot compress again
-    let panelToChangeId = $(this).parent().parent().attr("id");
+    const panelToChangeId = $(this).parent().parent().attr("id");
     const bg = $("#" + panelToChangeId).css("background-image");
 
     if(bg.includes("Compress"))
@@ -540,7 +540,7 @@ function onCompressPanelClicked() {
             "url('../../Textures/gui/bevel/environmentPanelCompress.png')";
         barToChange = "EnvironmentBar";
         titleToChange = "EnvironmentBarTitle";
-        valuesToChange = "EnvironmentBarValue";  
+        valuesToChange = "EnvironmentBarValue";
         h = elementToChange.offsetHeight - 58;
     }
 
@@ -556,9 +556,9 @@ function onCompressPanelClicked() {
     //! ROWS
     const rows = elementToChange.querySelectorAll(".row");
     for(const row of rows) {
-        let bars = row.getElementsByClassName(barToChange);
-        let title = row.getElementsByClassName(titleToChange);
-        let barValues = row.getElementsByClassName(valuesToChange);
+        const bars = row.getElementsByClassName(barToChange);
+        const title = row.getElementsByClassName(titleToChange);
+        const barValues = row.getElementsByClassName(valuesToChange);
 
         for (const bar of bars) {
 
@@ -570,7 +570,7 @@ function onCompressPanelClicked() {
             } else {
                 w = bar.offsetWidth - 100;
                 bar.style.marginLeft = "5px";
-             }
+            }
             bar.style.width = w + "px";
             bar.style.marginBottom = "0px";
             bar.style.marginTop = "6px";
@@ -595,7 +595,7 @@ function onCompressPanelClicked() {
 function onExpandPanelClicked() {
 
     // If panel is already expand cannot expand again
-    let panelToChangeId = $(this).parent().parent().attr("id");
+    const panelToChangeId = $(this).parent().parent().attr("id");
     const bg = $("#" + panelToChangeId).css("background-image");
 
     if(bg.includes("Expand"))
@@ -633,9 +633,9 @@ function onExpandPanelClicked() {
 
     const rows = elementToChange.querySelectorAll(".row");
     for(const row of rows) {
-        let bars = row.getElementsByClassName(barToChange);
-        let title = row.getElementsByClassName(titleToChange);
-        let barValues = row.getElementsByClassName(valuesToChange);
+        const bars = row.getElementsByClassName(barToChange);
+        const title = row.getElementsByClassName(titleToChange);
+        const barValues = row.getElementsByClassName(valuesToChange);
 
         for (const bar of bars) {
             bar.style.display = "block";
