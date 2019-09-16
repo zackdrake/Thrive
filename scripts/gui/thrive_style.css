@@ -184,7 +184,7 @@ div::-webkit-scrollbar-thumb:hover {
   width: 180px;
   height: 25px;
   margin-left: 20px;
-  margin-right: 32px;
+  margin-right: 10px;
   margin-bottom: 4px;
   margin-top: 6px;
   background-color: rgb(0, 0, 0, 0.2);
@@ -981,6 +981,7 @@ div::-webkit-scrollbar-thumb:hover {
 
 #GlucoseIcon {
   background-image: url("../../Textures/gui/bevel/Glucose.png");
+  background-repeat: no-repeat;
 }
 
 #microbeHUDPlayerGlucoseBar {
@@ -1044,6 +1045,7 @@ div::-webkit-scrollbar-thumb:hover {
 
 #MutationPointsIcon {
   background-image: url("../../Textures/gui/bevel/MP.png");
+  background-repeat: no-repeat;
 }
 
 #microbeHUDPlayerMutationPointsBar {
@@ -1711,29 +1713,60 @@ div::-webkit-scrollbar-thumb:hover {
   background-size: contain;
   background-image: url("../../Textures/gui/bevel/CytoplasmIcon.png");
 }
+/* TOOLTIP ENTRIES */
 
-/* Tooltip text */
-.tooltiptext {
+/* The following few entries are for elements regarding tooltips. */
+
+/* Used to place the headers as a second, transparent background tooltip on top of the actual text containing tooltip. This way the headers can be center aligned while the rest of the tooltip is left aligned. */
+
+.tooltipheader {
   visibility: hidden;
-  width: 320px;
+  width: 400px;
   height: 30%;
   right: 5%;
   top: 10%;
-  font-size: 10pt;
-  background-color: rgba(0, 139, 139, 0.5);
+  background-color: rgba(0, 89, 89, 0);
   color: #fff;
-  text-align: center-left;
+  text-align: center;
   border-radius: 25px;
-  padding: 5px 0;
+  padding: 20px 20px 20px 20px;
   position: fixed;
   z-index: 1;
+  font-size: 190%;
 }
 
+.OrganelleListItem:hover .tooltipheader {
+  visibility: visible;
+}
+
+/* Regular tooltip text aside from the header. */
+
+.tooltiptext {
+  visibility: hidden;
+  width: 400px;
+  height: auto;
+  right: 5%;
+  top: 10%;
+  background-color: rgba(0, 89, 89, 0.75);
+  border-radius: 25px;
+  padding: 20px 20px 20px 20px;
+  position: fixed;
+  z-index: 1;
+  color: #d3d3d3;
+  text-align: left;
+  font-size: 190%;
+}
+
+.tooltiptext .compoundIcon {
+  position: relative;
+  display: inline-block;
+  top: 4px;
+  left: 1px;
+}
 
 .OrganelleListItem:hover .tooltiptext {
   visibility: visible;
 }
-
 
 #PlastidIcon {
   position: relative;
@@ -1783,6 +1816,10 @@ div::-webkit-scrollbar-thumb:hover {
   background-image: url("../../Textures/gui/bevel/VacuoleIcon.png");
 }
 
+#VacuoleTooltipIcon {
+  background-image: url("../../Textures/gui/bevel/VacuoleIcon.png");
+}
+
 #ToxinVacuoleIcon {
   position: relative;
   left: calc(50% - 30px);
@@ -1817,6 +1854,12 @@ div::-webkit-scrollbar-thumb:hover {
   width: 60px;
   height: 60px;
   background-size: contain;
+  background-image: url("../../Textures/gui/bevel/FlagellumIcon.png");
+}
+
+/* Used to place the flagellum's icon inside tooltips as an icon for storage. */
+
+#FlagellumTooltipIcon {
   background-image: url("../../Textures/gui/bevel/FlagellumIcon.png");
 }
 
@@ -1915,6 +1958,74 @@ div::-webkit-scrollbar-thumb:hover {
   position: absolute;
   bottom: -40px;
   right: 12px;
+}
+
+/* Used for the scientific description text in the final blurb. */
+
+/* Used in formulas in tooltips. */
+
+#WhiteArrow {
+  background-image: url("../../Textures/gui/bevel/WhiteArrow.png");
+}
+
+#TemperatureIcon {
+  background-image: url("../../Textures/gui/bevel/Temperature.png");
+}
+
+#LightIcon {
+  background-image: url("../../Textures/gui/bevel/Light.png");
+}
+
+#PressureIcon {
+  background-image: url("../../Textures/gui/bevel/Pressure.png");
+}
+
+/* Used for the headers of tooltips. */
+
+.thead {
+  color: white;
+  font-size: 150%;
+  font-weight: 1000;
+  text-align: center;
+}
+
+/* Used everytime an input or output is mentioned in the initial blurb of the tooltip. */
+
+.tkey {
+  color: white;
+  font-size: 100%;
+  font-weight: 1000;
+}
+
+/* Used for formula names in tooltips. */
+
+.tgold {
+  color: #ffd700;
+  font-size: 100%;
+  font-weight: 1000;
+}
+
+/* Used for highlighting beneficial values. */
+
+.tbonus {
+  color: #0f0;
+  font-size: 100%;
+  font-weight: 1000;
+}
+
+/* Used for highlighting deleterious values. */
+
+.tmalus {
+  color: #ff4d4d;
+  font-size: 100%;
+  font-weight: 1000;
+}
+
+/* Used for the regular text in the initial blurb. */
+
+.tbody {
+  color: #d3d3d3;
+  font-size: 100%;
 }
 
 /* Used for the scientific description text in the final blurb. */

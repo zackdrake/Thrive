@@ -506,10 +506,17 @@ function hideWinText(){
 
 
 //! Compress panel function
+
+// Variables needed for changes
+let barToChange = "";
+let titleToChange = "";
+let valuesToChange = "";
+let h = "";
+
 function onCompressPanelClicked() {
 
     // If panel is already compress cannot compress again
-    const panelToChangeId = $(this).parent().parent().attr("id");
+    let panelToChangeId = $(this).parent().parent().attr("id");
     const bg = $("#" + panelToChangeId).css("background-image");
 
     if(bg.includes("Compress"))
@@ -517,104 +524,68 @@ function onCompressPanelClicked() {
 
     // Determine which panel needs to be compress
     const elementToChange = document.getElementById(panelToChangeId);
-    let barToChange = "";
-    let titleToChange = "";
-    let valuesToChange = "";
 
-    // Determine the tags that will be changed
-    if(panelToChangeId != "environmentPanel") {
-        barToChange = "Bar";
-        titleToChange = "BarTitle";
-        valuesToChange = "BarValue";
-    } else {
-        barToChange = "EnvironmentBar";
-        titleToChange = "EnvironmentBarTitle";
-        valuesToChange = "EnvironmentBarValue";
-    }
-
-    // Change Panel dimension and background
-    const h = elementToChange.offsetHeight - 93;
-    elementToChange.style.height = h + "px";
+    // Determine different values because right now
+    // The two panels a little difference in layout
 
     if(panelToChangeId == "compoundsPanel") {
         elementToChange.style.backgroundImage =
             "url('../../Textures/gui/bevel/compoundsPanelCompress.png')";
+        barToChange = "Bar";
+        titleToChange = "BarTitle";
+        valuesToChange = "BarValue";
+        h = elementToChange.offsetHeight - 92;
     } else {
         elementToChange.style.backgroundImage =
             "url('../../Textures/gui/bevel/environmentPanelCompress.png')";
+        barToChange = "EnvironmentBar";
+        titleToChange = "EnvironmentBarTitle";
+        valuesToChange = "EnvironmentBarValue";  
+        h = elementToChange.offsetHeight - 58;
     }
 
+    
+    elementToChange.style.height = h + "px";
+    
     // Change buttons status
     elementToChange.querySelector(".compressPanel").style.backgroundImage =
         "url('../../Textures/gui/bevel/compressPanelActive.png')";
     elementToChange.querySelector(".expandPanel").style.backgroundImage =
         "url('../../Textures/gui/bevel/expandPanel.png')";
 
-    //! ROW 1
-    const row1 = elementToChange.querySelector(".row1");
-    let bars = row1.getElementsByClassName(barToChange);
-    let title = row1.getElementsByClassName(titleToChange);
-    let barValues = row1.getElementsByClassName(valuesToChange);
+    //! ROWS
+    const rows = elementToChange.querySelectorAll(".row");
+    for(const row of rows) {
+        let bars = row.getElementsByClassName(barToChange);
+        let title = row.getElementsByClassName(titleToChange);
+        let barValues = row.getElementsByClassName(valuesToChange);
 
-    for (const bar of bars) {
-        bar.style.display = "inline-block";
-        let w = "";
+        for (const bar of bars) {
 
-        if(panelToChangeId == "compoundsPanel") {
-            w = bar.offsetWidth - 150;
-            bar.style.marginLeft = "-25px";
-        } else {
-            w = bar.offsetWidth - 100;
-            bar.style.marginLeft = "0px";
+            bar.style.display = "inline-block";
+            let w = "";
+            if(panelToChangeId == "compoundsPanel") {
+                w = bar.offsetWidth - 150;
+                bar.style.marginLeft = "-25px";
+            } else {
+                w = bar.offsetWidth - 100;
+                bar.style.marginLeft = "5px";
+             }
+            bar.style.width = w + "px";
+            bar.style.marginBottom = "0px";
+            bar.style.marginTop = "6px";
         }
-        bar.style.width = w + "px";
-        bar.style.marginBottom = "0px";
-        bar.style.marginTop = "6px";
-    }
 
-    for (const tit of title) {
-        tit.style.visibility = "hidden";
-    }
-
-    for (const barValue of barValues) {
-        if(panelToChangeId == "compoundsPanel") {
-            barValue.style.left = "-30px";
-        } else {
-            barValue.style.left = "15px";
+        for (const tit of title) {
+            tit.style.visibility = "hidden";
         }
-    }
 
-    //! ROW 2
-    const row2 = elementToChange.querySelector(".row2");
-    bars = row2.getElementsByClassName(barToChange);
-    title = row2.getElementsByClassName(titleToChange);
-    barValues = row2.getElementsByClassName(valuesToChange);
-
-    for (const bar of bars) {
-        bar.style.display = "inline-block";
-        let w = "";
-
-        if(panelToChangeId == "compoundsPanel") {
-            w = bar.offsetWidth - 150;
-            bar.style.marginLeft = "-25px";
-        } else {
-            w = bar.offsetWidth - 100;
-            bar.style.marginLeft = "0px";
-        }
-        bar.style.width = w + "px";
-        bar.style.marginBottom = "0px";
-        bar.style.marginTop = "-10px";
-    }
-
-    for (const tit of title) {
-        tit.style.visibility = "hidden";
-    }
-
-    for (const barValue of barValues) {
-        if(panelToChangeId == "compoundsPanel") {
-            barValue.style.left = "-30px";
-        } else {
-            barValue.style.left = "15px";
+        for (const barValue of barValues) {
+            if(panelToChangeId == "compoundsPanel") {
+                barValue.style.left = "-30px";
+            } else {
+                barValue.style.left = "15px";
+            }
         }
     }
 }
@@ -631,34 +602,28 @@ function onExpandPanelClicked() {
         return;
 
     // Determine which panel needs to be compress
-    panelToChangeId = $(this).parent().parent().attr("id");
     const elementToChange = document.getElementById(panelToChangeId);
-    let barToChange = "";
-    let titleToChange = "";
-    let valuesToChange = "";
 
-    // Determine the tags that will be changed
-    if(panelToChangeId != "environmentPanel") {
-        barToChange = "Bar";
-        titleToChange = "BarTitle";
-        valuesToChange = "BarValue";
-    } else {
-        barToChange = "EnvironmentBar";
-        titleToChange = "EnvironmentBarTitle";
-        valuesToChange = "EnvironmentBarValue";
-    }
+    // Determine different values because right now
+    // The two panels a little difference in layout
 
-    // Change Panel dimension and background
-    const h = elementToChange.offsetHeight + 93;
-
-    elementToChange.style.height = h + "px";
     if(panelToChangeId == "compoundsPanel") {
         elementToChange.style.backgroundImage =
             "url('../../Textures/gui/bevel/compoundsPanelExpand.png')";
+        barToChange = "Bar";
+        titleToChange = "BarTitle";
+        valuesToChange = "BarValue";
+        h = elementToChange.offsetHeight + 92;
     } else {
         elementToChange.style.backgroundImage =
             "url('../../Textures/gui/bevel/environmentPanelExpand.png')";
+        barToChange = "EnvironmentBar";
+        titleToChange = "EnvironmentBarTitle";
+        valuesToChange = "EnvironmentBarValue";
+        h = elementToChange.offsetHeight + 58;
     }
+
+    elementToChange.style.height = h + "px";
 
     // Change buttons status
     elementToChange.querySelector(".compressPanel").style.backgroundImage =
@@ -666,70 +631,39 @@ function onExpandPanelClicked() {
     elementToChange.querySelector(".expandPanel").style.backgroundImage =
         "url('../../Textures/gui/bevel/expandPanelActive.png')";
 
-    const row1 = elementToChange.querySelector(".row1");
-    let bars = row1.getElementsByClassName(barToChange);
-    let title = row1.getElementsByClassName(titleToChange);
-    let barValues = row1.getElementsByClassName(valuesToChange);
+    const rows = elementToChange.querySelectorAll(".row");
+    for(const row of rows) {
+        let bars = row.getElementsByClassName(barToChange);
+        let title = row.getElementsByClassName(titleToChange);
+        let barValues = row.getElementsByClassName(valuesToChange);
 
-    for (const bar of bars) {
-        bar.style.display = "block";
-        let w = "";
+        for (const bar of bars) {
+            bar.style.display = "block";
+            let w = "";
 
-        if(panelToChangeId == "compoundsPanel") {
-            w = bar.offsetWidth + 150;
-            bar.style.marginLeft = "20px";
-        } else {
-            w = bar.offsetWidth + 100;
-            bar.style.marginLeft = "20px";
+            if(panelToChangeId == "compoundsPanel") {
+                w = bar.offsetWidth + 150;
+                bar.style.marginLeft = "20px";
+            } else {
+                w = bar.offsetWidth + 100;
+                bar.style.marginLeft = "20px";
+            }
+
+            bar.style.marginBottom = "4px";
+            bar.style.marginTop = "6px";
+            bar.style.width = w + "px";
         }
-        bar.style.marginBottom = "4px";
-        bar.style.marginTop = "6px";
-        bar.style.width = w + "px";
-    }
 
-    for (const tit of title) {
-        tit.style.visibility = "visible";
-    }
-
-    for (const barValue of barValues) {
-        if(panelToChangeId == "compoundsPanel") {
-            barValue.style.left = "120px";
-        } else {
-            barValue.style.left = "100px";
+        for (const tit of title) {
+            tit.style.visibility = "visible";
         }
-    }
 
-    //! ROW 2
-    const row2 = elementToChange.querySelector(".row2");
-    bars = row2.getElementsByClassName(barToChange);
-    title = row2.getElementsByClassName(titleToChange);
-    barValues = row2.getElementsByClassName(valuesToChange);
-
-    for (const bar of bars) {
-        bar.style.display = "block";
-        let w = "";
-
-        if(panelToChangeId == "compoundsPanel") {
-            w = bar.offsetWidth + 150;
-            bar.style.marginLeft = "20px";
-        } else {
-            w = bar.offsetWidth + 100;
-            bar.style.marginLeft = "20px";
-        }
-        bar.style.marginBottom = "4px";
-        bar.style.marginTop = "6px";
-        bar.style.width = w + "px";
-    }
-
-    for (const tit of title) {
-        tit.style.visibility = "visible";
-    }
-
-    for (const barValue of barValues) {
-        if(panelToChangeId == "compoundsPanel") {
-            barValue.style.left = "120px";
-        } else {
-            barValue.style.left = "100px";
+        for (const barValue of barValues) {
+            if(panelToChangeId == "compoundsPanel") {
+                barValue.style.left = "120px";
+            } else {
+                barValue.style.left = "100px";
+            }
         }
     }
 }
