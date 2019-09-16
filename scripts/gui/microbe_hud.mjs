@@ -544,9 +544,8 @@ function onCompressPanelClicked() {
         h = elementToChange.offsetHeight - 58;
     }
 
-    
     elementToChange.style.height = h + "px";
-    
+ 
     // Change buttons status
     elementToChange.querySelector(".compressPanel").style.backgroundImage =
         "url('../../Textures/gui/bevel/compressPanelActive.png')";
@@ -555,6 +554,7 @@ function onCompressPanelClicked() {
 
     //! ROWS
     const rows = elementToChange.querySelectorAll(".row");
+
     for(const row of rows) {
         const bars = row.getElementsByClassName(barToChange);
         const title = row.getElementsByClassName(titleToChange);
@@ -632,6 +632,7 @@ function onExpandPanelClicked() {
         "url('../../Textures/gui/bevel/expandPanelActive.png')";
 
     const rows = elementToChange.querySelectorAll(".row");
+
     for(const row of rows) {
         const bars = row.getElementsByClassName(barToChange);
         const title = row.getElementsByClassName(titleToChange);
