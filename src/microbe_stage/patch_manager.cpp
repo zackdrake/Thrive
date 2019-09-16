@@ -21,6 +21,17 @@ PatchManager::PatchManager(GameWorld& world) :
 {}
 // ------------------------------------ //
 void
+    PatchManager::setNewMap(PatchMap::pointer map)
+{
+    LOG_INFO("Setting new patch map");
+    if(map && !map->verify()) {
+        throw Leviathan::InvalidArgument("verify failed for map");
+    }
+
+    currentMap = map;
+}
+// ------------------------------------ //
+void
     PatchManager::applyPatchSettings()
 {
     if(!currentMap)
@@ -32,6 +43,8 @@ void
         throw InvalidState("currently selected patch is invalid");
 
     LOG_INFO("PatchManager: applying patch settings");
+
+    updateSpeciesGlobalPopulation();
 
     unmarkAllSpawners();
 
@@ -70,10 +83,12 @@ void
         }
 
         const auto existing = std::find_if(chunkSpawners.begin(),
-            chunkSpawners.begin(),
+            chunkSpawners.end(),
             [&](const auto& spawner) { return spawner.thing == chunk.name; });
 
         if(existing != chunkSpawners.end()) {
+
+            existing->marked = true;
 
             if(existing->setDensity != chunk.density) {
 
@@ -81,36 +96,32 @@ void
                 cellWorld.GetSpawnSystem().updateDensity(
                     existing->id, existing->setDensity);
             }
-
-        } else {
-            // New spawner needed
-            LOG_INFO("registering chunk: Name: " + chunk.name +
-                     " density: " + std::to_string(chunk.density));
-
-            chunkSpawners.emplace_back(
-                cellWorld.GetSpawnSystem().addSpawnType(
-                    [=](CellStageWorld& world, Float3 pos) {
-                        ScriptRunningSetup setup =
-                            ScriptRunningSetup("spawnChunk");
-
-                        auto result =
-                            ThriveCommon::get()
-                                ->getMicrobeScripts()
-                                ->ExecuteOnModule<ObjectID>(setup, false,
-                                    &world, &const_cast<ChunkData&>(chunk),
-                                    pos);
-
-                        if(result.Result != SCRIPT_RUN_RESULT::Success) {
-
-                            LOG_ERROR("Failed to run chunk spawn");
-                            return NULL_OBJECT;
-                        }
-
-                        return result.Value;
-                    },
-                    chunk.density, MICROBE_SPAWN_RADIUS),
-                chunk.name, chunk.density);
+            continue;
         }
+        // New spawner needed
+        LOG_INFO("registering chunk: Name: " + chunk.name +
+                 " density: " + std::to_string(chunk.density));
+
+        chunkSpawners.emplace_back(
+            cellWorld.GetSpawnSystem().addSpawnType(
+                [=](CellStageWorld& world, Float3 pos) {
+                    ScriptRunningSetup setup = ScriptRunningSetup("spawnChunk");
+
+                    auto result = ThriveCommon::get()
+                                      ->getMicrobeScripts()
+                                      ->ExecuteOnModule<ObjectID>(
+                                          setup, false, &world, &chunk, pos);
+
+                    if(result.Result != SCRIPT_RUN_RESULT::Success) {
+
+                        LOG_ERROR("Failed to run chunk spawn");
+                        return NULL_OBJECT;
+                    }
+
+                    return result.Value;
+                },
+                chunk.density, MICROBE_SPAWN_RADIUS),
+            chunk.name, chunk.density);
     }
 }
 
@@ -137,11 +148,13 @@ void
         }
 
         const auto existing = std::find_if(cloudSpawners.begin(),
-            cloudSpawners.begin(), [&](const auto& spawner) {
+            cloudSpawners.end(), [&](const auto& spawner) {
                 return spawner.thing == compoundData.internalName;
             });
 
         if(existing != cloudSpawners.end()) {
+
+            existing->marked = true;
 
             if(existing->setDensity != compound.density) {
 
@@ -150,34 +163,36 @@ void
                     existing->id, existing->setDensity);
             }
 
-        } else {
-            // New spawner needed
-            LOG_INFO("registering cloud: " + compoundData.internalName +
-                     ", density: " + std::to_string(compound.density));
-
-            cloudSpawners.emplace_back(
-                cellWorld.GetSpawnSystem().addSpawnType(
-                    [=](CellStageWorld& world, Float3 pos) {
-                        ScriptRunningSetup setup =
-                            ScriptRunningSetup("spawnCompoundCloud");
-
-                        auto result =
-                            ThriveCommon::get()
-                                ->getMicrobeScripts()
-                                ->ExecuteOnModule<ObjectID>(setup, false,
-                                    &world, compoundId, compound.amount, pos);
-
-                        if(result.Result != SCRIPT_RUN_RESULT::Success) {
-
-                            LOG_ERROR("Failed to run compound spawn");
-                            return NULL_OBJECT;
-                        }
-
-                        return result.Value;
-                    },
-                    compound.density, CLOUD_SPAWN_RADIUS),
-                compoundData.internalName, compound.density);
+            continue;
         }
+
+        // New spawner needed
+        LOG_INFO("registering cloud: " + compoundData.internalName +
+                 ", density: " + std::to_string(compound.density));
+
+        cloudSpawners.emplace_back(
+            cellWorld.GetSpawnSystem().addSpawnType(
+                [=](CellStageWorld& world, Float3 pos) {
+                    ScriptRunningSetup setup =
+                        ScriptRunningSetup("spawnCompoundCloud");
+
+                    auto result =
+                        ThriveCommon::get()
+                            ->getMicrobeScripts()
+                            ->ExecuteOnModule<void>(setup, false, &world,
+                                compoundId, compound.amount, pos);
+
+                    if(result.Result != SCRIPT_RUN_RESULT::Success) {
+
+                        LOG_ERROR("Failed to run compound spawn");
+                        return NULL_OBJECT;
+                    }
+
+                    // Clouds never spawn as entities
+                    return NULL_OBJECT;
+                },
+                compound.density, CLOUD_SPAWN_RADIUS),
+            compoundData.internalName, compound.density);
     }
 }
 
@@ -196,10 +211,12 @@ void
         const auto& name = speciesInPatch.species->name;
 
         const auto existing =
-            std::find_if(microbeSpawners.begin(), microbeSpawners.begin(),
+            std::find_if(microbeSpawners.begin(), microbeSpawners.end(),
                 [&](const auto& spawner) { return spawner.thing == name; });
 
         if(existing != microbeSpawners.end()) {
+
+            existing->marked = true;
 
             if(existing->setDensity != density) {
 
@@ -208,61 +225,65 @@ void
                     existing->id, existing->setDensity);
             }
 
-        } else {
-            // New spawner needed
-            LOG_INFO("registering species spawn: " + name +
-                     ", initial density: " + std::to_string(density));
-
-            microbeSpawners.emplace_back(
-                cellWorld.GetSpawnSystem().addSpawnType(
-                    [=](CellStageWorld& world, Float3 pos) {
-                        if(!speciesInPatch.species->isBacteria) {
-
-                            // TODO: this spawns a ton of things but only one of
-                            // them is returned, meaning the rest may not
-                            // despawn properly
-                            ScriptRunningSetup setup =
-                                ScriptRunningSetup("bacteriaColonySpawn");
-
-                            auto result = ThriveCommon::get()
-                                              ->getMicrobeScripts()
-                                              ->ExecuteOnModule<ObjectID>(setup,
-                                                  false, &world, pos,
-                                                  speciesInPatch.species->name);
-
-                            if(result.Result != SCRIPT_RUN_RESULT::Success) {
-
-                                LOG_ERROR("Failed to run bacteriaColonySpawn");
-                                return NULL_OBJECT;
-                            }
-
-                            return result.Value;
-
-                        } else {
-
-                            ScriptRunningSetup setup = ScriptRunningSetup(
-                                "MicrobeOperations::spawnMicrobe");
-
-                            auto result =
-                                ThriveCommon::get()
-                                    ->getMicrobeScripts()
-                                    ->ExecuteOnModule<ObjectID>(setup, false,
-                                        &world, pos,
-                                        speciesInPatch.species->name, true);
-
-                            if(result.Result != SCRIPT_RUN_RESULT::Success) {
-
-                                LOG_ERROR("Failed to run "
-                                          "MicrobeOperations::spawnMicrobe");
-                                return NULL_OBJECT;
-                            }
-
-                            return result.Value;
-                        }
-                    },
-                    density, MICROBE_SPAWN_RADIUS),
-                name, density);
+            continue;
         }
+        // New spawner needed
+        LOG_INFO("registering species spawn: " + name +
+                 ", initial density: " + std::to_string(density));
+
+        microbeSpawners.emplace_back(
+            cellWorld.GetSpawnSystem().addSpawnType(
+                [=](CellStageWorld& world, Float3 pos) {
+                    if(!speciesInPatch.species->isBacteria) {
+
+                        // TODO: this spawns a ton of things but only one of
+                        // them is returned, meaning the rest may not
+                        // despawn properly
+                        ScriptRunningSetup setup =
+                            ScriptRunningSetup("bacteriaColonySpawn");
+
+                        auto result =
+                            ThriveCommon::get()
+                                ->getMicrobeScripts()
+                                ->ExecuteOnModule<ObjectID>(setup, false,
+                                    &world, pos, speciesInPatch.species->name);
+
+                        if(result.Result != SCRIPT_RUN_RESULT::Success) {
+
+                            LOG_ERROR("Failed to run bacteriaColonySpawn");
+                            return NULL_OBJECT;
+                        }
+
+                        return result.Value;
+
+                    } else {
+
+                        ScriptRunningSetup setup = ScriptRunningSetup(
+                            "ObjectID "
+                            "MicrobeOperations::spawnMicrobe("
+                            "CellStageWorld@, Float3, const string &in, "
+                            "bool, bool)");
+                        setup.FullDeclaration = true;
+
+                        auto result =
+                            ThriveCommon::get()
+                                ->getMicrobeScripts()
+                                ->ExecuteOnModule<ObjectID>(setup, false,
+                                    &world, pos, speciesInPatch.species->name,
+                                    true, false);
+
+                        if(result.Result != SCRIPT_RUN_RESULT::Success) {
+
+                            LOG_ERROR("Failed to run "
+                                      "MicrobeOperations::spawnMicrobe");
+                            return NULL_OBJECT;
+                        }
+
+                        return result.Value;
+                    }
+                },
+                density, MICROBE_SPAWN_RADIUS),
+            name, density);
     }
 }
 // ------------------------------------ //
@@ -364,3 +385,9 @@ void
     }
 }
 // ------------------------------------ //
+void
+    PatchManager::updateSpeciesGlobalPopulation()
+{
+    if(currentMap)
+        currentMap->updateGlobalPopulations();
+}
