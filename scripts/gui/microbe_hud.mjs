@@ -545,7 +545,7 @@ function onCompressPanelClicked() {
     }
 
     elementToChange.style.height = h + "px";
- 
+
     // Change buttons status
     elementToChange.querySelector(".compressPanel").style.backgroundImage =
         "url('../../Textures/gui/bevel/compressPanelActive.png')";
@@ -564,6 +564,7 @@ function onCompressPanelClicked() {
 
             bar.style.display = "inline-block";
             let w = "";
+
             if(panelToChangeId == "compoundsPanel") {
                 w = bar.offsetWidth - 150;
                 bar.style.marginLeft = "-25px";
