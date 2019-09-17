@@ -83,7 +83,7 @@ export function runMicrobeHUDSetup(){
         Leviathan.OnGeneric("UpdatePatchDetails", (event, vars) => {
 
             // Apply the new values
-            updatePatchInfo(vars.patchName);
+            updatePatchInfo(vars.patchId);
         });
 
         // Event for checking extinction
@@ -173,8 +173,10 @@ function quitGameHud(){
     Leviathan.Quit();
 }
 
-function updatePatchInfo(patchName){
-    document.getElementById("infoPatch").textContent = "Patch Name:" + patchName;
+function updatePatchInfo(patch){
+   let patchId = patch;
+   alert("adds");
+   console.log("id of map: " + patchId);
 }
 
 //! Enables the editor button
@@ -354,7 +356,7 @@ function onEditorButtonClicked(event){
 
     document.getElementById("topLevelMicrobeStage").style.display = "none";
     document.getElementById("topLevelMicrobeEditor").style.display = "block";
-    $( "#report" ).click();
+    document.getElementById("report").click();
 
 
     event.stopPropagation();

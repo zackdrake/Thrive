@@ -568,17 +568,17 @@
               <img  class="nodeMap" id="A0" data-link="A1" data-here="true" data-type="Tidepool" src="../../Textures/gui/bevel/tidepool.png" style=" width: 50px; height: 50px; position: absolute; left: 355px; top: 150px;">
               
               <!--cave -->
-              <img  class="nodeMap" id="A1" data-link="A0-A2-A5" data-here="false" data-type="Cave" src="../../Textures/gui/bevel/cave.png" style=" width: 50px; height: 50px; position: absolute; left: 355px; top: 220px;">
+              <img  class="nodeMap" id="A1" data-link="A0-A2-A5" data-here="false" data-type="underwater_cave" src="../../Textures/gui/bevel/cave.png" style=" width: 50px; height: 50px; position: absolute; left: 355px; top: 220px;">
 
               <!--tidepool -->
               <img  class="nodeMap" id="A2" data-link="A1" data-here="false" data-type="Tidepool" src="../../Textures/gui/bevel/tidepool.png" style="width: 50px; height: 50px; position: absolute; left: 285px; top: 220px;">
 
               <!--Estuary -->
-              <img  class="nodeMap" id="A3" data-link="A5" data-here="false" data-type="Estuary" src="../../Textures/gui/bevel/estuary.png" style="width: 50px; height: 50px; position: absolute; left: 430px; top: 175px;">
-              <img  class="nodeMap" id="A4" data-link="A5" data-here="false" data-type="Estuary" src="../../Textures/gui/bevel/estuary.png" style="width: 50px; height: 50px; position: absolute; left: 490px; top: 175px;">
+              <img  class="nodeMap" id="A3" data-link="A5" data-here="false" data-type="estuary" src="../../Textures/gui/bevel/estuary.png" style="width: 50px; height: 50px; position: absolute; left: 430px; top: 175px;">
+              <img  class="nodeMap" id="A4" data-link="A5" data-here="false" data-type="estuary" src="../../Textures/gui/bevel/estuary.png" style="width: 50px; height: 50px; position: absolute; left: 490px; top: 175px;">
 
               <!--shallow -->
-              <img  class="nodeMap" id="A5"  data-link="A1-A3-A4" data-here="false" data-type="Shallow" src="../../Textures/gui/bevel/shallow.png" style="width: 50px; height: 50px; position: absolute; left: 457.5px; top: 300px;">
+              <img  class="nodeMap" id="A5"  data-link="A1-A3-A4" data-here="false" data-type="shallow" src="../../Textures/gui/bevel/shallow.png" style="width: 50px; height: 50px; position: absolute; left: 457.5px; top: 300px;">
               <img  class="nodeMap" data-here="false"  data-type="Shallow" src="../../Textures/gui/bevel/shallow.png" style="width: 50px; height: 50px; position: absolute; left: 260px; top: 300px;">
               
               <!--tidepool tidepool tidepool and estuary-->
@@ -591,9 +591,9 @@
               
               <!--epipelagic mesopelagic mesopelagic floor -->
               <div class=nodeMap style="width: 70px; height: 195px; position: absolute; left: 55px; top: 370px;">  
-                <img  data-type="Epipelagic"  src="../../Textures/gui/bevel/epipelagic.png" style="width: 50px; height: 50px; position: relative; display: inline-block; margin-left: 5px; margin-right: 5px; margin-top: 5px;">
-                <img  data-type="Mesopelagic"  src="../../Textures/gui/bevel/mesopelagic.png" style="width: 50px; height: 50px; position: relative; display: inline-block; margin-left: 5px; margin-right: 5px; margin-top: 5px;">
-                <img  data-type="Mesopelagic Floor" src="../../Textures/gui/bevel/mesopelagicFloor.png" style="width: 50px; height: 50px; position: relative; display: inline-block; margin-left: 5px; margin-right: 5px; margin-top: 5px;">
+                <img  data-type="epipelagic"  src="../../Textures/gui/bevel/epipelagic.png" style="width: 50px; height: 50px; position: relative; display: inline-block; margin-left: 5px; margin-right: 5px; margin-top: 5px;">
+                <img  data-type="mesopelagic"  src="../../Textures/gui/bevel/mesopelagic.png" style="width: 50px; height: 50px; position: relative; display: inline-block; margin-left: 5px; margin-right: 5px; margin-top: 5px;">
+                <img  data-type="mesopelagic Floor" src="../../Textures/gui/bevel/mesopelagicFloor.png" style="width: 50px; height: 50px; position: relative; display: inline-block; margin-left: 5px; margin-right: 5px; margin-top: 5px;">
               </div>
             </div>
         </svg>
@@ -609,11 +609,14 @@
             </div>
             <div class="ConditionTab" id="PhysicalCondition"> 
                 <div class="condition"><img src="../../Textures/gui/bevel/Temperature.png"  class="patchIcon"> 
-                  <span id="microbeHUDPatchTemperature" class="value"> 6 °C <div class="situation" id="microbeHUDPatchTemperatureSituation"></div> </span> </div> 
+                  <span id="microbeHUDPatchTemperature" class="value"> 6 
+                  </span><span>&nbsp;°C</span> <div class="situation" id="microbeHUDPatchTemperatureSituation"></div> </div> 
                 <div class="condition"><img src="../../Textures/gui/bevel/Pressure.png"  class="patchIcon"> 
-                  <span id="microbeHUDPatchPressure" class="value"> 20-30.4 bar </span> </div>
+                  <span id="microbeHUDPatchPressure" class="value"> 20
+                  </span> <span>&nbsp;bar</span> <div class="situation" id="microbeHUDPatchPressureSituation"></div> </div> 
                 <div class="condition"><img src="../../Textures/gui/bevel/Light.png"  class="patchIcon"> 
-                  <span id="microbeHUDPatchLight" class="value"> 40-23 lux </span> </div>
+                  <span id="microbeHUDPatchLight" class="value"> 40 
+                  </span><span>&nbsp;lux</span> <div class="situation" id="microbeHUDPatchLightSituation"></div> </div>
             </div>  
 
             <!-- Atmospheric Conditions -->
@@ -622,11 +625,14 @@
             </div>
             <div class="ConditionTab" id="AtmosphericCondition"> 
                 <div class="condition"><img src="../../Textures/gui/bevel/Oxygen.png"  class="patchIcon"> 
-                  <span id="microbeHUDPatchOxygen" class="value"> 23% </span> </div> 
+                  <span id="microbeHUDPatchOxygen" class="value"> 23
+                  </span><span>&nbsp;%</span> <div class="situation" id="microbeHUDPatchOxygenSituation"></div> </div> 
                 <div class="condition"><img src="../../Textures/gui/bevel/Nitrogen.png"  class="patchIcon"> 
-                  <span id="microbeHUDPatchNitrogen" class="value"> 3ppm </span> </div>
+                  <span id="microbeHUDPatchNitrogen" class="value"> 3
+                    </span><span>&nbsp;ppm</span> <div class="situation" id="microbeHUDPatchNitrogenSituation"></div> </div>
                 <div class="condition"><img src="../../Textures/gui/bevel/CO2.png" class="patchIcon"> 
-                  <span id="microbeHUDPatchCO2" class="value"> 43ppm </span> </div>
+                  <span id="microbeHUDPatchCO2" class="value"> 43
+                    </span><span>&nbsp;ppm</span> <div class="situation" id="microbeHUDPatchCO2Situation"></div> </div>
             </div> 
 
             <!--Compounds Cimposition -->

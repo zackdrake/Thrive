@@ -543,7 +543,9 @@ div::-webkit-scrollbar-thumb:hover {
 }
 
 .hereNode {
-  border-color: #00ab25;
+  border-color: #191863;
+  border-radius: 10px;
+  border-width: 5px;
 }
 
 .firstHalf {
@@ -635,7 +637,6 @@ div::-webkit-scrollbar-thumb:hover {
   margin-bottom: 10px;
   width: 12px;
   height: 12px;
-  background-image: url("../../Textures/gui/bevel/increase.png");
 }
 
 

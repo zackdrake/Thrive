@@ -28,6 +28,7 @@
 #include <Script/Bindings/StandardWorldBindHelper.h>
 #include <Script/ScriptExecutor.h>
 #include <Window.h>
+#include <microbe_stage/patch_manager.h>
 
 #include <bsfCore/Components/BsCRenderable.h>
 #include <bsfCore/Material/BsMaterial.h>
@@ -513,14 +514,19 @@ void
 void
     ThriveGame::patchButtonClicked()
 {
+    auto event = GenericEvent::MakeShared<GenericEvent>("SendPatchIdToReportTab");
+
+    auto vars = event->GetVariables();
+    PatchMap::pointer currentMap =
+        m_impl->m_cellStage->GetPatchManager().getCurrentMap();
+    const auto patch = currentMap->getCurrentPatch();
+    vars->Add(std::make_shared<NamedVariableList>(
+        "patchId", new Leviathan::IntBlock(patch->getId())));
     m_impl->m_cellStageKeys->setEnabled(false);
+
+	Engine::Get()->GetEventHandler()->CallEvent(event);
 }
 
-void
-    ThriveGame::changePatchButtonClicked()
-{
-    LOG_INFO("changing patch asap.");
-}
 void
     ThriveGame::editorButtonClicked()
 {

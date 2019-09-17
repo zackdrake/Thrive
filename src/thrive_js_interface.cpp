@@ -89,15 +89,6 @@ bool
         Owner->SendCustomExtensionMessage(message);
         return true;
 
-    } else if(name == "changePatchButtonClicked") {
-
-        auto message = CefProcessMessage::Create("Custom");
-        auto args = message->GetArgumentList();
-        args->SetString(0, "changePatchButtonClicked");
-
-        Owner->SendCustomExtensionMessage(message);
-        return true;
-
     } else if(name == "patchButtonClicked") {
         auto message = CefProcessMessage::Create("Custom");
         auto args = message->GetArgumentList();
@@ -192,10 +183,6 @@ bool
         return true;
     } else if(customType == "patchButtonClicked") {
         ThriveGame::Get()->patchButtonClicked();
-        return true;
-
-    } else if(customType == "changePatchButtonClicked") {
-        ThriveGame::Get()->changePatchButtonClicked();
         return true;
 
     } else if(customType == "killPlayerCellClicked") {
