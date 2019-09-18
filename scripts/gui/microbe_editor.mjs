@@ -223,8 +223,8 @@ export function setupMicrobeEditor(){
 
 //! Called to enter the editor view
 export function doEnterMicrobeEditor(){
-    
-    // this id will send by event for create new patch ?
+
+    // This id will send by event for create new patch ?
     const newId = microbe_patch.getNewId();
     window.setTimeout(() => {
         // Enable finish button

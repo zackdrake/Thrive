@@ -57,7 +57,7 @@ function onNextButtonClicked() {
 
 // Patch-Report function
 function onPatchReportClicked() {
-	
+
     // Fire event
     if(common.isInEngine()){
         // Call a function to tell the game to stop cell to move
@@ -95,11 +95,10 @@ function onPatchReportClicked() {
 	                        actualNode = $(this).attr("id");
 	                        $("#" + actualNode).addClass("hereNode");
 	                        if(links != "") {
-	                            links =  links + "-" + $(this).attr("data-link");   
+	                            links = links + "-" + $(this).attr("data-link");
 	                        } else {
-	                        	links =  links  + $(this).attr("data-link");   
-	                        }
-	                        
+	                        	links = links  + $(this).attr("data-link");   
+	                        }  
 	                    }
 	                });
 
@@ -180,7 +179,7 @@ $(".nodeMap").click(function() {
     } 
 
     // Update right Panel data
-    let type = $("#" + this.id).attr("data-type");
+    const type = $("#" + this.id).attr("data-type");
     document.getElementById("patchName").innerHTML = type;
     takeSelectedPatchData(type.toLowerCase());
 });
@@ -188,17 +187,17 @@ $(".nodeMap").click(function() {
 function takeSelectedPatchData(type) {
     $.getJSON("./../SimulationParameters/MicrobeStage/Biomes.json", function(biomeData) {
 	    // We change arrows of variation only if isn't the actual node
-	    
+
 	    if($("#" + actualNode).attr("data-type") != biomeData[type].name) {
 	        // Check change for each value
 	        // Light
 
 	        if(actualPlayerPatchData[1] > parseFloat(biomeData[type].lightPower)) {
-	            document.getElementById("microbeHUDPatchLightSituation").style
-	            .backgroundImage = "url(../../Textures/gui/bevel/decrease.png)";
+	            document.getElementById("microbeHUDPatchLightSituation").style.
+	            backgroundImage = "url(../../Textures/gui/bevel/decrease.png)";
 	        } else if(actualPlayerPatchData[1] < parseFloat(biomeData[type].lightPower)) {
-	            document.getElementById("microbeHUDPatchLightSituation").style
-	            .backgroundImage = "url(../../Textures/gui/bevel/increase.png)";
+	            document.getElementById("microbeHUDPatchLightSituation").style.
+	            backgroundImage = "url(../../Textures/gui/bevel/increase.png)";
 	        } else {
 	            document.getElementById("microbeHUDPatchLightSituation").style.backgroundImage =
 	                "none";
@@ -207,32 +206,33 @@ function takeSelectedPatchData(type) {
 
 	        // Temperature
 	        if(actualPlayerPatchData[2] > parseFloat(biomeData[type].averageTemperature)) {
-	            document.getElementById("microbeHUDPatchTemperatureSituation").style
-	            .backgroundImage = "url(../../Textures/gui/bevel/decrease.png)";
+	            document.getElementById("microbeHUDPatchTemperatureSituation").style.
+	            backgroundImage = "url(../../Textures/gui/bevel/decrease.png)";
 	        } else if(actualPlayerPatchData[2] < parseFloat(biomeData[type].averageTemperature)) {
-	            document.getElementById("microbeHUDPatchTemperatureSituation").style
-	            .backgroundImage = "url(../../Textures/gui/bevel/increase.png)";
+	            document.getElementById("microbeHUDPatchTemperatureSituation").style.
+	            backgroundImage = "url(../../Textures/gui/bevel/increase.png)";
 	        } else {
-	            document.getElementById("microbeHUDPatchTemperatureSituation").style
-	            .backgroundImage = "none";
+	            document.getElementById("microbeHUDPatchTemperatureSituation").style/
+	            backgroundImage = "none";
 	        }
 	    } else {
-	        actualPlayerPatchData = [biomeData[type].name,
+	        actualPlayerPatchData = [
+	            biomeData[type].name,
 	            biomeData[type].lightPower,
 	            biomeData[type].averageTemperature];
-	        document.getElementById("microbeHUDPatchTemperatureSituation").style
-	        .backgroundImage = "none";
-	        document.getElementById("microbeHUDPatchLightSituation").style
-	        .backgroundImage = "none";
+	        document.getElementById("microbeHUDPatchTemperatureSituation").style.
+	        backgroundImage = "none";
+	        document.getElementById("microbeHUDPatchLightSituation").style.
+	        backgroundImage = "none";
 	    }
 
-        document.getElementById("microbeHUDPatchTemperature").innerText = biomeData[type].averageTemperature;  
-        document.getElementById("microbeHUDPatchLight").innerText = biomeData[type].lightPower; 
+        document.getElementById("microbeHUDPatchTemperature").innerText = biomeData[type].averageTemperature;
+        document.getElementById("microbeHUDPatchLight").innerText = biomeData[type].lightPower;
     });
 }
 
 function doDrawPatchMap() {
-	// Draw map scripts here.
+// Draw map scripts here.
 }
 
 // Patch Map close button
@@ -246,11 +246,11 @@ function onConditionClicked() {
 
 
 function removeDuplicate() {
-    var arr = links.split("-");
+    const arr = links.split("-");
     
-    links = arr.filter(function(value, index, self) { 
+    links = arr.filter(function(value, index, self) {
 	    return self.indexOf(value) === index;
-    }).join('-');
+    }).join("-");
 }
 
 // Get the id of new patch
