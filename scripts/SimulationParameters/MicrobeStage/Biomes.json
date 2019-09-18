@@ -1263,38 +1263,6 @@
                     }
                 }
             },
-            // "iceCrystal": {
-            //     "name": "Ice Crystal",
-            //     "meshes": [{"mesh": "ice_crystal", "texture": "ice_crystal.png"}, 
-            //                {"mesh": "icecrystal", "texture": "icecrystal.png"}],
-            //     "density": 0.0001,
-            //     "dissolves": false,
-            //     "radius": 1,
-            //     "chunkScale": 1.0,
-            //     "mass": 100,
-            //     "size": 1000,
-            //     "ventAmount": 3.0,
-            //     "damages": 0.5,
-            //     "deleteOnTouch": false,
-            //     "compounds": {
-            //     }
-            // },
-            // "gianticeCrystal": {
-            //     "name": "Giant Ice Crystal",
-            //     "meshes": [{"mesh": "ice_crystal", "texture": "ice_crystal.png"}, 
-            //                {"mesh": "icecrystal", "texture": "icecrystal.png"}],
-            //     "density": 0.0001,
-            //     "dissolves": false,
-            //     "radius": 5,
-            //     "chunkScale": 5.0,
-            //     "mass": 100,
-            //     "size": 1000,
-            //     "ventAmount": 3.0,
-            //     "damages": 0.5,
-            //     "deleteOnTouch": false,
-            //     "compounds": {
-            //     }
-            // },
             "ironBigChunk": {
                 "name": "Big Iron Chunk",
                 "meshes":  [{"mesh": "iron_05", "texture": "iron_01.png"}],

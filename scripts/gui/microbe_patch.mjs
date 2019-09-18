@@ -19,11 +19,11 @@ let counter = 0;
 export function setupMicrobePatch(){
     // Top navigation Buttons Clicked
     document.getElementById("report").addEventListener("click",
-	    onPatchReportClicked, true);
+        onPatchReportClicked, true);
     document.getElementById("patch").addEventListener("click",
-	    onPatchReportClicked, true);
+        onPatchReportClicked, true);
     document.getElementById("editor").addEventListener("click",
-	    onPatchReportClicked, true);
+        onPatchReportClicked, true);
 
     // Change patch button clicked
     document.getElementById("changePatch").addEventListener("click",
@@ -148,10 +148,7 @@ $(".nodeMap").click(function() {
     newSelectedNode = event.target.id;
 
     // Update right Panel data
-    // Probably here need to invoke the function that give us all information about
-    // the selecte patch map
-
-    const type = $("#" + this.id).attr("data-type");
+    let type = $("#" + this.id).attr("data-type");
     document.getElementById("patchName").innerHTML = type;
 
     // Change border color to highlight the selected node
@@ -164,7 +161,7 @@ $(".nodeMap").click(function() {
     }
 
     $("#" + newSelectedNode).addClass("selectedNode");
-
+    takeSelectedPatchData(type.toLowerCase());
     const arrayLinks = links.split("-");
 
     for(const link of arrayLinks ) {
@@ -179,12 +176,9 @@ $(".nodeMap").click(function() {
 
 function takeSelectedPatchData(type) {
     $.getJSON("./../SimulationParameters/MicrobeStage/Biomes.json", function(biomeData) {
-
-        type = type.toLowerCase();
-
 	    // We change arrows of variation only if isn't the actual node
+	    
 	    if($("#" + actualNode).attr("data-type") != biomeData[type].name) {
-
 	        // Check change for each value
 	        // Light
 
@@ -215,7 +209,6 @@ function takeSelectedPatchData(type) {
 	        actualPlayerPatchData = [biomeData[type].name,
 	            biomeData[type].lightPower,
 	            biomeData[type].averageTemperature];
-
 	        document.getElementById("microbeHUDPatchTemperatureSituation").style
 	        .backgroundImage = "none";
 	        document.getElementById("microbeHUDPatchLightSituation").style

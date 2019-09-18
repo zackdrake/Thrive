@@ -179,7 +179,6 @@ function quitGameHud(){
 
 function updatePatchInfo(patch){
     patchId = patch;
-    alert(patchId);
 }
 
 //! Enables the editor button
