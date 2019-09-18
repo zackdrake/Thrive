@@ -89,25 +89,25 @@ function onPatchReportClicked() {
                     Thrive.editorButtonClicked();
                 } else if(this.id == "patch") {
 
-	                // Where we are where we can go
-	                $(".nodeMap").each(function() {
-	                    if($(this).attr("data-here") == "true") {
-	                        actualNode = $(this).attr("id");
-	                        $("#" + actualNode).addClass("hereNode");
-	                        if(links != "") {
-	                            links = links + "-" + $(this).attr("data-link");
-	                        } else {
-	                        	links = links  + $(this).attr("data-link");   
-	                        }  
-	                    }
-	                });
+                    // Where we are where we can go
+                    $(".nodeMap").each(function() {
+                       if($(this).attr("data-here") == "true") {
+                            actualNode = $(this).attr("id");
+                            $("#" + actualNode).addClass("hereNode");
+                            if(links != "") {
+                                 links = links + "-" + $(this).attr("data-link");
+                            } else {
+                                links = links  + $(this).attr("data-link");   
+                            }  
+                        }
+                    });
 
-	                removeDuplicate();
+                    removeDuplicate();
 
-	                // Instead of this every time we enter here should be taken the
-	                // Actual patch id
-	                actualNode = microbe_hud.getId();
-	                document.getElementById(actualNode).click();
+                    // Instead of this every time we enter here should be taken the
+                    // Actual patch id
+                    actualNode = microbe_hud.getId();
+                    document.getElementById(actualNode).click();
                 }
             } else {
                 document.getElementById(button).style.backgroundImage =
@@ -130,10 +130,8 @@ function onChangePatchClicked() {
     const newHereNode = $("#" + newSelectedNode);
     newHereNode.addClass("hereNode");
     newHereNode.attr( "data-here", "true");
-    console.log(newHereNode.attr("data-here"));
 
     actualNode = newHereNode.attr("id");
-    console.log(actualNode);
 
     document.getElementById("microbeHUDPatchTemperatureSituation").style.backgroundImage =
         "none";
@@ -159,23 +157,23 @@ $(".nodeMap").click(function() {
     $(".selectedNodeNegative").each(function() {
 	    $(this).removeClass("selectedNodeNegative");
 	});
-	$(".selectedNodePositive").each(function() {
+    $(".selectedNodePositive").each(function() {
 	    $(this).removeClass("selectedNodePositive");
-	});
+    });
 
 
     // Change border color to highlight the selected node
     if(newSelectedNode != actualNode) {
     	for(const link of links ) {
 	        if(newSelectedNode == link) {
-	        	$("#" + newSelectedNode).removeClass("selectedNodeNegative");
-	            $("#" + newSelectedNode).addClass("selectedNodePositive");
-	            document.getElementById("changePatch").style.visibility = "visible";
-	            break;
-	        }
-	        $("#" + newSelectedNode).addClass("selectedNodeNegative");
-	        document.getElementById("changePatch").style.visibility = "hidden";
-	    }
+                $("#" + newSelectedNode).removeClass("selectedNodeNegative");
+                $("#" + newSelectedNode).addClass("selectedNodePositive");
+                document.getElementById("changePatch").style.visibility = "visible";
+                break;
+            }
+            $("#" + newSelectedNode).addClass("selectedNodeNegative");
+            document.getElementById("changePatch").style.visibility = "hidden";
+        }
     } 
 
     // Update right Panel data
@@ -188,43 +186,43 @@ function takeSelectedPatchData(type) {
     $.getJSON("./../SimulationParameters/MicrobeStage/Biomes.json", function(biomeData) {
 	    // We change arrows of variation only if isn't the actual node
 
-	    if($("#" + actualNode).attr("data-type") != biomeData[type].name) {
-	        // Check change for each value
-	        // Light
+        if($("#" + actualNode).attr("data-type") != biomeData[type].name) {
+            // Check change for each value
+            // Light
 
-	        if(actualPlayerPatchData[1] > parseFloat(biomeData[type].lightPower)) {
-	            document.getElementById("microbeHUDPatchLightSituation").style.
-	            backgroundImage = "url(../../Textures/gui/bevel/decrease.png)";
-	        } else if(actualPlayerPatchData[1] < parseFloat(biomeData[type].lightPower)) {
-	            document.getElementById("microbeHUDPatchLightSituation").style.
-	            backgroundImage = "url(../../Textures/gui/bevel/increase.png)";
-	        } else {
-	            document.getElementById("microbeHUDPatchLightSituation").style.backgroundImage =
-	                "none";
-	        }
-	        document.getElementById("microbeHUDPatchLight").innerHTML = biomeData[type].lightPower;
+            if(actualPlayerPatchData[1] > parseFloat(biomeData[type].lightPower)) {
+                document.getElementById("microbeHUDPatchLightSituation").style.
+                backgroundImage = "url(../../Textures/gui/bevel/decrease.png)";
+            } else if(actualPlayerPatchData[1] < parseFloat(biomeData[type].lightPower)) {
+                document.getElementById("microbeHUDPatchLightSituation").style.
+                backgroundImage = "url(../../Textures/gui/bevel/increase.png)";
+            } else {
+                document.getElementById("microbeHUDPatchLightSituation").style.backgroundImage =
+                    "none";
+            }
+            document.getElementById("microbeHUDPatchLight").innerHTML = biomeData[type].lightPower;
 
-	        // Temperature
-	        if(actualPlayerPatchData[2] > parseFloat(biomeData[type].averageTemperature)) {
-	            document.getElementById("microbeHUDPatchTemperatureSituation").style.
-	            backgroundImage = "url(../../Textures/gui/bevel/decrease.png)";
-	        } else if(actualPlayerPatchData[2] < parseFloat(biomeData[type].averageTemperature)) {
-	            document.getElementById("microbeHUDPatchTemperatureSituation").style.
-	            backgroundImage = "url(../../Textures/gui/bevel/increase.png)";
-	        } else {
-	            document.getElementById("microbeHUDPatchTemperatureSituation").style.
-	            backgroundImage = "none";
-	        }
-	    } else {
-	        actualPlayerPatchData = [
-	            biomeData[type].name,
-	            biomeData[type].lightPower,
-	            biomeData[type].averageTemperature];
-	        document.getElementById("microbeHUDPatchTemperatureSituation").style.
-	        backgroundImage = "none";
-	        document.getElementById("microbeHUDPatchLightSituation").style.
-	        backgroundImage = "none";
-	    }
+            // Temperature
+            if(actualPlayerPatchData[2] > parseFloat(biomeData[type].averageTemperature)) {
+                document.getElementById("microbeHUDPatchTemperatureSituation").style.
+                backgroundImage = "url(../../Textures/gui/bevel/decrease.png)";
+            } else if(actualPlayerPatchData[2] < parseFloat(biomeData[type].averageTemperature)) {
+                document.getElementById("microbeHUDPatchTemperatureSituation").style.
+                backgroundImage = "url(../../Textures/gui/bevel/increase.png)";
+            } else {
+                document.getElementById("microbeHUDPatchTemperatureSituation").style.
+                backgroundImage = "none";
+            }
+        } else {
+            actualPlayerPatchData = [
+                biomeData[type].name,
+                biomeData[type].lightPower,
+                biomeData[type].averageTemperature];
+            document.getElementById("microbeHUDPatchTemperatureSituation").style.
+            backgroundImage = "none";
+            document.getElementById("microbeHUDPatchLightSituation").style.
+            backgroundImage = "none";
+        }
 
         document.getElementById("microbeHUDPatchTemperature").innerText = biomeData[type].averageTemperature;
         document.getElementById("microbeHUDPatchLight").innerText = biomeData[type].lightPower;
@@ -247,9 +245,9 @@ function onConditionClicked() {
 
 function removeDuplicate() {
     const arr = links.split("-");
-    
+
     links = arr.filter(function(value, index, self) {
-	    return self.indexOf(value) === index;
+        return self.indexOf(value) === index;
     }).join("-");
 }
 
