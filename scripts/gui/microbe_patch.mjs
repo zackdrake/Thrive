@@ -51,13 +51,13 @@ function onNextButtonClicked() {
         counter = 0;
     }
     counter = counter + 1;
-    $( "#" + panelButtons[counter] ).click();
+    document.getElementById(panelButtons[counter]).click();
 }
 
 
 // Patch-Report function
 function onPatchReportClicked() {
-
+	
     // Fire event
     if(common.isInEngine()){
         // Call a function to tell the game to stop cell to move
@@ -87,23 +87,28 @@ function onPatchReportClicked() {
                     document.getElementById("EditorPanelBottom").style.visibility = "visible";
                     document.getElementById("next").style.visibility = "hidden";
                     Thrive.editorButtonClicked();
-
                 } else if(this.id == "patch") {
 
-                    // Instead of this every time we enter here should be taken the
-                    // Actual patch id
-                    actualNode = microbe_hud.getId();
+	                // Where we are where we can go
+	                $(".nodeMap").each(function() {
+	                    if($(this).attr("data-here") == "true") {
+	                        actualNode = $(this).attr("id");
+	                        $("#" + actualNode).addClass("hereNode");
+	                        if(links != "") {
+	                            links =  links + "-" + $(this).attr("data-link");   
+	                        } else {
+	                        	links =  links  + $(this).attr("data-link");   
+	                        }
+	                        
+	                    }
+	                });
 
-                    // Where we are where we can go
-                    $(".nodeMap").each(function() {
-                        if($(this).attr("data-here") == "true") {
-                            actualNode = $(this).attr("id");
-                            $("#" + actualNode).addClass("hereNode");
-                            links =  links + $(this).attr("data-link");
-                        }
-                    });
+	                removeDuplicate();
 
-                    document.getElementById(actualNode).click();
+	                // Instead of this every time we enter here should be taken the
+	                // Actual patch id
+	                actualNode = microbe_hud.getId();
+	                document.getElementById(actualNode).click();
                 }
             } else {
                 document.getElementById(button).style.backgroundImage =
@@ -125,10 +130,11 @@ function onChangePatchClicked() {
     document.getElementById("changePatch").style.visibility = "hidden";
     const newHereNode = $("#" + newSelectedNode);
     newHereNode.addClass("hereNode");
-    newHereNode.data( "data-here", "true");
-    actualNode = newHereNode.attr("id");
+    newHereNode.attr( "data-here", "true");
+    console.log(newHereNode.attr("data-here"));
 
-    links = $("#" + actualNode).attr("data-link");
+    actualNode = newHereNode.attr("id");
+    console.log(actualNode);
 
     document.getElementById("microbeHUDPatchTemperatureSituation").style.backgroundImage =
         "none";
@@ -139,6 +145,9 @@ function onChangePatchClicked() {
     if(document.getElementsByClassName("selectedNode").length != 0) {
         $(".selectedNode").removeClass("selectedNode");
     }
+
+    // Go to editor
+    document.getElementById("editor").click();
 }
 
 
@@ -147,31 +156,33 @@ $(".nodeMap").click(function() {
     // Selected node
     newSelectedNode = event.target.id;
 
-    // Update right Panel data
-    let type = $("#" + this.id).attr("data-type");
-    document.getElementById("patchName").innerHTML = type;
+    // Reset selectedNode
+    $(".selectedNodeNegative").each(function() {
+	    $(this).removeClass("selectedNodeNegative");
+	});
+	$(".selectedNodePositive").each(function() {
+	    $(this).removeClass("selectedNodePositive");
+	});
+
 
     // Change border color to highlight the selected node
     if(newSelectedNode != actualNode) {
-        if(document.getElementsByClassName("selectedNode").length != 0) {
-            $(".selectedNode").removeClass("selectedNode");
-        }
-    } else {
-        $(".selectedNode").removeClass("selectedNode");
-    }
+    	for(const link of links ) {
+	        if(newSelectedNode == link) {
+	        	$("#" + newSelectedNode).removeClass("selectedNodeNegative");
+	            $("#" + newSelectedNode).addClass("selectedNodePositive");
+	            document.getElementById("changePatch").style.visibility = "visible";
+	            break;
+	        }
+	        $("#" + newSelectedNode).addClass("selectedNodeNegative");
+	        document.getElementById("changePatch").style.visibility = "hidden";
+	    }
+    } 
 
-    $("#" + newSelectedNode).addClass("selectedNode");
+    // Update right Panel data
+    let type = $("#" + this.id).attr("data-type");
+    document.getElementById("patchName").innerHTML = type;
     takeSelectedPatchData(type.toLowerCase());
-    const arrayLinks = links.split("-");
-
-    for(const link of arrayLinks ) {
-        if(event.target.id == link) {
-            document.getElementById("changePatch").style.visibility = "visible";
-            break;
-        } else {
-            document.getElementById("changePatch").style.visibility = "hidden";
-        }
-    }
 });
 
 function takeSelectedPatchData(type) {
@@ -231,4 +242,18 @@ function onConditionClicked() {
     $("#" + tab).animate({"height": "toggle"});
     $(this).toggleClass("minus");
     $(this).toggleClass("plus");
+}
+
+
+function removeDuplicate() {
+    var arr = links.split("-");
+    
+    links = arr.filter(function(value, index, self) { 
+	    return self.indexOf(value) === index;
+    }).join('-');
+}
+
+// Get the id of new patch
+export function getNewId() {
+    return newSelectedNode;
 }

@@ -512,6 +512,7 @@ div::-webkit-scrollbar-thumb:hover {
   right: 50%;
   bottom: 5px;
   z-index: 2;
+  visibility: hidden;
 }
 
 #reportTab {
@@ -537,9 +538,12 @@ div::-webkit-scrollbar-thumb:hover {
   border-radius: 10px;
 }
 
-.selectedNode {
-  animation: pulse 2s infinite;
-  border-color: #e61700;
+.selectedNodePositive {
+  border-color:rgba(0, 135, 36, 0.85);
+}
+
+.selectedNodeNegative {
+  border-color:rgba(230, 23, 0, 1);
 }
 
 .hereNode {

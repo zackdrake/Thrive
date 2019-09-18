@@ -4,6 +4,7 @@
 import * as common from "./gui_common.mjs";
 import * as main_menu from "./main_menu.mjs";
 import * as microbe_hud from "./microbe_hud.mjs";
+import * as microbe_patch from "./microbe_patch.mjs";
 
 let readyToFinishEdit = false;
 let symmetry = 0;
@@ -222,7 +223,9 @@ export function setupMicrobeEditor(){
 
 //! Called to enter the editor view
 export function doEnterMicrobeEditor(){
-
+    
+    // this id will send by event for create new patch ?
+    const newId = microbe_patch.getNewId();
     window.setTimeout(() => {
         // Enable finish button
         onFinishButtonEnable();
