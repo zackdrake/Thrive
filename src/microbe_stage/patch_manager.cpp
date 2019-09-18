@@ -338,8 +338,8 @@ void
 
 void
     PatchManager::updateCurrentPatchInfoForGUI(const Patch& patch)
-{  
-	auto event = GenericEvent::MakeShared<GenericEvent>("UpdatePatchDetails");
+{
+    auto event = GenericEvent::MakeShared<GenericEvent>("UpdatePatchDetails");
     auto vars = event->GetVariables();
 
     int32_t id = patch.getId();
