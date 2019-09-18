@@ -13,7 +13,7 @@ let wonOnce = false;
 
 // If id is given by main script this value will change
 // if not
-let patchId = 9;
+let patchId = 0;
 
 //! Registers all the stuff for this to work.
 //! This makes sure it does something only once
@@ -178,8 +178,8 @@ function quitGameHud(){
 }
 
 function updatePatchInfo(patch){
-   patchId = patch;
-   alert(patchId);
+    patchId = patch;
+    alert(patchId);
 }
 
 //! Enables the editor button

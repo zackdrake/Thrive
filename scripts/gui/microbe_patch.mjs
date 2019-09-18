@@ -18,20 +18,20 @@ let counter = 0;
 
 //! Setup for reportPatch callbacks
 export function setupMicrobePatch(){
-	// Top navigation Buttons Clicked
-	document.getElementById("report").addEventListener("click",
+    // Top navigation Buttons Clicked
+    document.getElementById("report").addEventListener("click",
 	    onPatchReportClicked, true);
-	document.getElementById("patch").addEventListener("click",
+    document.getElementById("patch").addEventListener("click",
 	    onPatchReportClicked, true);
-	document.getElementById("editor").addEventListener("click",
+    document.getElementById("editor").addEventListener("click",
 	    onPatchReportClicked, true);
 
-	// Change patch button clicked
+    // Change patch button clicked
     document.getElementById("changePatch").addEventListener("click",
         onChangePatchClicked, true);
 
-	// Next Button Clicked
-	document.getElementById("next").addEventListener("click",
+    // Next Button Clicked
+    document.getElementById("next").addEventListener("click",
         onNextButtonClicked, true);
 
     // Condition buttons clicked
@@ -71,7 +71,7 @@ function onPatchReportClicked() {
     document.getElementById("changePatch").style.visibility = "hidden";
 
     // Avoid click to same panel 
-    if( !$("#"+ this.id).css("background-image").includes("Active")) {
+    if( !$("#" + this.id).css("background-image").includes("Active")) {
         for(const [i, button] of panelButtons.entries()) {
             if(button == this.id && this.id != activePanel) {
 
@@ -94,13 +94,13 @@ function onPatchReportClicked() {
                     // Instead of this every time we enter here should be taken the 
                     // Actual patch id
                     actualNode = microbe_hud.getId();
-                    alert("nodo: " + actualNode);
+
                     // Where we are where we can go
                     $(".nodeMap").each(function() {
                         if($(this).attr("data-here") == "true") {
-                        actualNode = $(this).attr("id");
-                        $("#" + actualNode).addClass("hereNode");
-                        links =  links + $(this).attr("data-link");
+                            actualNode = $(this).attr("id");
+                            $("#" + actualNode).addClass("hereNode");
+                            links =  links + $(this).attr("data-link");
                         }
                     });
 
@@ -152,7 +152,7 @@ $(".nodeMap").click(function() {
     // Probably here need to invoke the function that give us all information about
     // the selecte patch map
 
-    let type = $("#" + this.id).attr("data-type");
+    const type = $("#" + this.id).attr("data-type");
     document.getElementById("patchName").innerHTML = type;
 
     // Change border color to highlight the selected node
@@ -181,44 +181,44 @@ $(".nodeMap").click(function() {
 function takeSelectedPatchData(type) {
     $.getJSON("./../SimulationParameters/MicrobeStage/Biomes.json", function(biomeData) {
 
-    type = type.toLowerCase();
+        type = type.toLowerCase();
 
-    // We change arrows of variation only if isn't the actual node
-    if($("#" + actualNode).attr("data-type") !=  biomeData[type].name) {
+	    // We change arrows of variation only if isn't the actual node
+	    if($("#" + actualNode).attr("data-type") !=  biomeData[type].name) {
 
-        // Check change for each value
-        // Light
+	        // Check change for each value
+	        // Light
 
-        if(actualPlayerPatchData[1] > parseFloat(biomeData[type].lightPower)) {
-            document.getElementById("microbeHUDPatchLightSituation").style.backgroundImage =
-                "url(../../Textures/gui/bevel/decrease.png)";
-        } else if(actualPlayerPatchData[1] <  parseFloat(biomeData[type].lightPower)) {
-            document.getElementById("microbeHUDPatchLightSituation").style.backgroundImage =
-                "url(../../Textures/gui/bevel/increase.png)";
-        } else {
-            document.getElementById("microbeHUDPatchLightSituation").style.backgroundImage =
-                "none";
-        }
-        document.getElementById("microbeHUDPatchLight").innerHTML = biomeData[type].lightPower;
+	        if(actualPlayerPatchData[1] > parseFloat(biomeData[type].lightPower)) {
+	            document.getElementById("microbeHUDPatchLightSituation").style.backgroundImage =
+	                "url(../../Textures/gui/bevel/decrease.png)";
+	        } else if(actualPlayerPatchData[1] <  parseFloat(biomeData[type].lightPower)) {
+	            document.getElementById("microbeHUDPatchLightSituation").style.backgroundImage =
+	                "url(../../Textures/gui/bevel/increase.png)";
+	        } else {
+	            document.getElementById("microbeHUDPatchLightSituation").style.backgroundImage =
+	                "none";
+	        }
+	        document.getElementById("microbeHUDPatchLight").innerHTML = biomeData[type].lightPower;
 
-        // Temperature
-        if(actualPlayerPatchData[2] > parseFloat(biomeData[type].averageTemperature)) {
-            document.getElementById("microbeHUDPatchTemperatureSituation").style.backgroundImage =
-                "url(../../Textures/gui/bevel/decrease.png)";
-        } else if(actualPlayerPatchData[2]  < parseFloat(biomeData[type].averageTemperature)) {
-            document.getElementById("microbeHUDPatchTemperatureSituation").style.backgroundImage =
-                "url(../../Textures/gui/bevel/increase.png)";
-        } else {
-            document.getElementById("microbeHUDPatchTemperatureSituation").style.backgroundImage =
-                "none";
-        } 
-    } else {
-        actualPlayerPatchData = [biomeData[type].name, biomeData[type].lightPower,  biomeData[type].averageTemperature];
-        document.getElementById("microbeHUDPatchTemperatureSituation").style.backgroundImage =
-            "none";
-        document.getElementById("microbeHUDPatchLightSituation").style.backgroundImage =
-            "none";
-    }
+	        // Temperature
+	        if(actualPlayerPatchData[2] > parseFloat(biomeData[type].averageTemperature)) {
+	            document.getElementById("microbeHUDPatchTemperatureSituation").style.backgroundImage =
+	                "url(../../Textures/gui/bevel/decrease.png)";
+	        } else if(actualPlayerPatchData[2]  < parseFloat(biomeData[type].averageTemperature)) {
+	            document.getElementById("microbeHUDPatchTemperatureSituation").style.backgroundImage =
+	                "url(../../Textures/gui/bevel/increase.png)";
+	        } else {
+	            document.getElementById("microbeHUDPatchTemperatureSituation").style.backgroundImage =
+	                "none";
+	        } 
+	    } else {
+	        actualPlayerPatchData = [biomeData[type].name, biomeData[type].lightPower,  biomeData[type].averageTemperature];
+	        document.getElementById("microbeHUDPatchTemperatureSituation").style.backgroundImage =
+	            "none";
+	        document.getElementById("microbeHUDPatchLightSituation").style.backgroundImage =
+	            "none";
+	    }
 
         document.getElementById("microbeHUDPatchTemperature").innerText  = biomeData[type].averageTemperature;  
         document.getElementById("microbeHUDPatchLight").innerText = biomeData[type].lightPower; 
@@ -226,11 +226,7 @@ function takeSelectedPatchData(type) {
 }
 
 function doDrawPatchMap() {
-    
-    alert("Draw map here with data taken from Biomes");
-   /* NamedVars@ vars = event.GetNamedVars();
-    let name = vars.GetSingleValueByName("MicrobePatchEnter");
-    alert(name);*/
+	// Draw map scripts here.
 }
 
 // Patch Map close button
