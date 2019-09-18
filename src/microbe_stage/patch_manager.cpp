@@ -343,7 +343,6 @@ void
     auto vars = event->GetVariables();
 
     int32_t id = patch.getId();
-    LOG_INFO("ID: ", id);
     vars->Add(std::make_shared<NamedVariableList>(
         "patchId", new Leviathan::IntBlock(patch.getId())));
 

@@ -514,17 +514,7 @@ void
 void
     ThriveGame::patchButtonClicked()
 {
-    auto event = GenericEvent::MakeShared<GenericEvent>("SendPatchIdToReportTab");
-
-    auto vars = event->GetVariables();
-    PatchMap::pointer currentMap =
-        m_impl->m_cellStage->GetPatchManager().getCurrentMap();
-    const auto patch = currentMap->getCurrentPatch();
-    vars->Add(std::make_shared<NamedVariableList>(
-        "patchId", new Leviathan::IntBlock(patch->getId())));
     m_impl->m_cellStageKeys->setEnabled(false);
-
-	Engine::Get()->GetEventHandler()->CallEvent(event);
 }
 
 void

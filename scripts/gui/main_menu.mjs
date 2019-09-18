@@ -2,6 +2,7 @@
 import * as common from "./gui_common.mjs";
 import * as microbe_hud from "./microbe_hud.mjs";
 import {setupMicrobeEditor} from "./microbe_editor.mjs";
+import {setupMicrobePatch} from "./microbe_patch.mjs";
 
 // eslint off
 // import {doEnterMicrobeEditor} from "./microbe_editor.mjs";
@@ -136,6 +137,7 @@ export function runMenuSetup(){
     // callbacks that will be called before finishing entering the
     // editor
     setupMicrobeEditor();
+    setupMicrobePatch();
 
     //
     // Use these to immediately test some specific menu

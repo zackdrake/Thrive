@@ -11,6 +11,10 @@ let readyToEdit = false;
 
 let wonOnce = false;
 
+// If id is given by main script this value will change
+// if not
+let patchId = 9;
+
 //! Registers all the stuff for this to work.
 //! This makes sure it does something only once
 export function runMicrobeHUDSetup(){
@@ -19,7 +23,7 @@ export function runMicrobeHUDSetup(){
         return;
 
     document.getElementById("microbeToEditorButton").addEventListener("click",
-        onEditorButtonClicked, true);
+        onPatchButtonClicked, true);
 
     // Compound Panel
     document.getElementById("compoundsButton").addEventListener("click",
@@ -174,9 +178,8 @@ function quitGameHud(){
 }
 
 function updatePatchInfo(patch){
-   let patchId = patch;
-   alert("adds");
-   console.log("id of map: " + patchId);
+   patchId = patch;
+   alert(patchId);
 }
 
 //! Enables the editor button
@@ -184,6 +187,11 @@ export function onReadyToEnterEditor(){
 
     readyToEdit = true;
     document.getElementById("microbeToEditorButton").classList.remove("DisabledButton");
+}
+
+// Get the id of patch
+export function getId() {
+    return patchId;
 }
 
 
@@ -348,11 +356,10 @@ function hideSuicideMsg() {
     document.getElementById("suicideMsg").style.display = "none";
 }
 
-function onEditorButtonClicked(event){
+function onPatchButtonClicked(event){
 
     if(!readyToEdit)
         return false;
-
 
     document.getElementById("topLevelMicrobeStage").style.display = "none";
     document.getElementById("topLevelMicrobeEditor").style.display = "block";
