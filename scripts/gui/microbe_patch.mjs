@@ -97,7 +97,7 @@ function onPatchReportClicked() {
                             if(links != "") {
                                 links = links + "-" + $(this).attr("data-link");
                             } else {
-                                links = links + $(this).attr("data-link");   
+                                links = links + $(this).attr("data-link");
                             }
                         }
                     });
@@ -200,14 +200,15 @@ function takeSelectedPatchData(type) {
                 document.getElementById("microbeHUDPatchLightSituation").style.
                     backgroundImage = "none";
             }
-            document.getElementById("microbeHUDPatchLight").innerHTML = 
+            document.getElementById("microbeHUDPatchLight").innerHTML =
                 biomeData[type].lightPower;
 
             // Temperature
             if(actualPlayerPatchData[2] > parseFloat(biomeData[type].averageTemperature)) {
                 document.getElementById("microbeHUDPatchTemperatureSituation").style.
                     backgroundImage = "url(../../Textures/gui/bevel/decrease.png)";
-            } else if(actualPlayerPatchData[2] < parseFloat(biomeData[type].averageTemperature)) {
+            } else if(actualPlayerPatchData[2] < 
+                parseFloat(biomeData[type].averageTemperature)) {
                 document.getElementById("microbeHUDPatchTemperatureSituation").style.
                     backgroundImage = "url(../../Textures/gui/bevel/increase.png)";
             } else {

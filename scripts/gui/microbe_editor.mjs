@@ -4,7 +4,7 @@
 import * as common from "./gui_common.mjs";
 import * as main_menu from "./main_menu.mjs";
 import * as microbe_hud from "./microbe_hud.mjs";
-import * as microbe_patch from "./microbe_patch.mjs";
+// Import * as microbe_patch from "./microbe_patch.mjs";
 
 let readyToFinishEdit = false;
 let symmetry = 0;
