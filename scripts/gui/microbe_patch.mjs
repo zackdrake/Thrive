@@ -207,7 +207,7 @@ function takeSelectedPatchData(type) {
             if(actualPlayerPatchData[2] > parseFloat(biomeData[type].averageTemperature)) {
                 document.getElementById("microbeHUDPatchTemperatureSituation").style.
                     backgroundImage = "url(../../Textures/gui/bevel/decrease.png)";
-            } else if(actualPlayerPatchData[2] < 
+            } else if(actualPlayerPatchData[2] <
                 parseFloat(biomeData[type].averageTemperature)) {
                 document.getElementById("microbeHUDPatchTemperatureSituation").style.
                     backgroundImage = "url(../../Textures/gui/bevel/increase.png)";

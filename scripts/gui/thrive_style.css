@@ -539,11 +539,11 @@ div::-webkit-scrollbar-thumb:hover {
 }
 
 .selectedNodePositive {
-  border-color:rgba(0, 135, 36, 0.85);
+  border-color: rgba(0, 135, 36, 0.85);
 }
 
 .selectedNodeNegative {
-  border-color:rgba(230, 23, 0, 1);
+  border-color: rgba(230, 23, 0, 1);
 }
 
 .hereNode {
