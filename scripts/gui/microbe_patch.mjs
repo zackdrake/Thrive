@@ -212,7 +212,7 @@ function takeSelectedPatchData(type) {
 	            document.getElementById("microbeHUDPatchTemperatureSituation").style.
 	            backgroundImage = "url(../../Textures/gui/bevel/increase.png)";
 	        } else {
-	            document.getElementById("microbeHUDPatchTemperatureSituation").style/
+	            document.getElementById("microbeHUDPatchTemperatureSituation").style.
 	            backgroundImage = "none";
 	        }
 	    } else {
