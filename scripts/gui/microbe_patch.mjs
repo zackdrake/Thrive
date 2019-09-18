@@ -1,5 +1,4 @@
 import * as common from "./gui_common.mjs";
-import * as main_menu from "./main_menu.mjs";
 import * as microbe_hud from "./microbe_hud.mjs";
 import {doEnterMicrobeEditor} from "./microbe_editor.mjs";
 
@@ -190,11 +189,11 @@ function takeSelectedPatchData(type) {
 	        // Light
 
 	        if(actualPlayerPatchData[1] > parseFloat(biomeData[type].lightPower)) {
-	            document.getElementById("microbeHUDPatchLightSituation").style.backgroundImage =
-	                "url(../../Textures/gui/bevel/decrease.png)";
+	            document.getElementById("microbeHUDPatchLightSituation").style
+	            .backgroundImage = "url(../../Textures/gui/bevel/decrease.png)";
 	        } else if(actualPlayerPatchData[1] <  parseFloat(biomeData[type].lightPower)) {
-	            document.getElementById("microbeHUDPatchLightSituation").style.backgroundImage =
-	                "url(../../Textures/gui/bevel/increase.png)";
+	            document.getElementById("microbeHUDPatchLightSituation").style
+	            .backgroundImage = "url(../../Textures/gui/bevel/increase.png)";
 	        } else {
 	            document.getElementById("microbeHUDPatchLightSituation").style.backgroundImage =
 	                "none";
@@ -203,24 +202,27 @@ function takeSelectedPatchData(type) {
 
 	        // Temperature
 	        if(actualPlayerPatchData[2] > parseFloat(biomeData[type].averageTemperature)) {
-	            document.getElementById("microbeHUDPatchTemperatureSituation").style.backgroundImage =
-	                "url(../../Textures/gui/bevel/decrease.png)";
+	            document.getElementById("microbeHUDPatchTemperatureSituation").style
+	            .backgroundImage = "url(../../Textures/gui/bevel/decrease.png)";
 	        } else if(actualPlayerPatchData[2]  < parseFloat(biomeData[type].averageTemperature)) {
-	            document.getElementById("microbeHUDPatchTemperatureSituation").style.backgroundImage =
-	                "url(../../Textures/gui/bevel/increase.png)";
+	            document.getElementById("microbeHUDPatchTemperatureSituation").style
+	            .backgroundImage = "url(../../Textures/gui/bevel/increase.png)";
 	        } else {
-	            document.getElementById("microbeHUDPatchTemperatureSituation").style.backgroundImage =
-	                "none";
+	            document.getElementById("microbeHUDPatchTemperatureSituation").style
+	            .backgroundImage = "none";
 	        } 
 	    } else {
-	        actualPlayerPatchData = [biomeData[type].name, biomeData[type].lightPower,  biomeData[type].averageTemperature];
-	        document.getElementById("microbeHUDPatchTemperatureSituation").style.backgroundImage =
-	            "none";
-	        document.getElementById("microbeHUDPatchLightSituation").style.backgroundImage =
-	            "none";
+	        actualPlayerPatchData = [biomeData[type].name, 
+	            biomeData[type].lightPower,  
+	            biomeData[type].averageTemperature];
+
+	        document.getElementById("microbeHUDPatchTemperatureSituation").style
+	        .backgroundImage = "none";
+	        document.getElementById("microbeHUDPatchLightSituation").style
+	        .backgroundImage = "none";
 	    }
 
-        document.getElementById("microbeHUDPatchTemperature").innerText  = biomeData[type].averageTemperature;  
+        document.getElementById("microbeHUDPatchTemperature").innerText = biomeData[type].averageTemperature;  
         document.getElementById("microbeHUDPatchLight").innerText = biomeData[type].lightPower; 
     });
 }
