@@ -7,6 +7,8 @@
 #include <add_on/scriptarray/scriptarray.h>
 #include <add_on/scriptdictionary/scriptdictionary.h>
 
+#include <json/json.h>
+
 #include <map>
 #include <string>
 #include <vector>
@@ -43,6 +45,16 @@ public:
     bool
         isPlayerSpecies() const;
 
+    //! \returns A formatted name
+    std::string
+        getFormattedName(bool identifier = false);
+
+    //! \brief Makes a JSON object representing this biome
+    //! \todo Implement full mode, right now this skips the avg compounds (and
+    //! organelles, but those are findable in stringCode)
+    Json::Value
+        toJSON(bool full = false) const;
+
     // These are reference counted so don't forget to release
     CScriptArray* organelles = nullptr;
     CScriptDictionary* avgCompoundAmounts = nullptr;
@@ -65,6 +77,7 @@ public:
 
     //! This is the global population (the sum of population in all patches)
     int32_t population = 1;
+    //! \todo Increment this for non-player species
     int32_t generation = 1;
 
     REFERENCE_COUNTED_PTR_TYPE(Species);

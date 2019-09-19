@@ -19,6 +19,12 @@ bool
     return true;
 }
 // ------------------------------------ //
+void
+    Patch::setScreenCoordinates(Float2 coordinates)
+{
+    screenCoordinates = coordinates;
+}
+// ------------------------------------ //
 Species::pointer
     Patch::searchSpeciesByName(const std::string& name) const
 {
@@ -94,6 +100,41 @@ Species::pointer
         return nullptr;
 
     return speciesInPatch[index].species;
+}
+// ------------------------------------ //
+Json::Value
+    Patch::toJSON() const
+{
+    Json::Value result;
+
+    result["id"] = patchId;
+    result["name"] = name;
+    result["biome"] = biome.toJSON();
+
+    Json::Value coordinates;
+    coordinates["x"] = screenCoordinates.X;
+    coordinates["y"] = screenCoordinates.Y;
+    result["screenCoordinates"] = coordinates;
+
+    Json::Value species(Json::ValueType::arrayValue);
+    for(const auto& current : speciesInPatch) {
+
+        Json::Value obj;
+        obj["population"] = current.population;
+        obj["species"] = current.species->toJSON();
+
+        species.append(obj);
+    }
+
+    result["species"] = species;
+
+    Json::Value adjacent(Json::ValueType::arrayValue);
+    for(auto patch : adjacentPatches)
+        adjacent.append(patch);
+
+    result["adjacentPatches"] = adjacent;
+
+    return result;
 }
 // ------------------------------------ //
 // Patch map
@@ -255,6 +296,38 @@ void
             patch->removeSpecies(species);
         }
     }
+}
+// ------------------------------------ //
+Json::Value
+    PatchMap::toJSON() const
+{
+    Json::Value result;
+    result["currentPatchId"] = currentPatchId;
+    Json::Value patchesObj(Json::ValueType::objectValue);
+
+    for(const auto& [id, patch] : patches) {
+
+        patchesObj[std::to_string(id)] = patch->toJSON();
+    }
+
+    result["patches"] = patchesObj;
+
+    return result;
+}
+
+std::string
+    PatchMap::toJSONString() const
+{
+    std::stringstream sstream;
+    const Json::Value value = toJSON();
+
+    Json::StreamWriterBuilder builder;
+    builder["indentation"] = "";
+    std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
+
+    writer->write(value, &sstream);
+
+    return sstream.str();
 }
 // ------------------------------------ //
 Patch::pointer

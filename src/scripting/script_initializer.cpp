@@ -352,30 +352,7 @@ bool
 
     // ------------------------------------ //
     // Biome
-    // define colors for sunglight here aswell
-    if(engine->RegisterObjectProperty("Biome", "Float4 specularColors",
-           asOFFSET(Biome, specularColors)) < 0) {
-        ANGELSCRIPT_REGISTERFAIL;
-    }
-    if(engine->RegisterObjectProperty("Biome", "Float4 diffuseColors",
-           asOFFSET(Biome, diffuseColors)) < 0) {
-        ANGELSCRIPT_REGISTERFAIL;
-    }
-
-    if(engine->RegisterObjectProperty("Biome", "Float4 upperAmbientColor",
-           asOFFSET(Biome, upperAmbientColor)) < 0) {
-        ANGELSCRIPT_REGISTERFAIL;
-    }
-    if(engine->RegisterObjectProperty("Biome", "Float4 lowerAmbientColor",
-           asOFFSET(Biome, lowerAmbientColor)) < 0) {
-        ANGELSCRIPT_REGISTERFAIL;
-    }
-
-    if(engine->RegisterObjectProperty(
-           "Biome", "float lightPower", asOFFSET(Biome, lightPower)) < 0) {
-        ANGELSCRIPT_REGISTERFAIL;
-    }
-
+    // TODO: bind new light properties
     if(engine->RegisterObjectProperty("Biome", "const string background",
            asOFFSET(Biome, background)) < 0) {
         ANGELSCRIPT_REGISTERFAIL;
@@ -1556,6 +1533,23 @@ bool
 
     if(engine->RegisterObjectMethod("Patch", "int32 getId() const",
            asMETHOD(Patch, getId), asCALL_THISCALL) < 0) {
+        ANGELSCRIPT_REGISTERFAIL;
+    }
+
+    if(engine->RegisterObjectMethod("Patch", "bool addNeighbour(int32 id)",
+           asMETHOD(Patch, addNeighbour), asCALL_THISCALL) < 0) {
+        ANGELSCRIPT_REGISTERFAIL;
+    }
+
+    if(engine->RegisterObjectMethod("Patch",
+           "Float2 getScreenCoordinates() const",
+           asMETHOD(Patch, getScreenCoordinates), asCALL_THISCALL) < 0) {
+        ANGELSCRIPT_REGISTERFAIL;
+    }
+
+    if(engine->RegisterObjectMethod("Patch",
+           "void setScreenCoordinates(Float2 coordinates)",
+           asMETHOD(Patch, setScreenCoordinates), asCALL_THISCALL) < 0) {
         ANGELSCRIPT_REGISTERFAIL;
     }
 
