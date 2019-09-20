@@ -28,6 +28,7 @@
 #include <Script/Bindings/StandardWorldBindHelper.h>
 #include <Script/ScriptExecutor.h>
 #include <Window.h>
+#include <microbe_stage/patch_manager.h>
 
 #include <bsfCore/Components/BsCRenderable.h>
 #include <bsfCore/Material/BsMaterial.h>
@@ -540,6 +541,11 @@ void
     // Abandon previous auto-evo run
     m_impl->m_autoEvoRun = nullptr;
     checkAutoEvoStart();
+}
+void
+    ThriveGame::patchButtonClicked()
+{
+    m_impl->m_cellStageKeys->setEnabled(false);
 }
 
 void

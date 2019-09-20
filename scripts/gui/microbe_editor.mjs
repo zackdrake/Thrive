@@ -5,6 +5,8 @@ import * as common from "./gui_common.mjs";
 import * as main_menu from "./main_menu.mjs";
 import * as microbe_hud from "./microbe_hud.mjs";
 
+// Import * as microbe_patch from "./microbe_patch.mjs";
+
 let readyToFinishEdit = false;
 let symmetry = 0;
 
@@ -136,7 +138,6 @@ export function setupMicrobeEditor(){
     document.getElementById("Redo").addEventListener("click",
         onRedoClicked, true);
 
-
     // All of the organelle buttons
     for(const element of organelleSelectionElements){
 
@@ -224,9 +225,8 @@ export function setupMicrobeEditor(){
 //! Called to enter the editor view
 export function doEnterMicrobeEditor(){
 
-    document.getElementById("topLevelMicrobeStage").style.display = "none";
-    document.getElementById("topLevelMicrobeEditor").style.display = "block";
-
+    // This id will send by event for create new patch ?
+    // Const newId = microbe_patch.getNewId();
     window.setTimeout(() => {
         // Enable finish button
         onFinishButtonEnable();
@@ -337,13 +337,12 @@ function updateGuiButtons(isNucleusPresent){
     }
 }
 
+
 //! Updates generation points in GUI
 function updateSpeed(speed){
     document.getElementById("speedLabel").textContent =
     speed.toFixed(2);
 }
-
-
 
 function onResumeClickedEditor(){
 

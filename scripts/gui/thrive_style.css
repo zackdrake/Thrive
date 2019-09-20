@@ -106,12 +106,20 @@ div::-webkit-scrollbar-thumb:hover {
 
 /* Bars */
 .Bar {
+  display: block;
   position: relative;
-  width: 310px;
-  height: 20px;
-  left: 30px;
-  margin-bottom: 20px;
-  margin-top: 10px;
+  width: 215px;
+  height: 25px;
+  margin-left: 20px;
+  margin-right: 32px;
+  margin-bottom: 4px;
+  margin-top: 6px;
+  background-color: rgb(0, 0, 0, 0.2);
+  transition: 0.5s;
+}
+
+#panelTitle {
+  display: block;
 }
 
 #MP.Bar {
@@ -129,15 +137,14 @@ div::-webkit-scrollbar-thumb:hover {
 .BarForeground {
   width: 100%;
   height: 100%;
-  background: linear-gradient(rgb(255, 255, 255, 0.8), rgb(125, 125, 125, 0), rgb(125, 125, 125, 0));
 }
 
 .compoundIcon {
   position: relative;
-  width: 20px;
-  height: 20px;
+  width: 25px;
+  height: 25px;
   left: -10px;
-  background-size: 20px 20px;
+  background-size: 25px 25px;
 }
 
 .BarTitle {
@@ -145,21 +152,22 @@ div::-webkit-scrollbar-thumb:hover {
   left: -20px;
   top: -10px;
   line-height: 0;
-  font-size: 10pt;
+  font-size: 11pt;
 }
 
 .BarValue {
   position: absolute;
-  left: 210px;
-  top: 10px;
+  left: 120px;
+  top: 14px;
   text-align: right;
   line-height: 0;
-  font-size: 10pt;
+  font-size: 11pt;
+  transition: 0.5s;
 }
 
 .HealthValue {
   position: absolute;
-  left: 230px;
+  left: 100px;
   top: 20px;
   text-align: right;
   line-height: 0;
@@ -172,7 +180,86 @@ div::-webkit-scrollbar-thumb:hover {
   top: -10px;
   text-align: center;
   line-height: 0;
-  font-size: 10pt;
+  font-size: 0;
+}
+
+.EnvironmentBar {
+  display: block;
+  position: relative;
+  width: 180px;
+  height: 25px;
+  margin-left: 20px;
+  margin-right: 10px;
+  margin-bottom: 4px;
+  margin-top: 6px;
+  background-color: rgb(0, 0, 0, 0.2);
+  transition: 0.5s;
+}
+
+.OxygenBarBackground {
+  /* Starts out filled */
+  position: relative;
+  width: 21%;
+  height: 100%;
+  background: rgb(0, 125, 125, 0.8);
+}
+
+.CO2BarBackground {
+  /* Starts out filled */
+  position: relative;
+  width: 9%;
+  height: 100%;
+  background: rgb(0, 125, 125, 0.8);
+}
+
+.NitrogenBarBackground {
+  /* Starts out filled */
+  position: relative;
+  width: 70%;
+  height: 100%;
+  background: rgb(0, 125, 125, 0.8);
+}
+
+.EnvironmentBarBackground {
+  /* Starts out filled */
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: rgb(0, 125, 125, 0.8);
+}
+
+.EnvironmentBarTitle {
+  position: relative;
+  left: 10px;
+  top: -10px;
+  line-height: 0;
+  font-size: 11pt;
+}
+
+.EnvironmentBarValue {
+  position: absolute;
+  left: 100px;
+  top: 14px;
+  text-align: right;
+  line-height: 0;
+  font-size: 11pt;
+  transition: 0.5s;
+}
+
+
+.environmentIcon {
+  position: relative;
+  width: 29px;
+  height: 25px;
+  left: -10px;
+  background-size: 29px 25px;
+}
+
+.EmptyBarBackground {
+  position: relative;
+  width: 0%;
+  height: 0%;
+  background: rgb(0, 0, 0, 0);
 }
 
 /* Menu things */
@@ -241,7 +328,7 @@ div::-webkit-scrollbar-thumb:hover {
 }
 
 .MenuButton {
-  width: 280px;
+  width: 200px;
   height: 40px;
   margin-bottom: 10px;
   background-image: url("../../Textures/gui/bevel/MenuNormal.png");
@@ -322,7 +409,7 @@ div::-webkit-scrollbar-thumb:hover {
 
 /* Any type of panel like the bottom bar and health window */
 
-/* .Panel{
+/* .Panel {
     background-color: rgb(0, 125, 125, 0.4);
 } */
 
@@ -348,7 +435,6 @@ div::-webkit-scrollbar-thumb:hover {
   position: relative;
   width: 40px;
   height: 40px;
-  background-image: url("../../Textures/gui/bevel/LowerBarLeft.png");
   display: inline-block;
 }
 
@@ -356,7 +442,6 @@ div::-webkit-scrollbar-thumb:hover {
   position: relative;
   width: calc(100% - 80px);
   height: 40px;
-  background-image: url("../../Textures/gui/bevel/LowerBarCentre.png");
   display: inline-block;
 }
 
@@ -364,7 +449,6 @@ div::-webkit-scrollbar-thumb:hover {
   position: absolute;
   width: 100%;
   height: 40px;
-  background-image: url("../../Textures/gui/bevel/LowerBarCentre.png");
   display: inline-block;
 }
 
@@ -372,123 +456,517 @@ div::-webkit-scrollbar-thumb:hover {
   position: relative;
   width: 40px;
   height: 40px;
-  background-image: url("../../Textures/gui/bevel/LowerBarRight.png");
   display: inline-block;
 }
 
-#mainMenuButton {
+
+#topLeftButtons {
   position: absolute;
-  width: 120px;
-  height: 40px;
-  left: 0;
-  bottom: 0;
-  background-image: url("../../Textures/gui/bevel/MediumTwoNormal.png");
+  top: 10px;
+  left: 5px;
+  width: 500px;
+  height: 36px;
+  font-weight: bold;
+}
+
+.topButtons {
+  position: relative;
+  display: inline-block;
+  width: 133px;
+  height: 34px;
+  background-image: url("../../Textures/gui/bevel/topLeftButton.png");
   text-align: center;
-  line-height: 40px;
-  font-size: 18pt;
-  text-indent: -40px;
+  vertical-align: middle;
+  line-height: 34px;
+}
+
+#next {
+  width: 150px;
+  height: 44px;
+  vertical-align: middle;
+  line-height: 44px;
+  text-align: center;
+  background-color: #008a42;
+  border-style: solid;
+  border-width: 2px;
+  border-radius: 5px;
+  border-color: rgba(17, 255, 213, 1);
+  position: absolute;
+  right: 20px;
+  bottom: 5px;
+  z-index: 2;
+}
+
+#changePatch {
+  width: 150px;
+  height: 44px;
+  vertical-align: middle;
+  line-height: 44px;
+  text-align: center;
+  background-color: #c2142a;
+  border-style: solid;
+  border-width: 2px;
+  border-radius: 5px;
+  border-color: rgba(17, 255, 213, 1);
+  position: absolute;
+  right: 50%;
+  bottom: 5px;
+  z-index: 2;
+  visibility: hidden;
+}
+
+#reportTab {
+  position: absolute;
+  width: 100%;
+  height: 89%;
+  top: 5%;
+  left: 1.5%;
+}
+
+#patchTab {
+  position: absolute;
+  width: 100%;
+  height: 89%;
+  top: 5%;
+  left: 1.5%;
+}
+
+.nodeMap {
+  border:
+    2px
+    solid rgba(0, 1, 28, 0.6);
+  border-radius: 10px;
+}
+
+.selectedNodePositive {
+  border-color: rgba(0, 135, 36, 0.85);
+}
+
+.selectedNodeNegative {
+  border-color: rgba(230, 23, 0, 1);
+}
+
+.hereNode {
+  border-color: #191863;
+  border-radius: 10px;
+  border-width: 5px;
+}
+
+.firstHalf {
+  position: relative;
+  display: inline-block;
+  width: 70%;
+  height: 100%;
+  z-index: 2;
+  font-size: 50px;
+  background-color: rgba(0, 32, 36, 0.75);
+  border-style: solid;
+  border-color: #11fcd3;
+  border-width: 1px;
+  border-radius: 10px;
+  text-align: center;
+  line-height: normal;
+  color: white;
+}
+
+#Map {
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  width: 100%;
+  height: 100%;
+}
+
+
+
+.secondHalf {
+  position: relative;
+  display: inline-block;
+  width: 25%;
+  height: 100%;
+  margin-left: 1.75%;
+  z-index: 2;
+  font-size: 50px;
+  background-color: rgba(0, 32, 36, 0.75);
+  border-style: solid;
+  border-color: #11fcd3;
+  border-width: 1px;
+  border-radius: 10px;
+  color: white;
+}
+
+.tabTitle {
+  text-align: center;
+  position: relative;
+  width: 100%;
+  margin-top: 15px;
+  height: 50px;
+  font-size: 28pt;
+}
+
+#Allcondition {
+  position: absolute;
+  width: 100%;
+  height: calc(100% - 65px);
+  font-size: 11pt;
+}
+
+.ConditionTab {
+  position: relative;
+  display: inline-block;
+  height: auto;
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.condition {
+  position: relative;
+  display: inline-block;
+  margin-top: 5px;
+  width: 42.5%;
+  margin-left: 5%;
+  height: auto;
+}
+
+
+.value {
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 16pt;
+}
+
+.situation {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 10px;
+  width: 12px;
+  height: 12px;
+}
+
+
+.patchIcon {
+  display: inline-block;
+  vertical-align: middle;
+  width: 40px;
+  height: auto;
+}
+
+#microbeHUDPatchMeters {
+  position: relative;
+  width: 100%;
+  text-align: center;
+  font-size: 14pt;
+}
+
+.minusBtn {
+  position: relative;
+  display: inline-block;
+  width: 27px;
+  height: 27px;
+  margin-bottom: 5px;
+  font-size: 12pt;
+  background-size: 27px, 27px;
+  background-position: center;
+}
+
+.minusBtn:hover {
+  background-image: url("../../Textures/gui/bevel/minusButtonHover.png");
+}
+
+.topBar {
+  display: block;
+  margin-left: 20px;
+  margin-top: 8px;
+  margin-bottom: 0;
+  width: 100%;
+  height: auto;
+  vertical-align: middle;
+}
+
+.condTitle {
+  display: inline-block;
+  position: relative;
+  height: auto;
+  font-size: 13pt;
+  vertical-align: middle;
+  margin-left: 5px;
+  padding-bottom: 28px;
+}
+
+
+
+.chart {
+  background: transparent;
+  width: 100px;
+  height: 100px;
+  border-left: 1px dotted #555;
+  border-bottom: 1px dotted #555;
+  padding: 20px 20px 20px 0;
+}
+
+
+#EditorPanelTop {
+  display: none;
+}
+
+#EditorPanelBottom {
+  visibility: hidden;
+}
+
+#microbeBottomBar {
+  width: 500px;
+  height: 46px;
+  position: absolute;
+  left: 5px;
+  bottom: 5px;
+}
+
+#mainMenuButton {
+  position: relative;
+  display: inline-block;
+  width: 55px;
+  height: 42px;
+  background-image: url("../../Textures/gui/bevel/MainMenu.png");
+  text-align: center;
 }
 
 #mainMenuButton:hover {
-  background-image: url("../../Textures/gui/bevel/MediumTwoHover.png");
+  background-image: url("../../Textures/gui/bevel/MainMenuHover.png");
+}
+
+#pauseButtonBottom {
+  position: relative;
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  background-image: url("../../Textures/gui/bevel/pauseButton.png");
+  text-align: center;
+}
+
+#pauseButtonBottom:hover {
+  background-image: url("../../Textures/gui/bevel/pauseButtonHover.png");
+}
+
+#compoundsButton {
+  position: relative;
+  display: inline-block;
+  width: 42px;
+  height: 42px;
+  text-align: center;
+}
+
+#compoundsButton.active {
+  background-image: url("../../Textures/gui/bevel/compoundsButtonActive.png");
+}
+
+
+#compoundsButton.inactive {
+  background-image: url("../../Textures/gui/bevel/compoundsButton.png");
+}
+
+#compoundsButton:hover {
+  background-image: url("../../Textures/gui/bevel/compoundsButtonHover.png");
+}
+
+#chemicalButton {
+  position: relative;
+  display: inline-block;
+  width: 42px;
+  height: 42px;
+  background-image: url("../../Textures/gui/bevel/chemicalButton.png");
+  text-align: center;
+}
+
+#chemicalButton:hover {
+  background-image: url("../../Textures/gui/bevel/chemicalButtonHover.png");
+}
+
+
+#searchButton {
+  position: relative;
+  display: inline-block;
+  width: 42px;
+  height: 42px;
+  background-image: url("../../Textures/gui/bevel/searchButton.png");
+  text-align: center;
+}
+
+
+#searchButton:hover {
+  background-image: url("../../Textures/gui/bevel/searchButtonHover.png");
+}
+
+#questionMarkButton {
+  position: relative;
+  display: inline-block;
+  width: 42px;
+  height: 42px;
+  background-image: url("../../Textures/gui/bevel/helpButton.png");
+  text-align: center;
+}
+
+#questionMarkButton:hover {
+  background-image: url("../../Textures/gui/bevel/helpButtonHover.png");
+}
+
+#statisticsButton {
+  position: relative;
+  display: inline-block;
+  width: 42px;
+  height: 42px;
+  background-image: url("../../Textures/gui/bevel/statisticsButton.png");
+  text-align: center;
+}
+
+#statisticsButton:hover {
+  background-image: url("../../Textures/gui/bevel/statisticsButtonHover.png");
+}
+
+#suicideButton {
+  position: relative;
+  display: inline-block;
+  height: 42px;
+  width: 42px;
+  background-image: url("../../Textures/gui/bevel/suicideButton.png");
+}
+
+#suicideButton:hover {
+  background-image: url("../../Textures/gui/bevel/suicideButtonHover.png");
 }
 
 #mainMenuButtonEditor {
   position: absolute;
-  width: 120px;
-  height: 40px;
-  left: 0;
-  bottom: 0;
-  background-image: url("../../Textures/gui/bevel/MediumTwoNormal.png");
-  text-align: center;
-  line-height: 40px;
-  font-size: 18pt;
-  text-indent: -40px;
+  width: 55px;
+  height: 42px;
+  bottom: 10px;
+  left: 20px;
+  background-image: url("../../Textures/gui/bevel/MainMenu.png");
 }
 
 #mainMenuButtonEditor:hover {
-  background-image: url("../../Textures/gui/bevel/MediumTwoHover.png");
+  background-image: url("../../Textures/gui/bevel/MainMenuHover.png");
 }
 
 
-#compoundExpand {
+.expandPanel {
+  display: inline-block;
+  float: right;
+  margin-top: 10px;
+  margin-right: 10px;
+  width: 20px;
+  height: 20px;
+  background-image: url("../../Textures/gui/bevel/expandPanelActive.png");
+  background-repeat: no-repeat;
+  background-size: 20px, 20px;
+  background-position: center;
+}
+
+.expandPanel:hover {
+  background-size: 22px, 22px;
+}
+
+.compressPanel {
+  display: inline-block;
+  float: right;
+  margin-top: 9.5px;
+  margin-right: 15px;
+  width: 20px;
+  height: 20px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 20px, 20px;
+  background-image: url("../../Textures/gui/bevel/compressPanel.png");
+}
+
+.compressPanel:hover {
+  background-size: 22px, 22px;
+}
+
+#Panels {
+  width: 300px;
+  height: 600px;
+  left: 5px;
+  bottom: 58px;
   position: absolute;
-  width: 80px;
-  height: 40px;
-  right: 0;
-  bottom: 0;
-  background-image: url("../../Textures/gui/bevel/SmallTwoNormal.png");
-}
-
-#compoundExpandIcon {
-  /* Needs some Javascript to replace image with Textures/gui/bevel/ExpandUpIcon.png when hidden */
-  background-image: url("../../Textures/gui/bevel/ExpandDownIcon.png");
-  width: 40px;
-  height: 40px;
-  position: relative;
-  left: 40px;
-}
-
-#compoundExpand:hover {
-  background-image: url("../../Textures/gui/bevel/SmallTwoHover.png");
 }
 
 #compoundsPanel {
-  position: absolute;
-  right: 0;
-  bottom: 40px;
-  width: 360px;
-  height: 360px;
-  background-image: url("../../Textures/gui/bevel/CompoundPanel.png");
-  text-indent: 40px;
-  line-height: 40px;
-  font-size: 18pt;
+  position: relative;
+  width: 249px;
+  height: 238px;
+  margin-top: 10px;
+  background-image: url("../../Textures/gui/bevel/CompoundPanelExpand.png");
+  background-repeat: no-repeat;
+  text-indent: 45px;
+  line-height: 42px;
+  font-size: 15pt;
+  white-space: nowrap;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  transition: 0.5s;
+}
+
+#environmentPanel {
+  position: relative;
+  width: 213px;
+  height: 240px;
+  margin-top: 10px;
+  background-image: url("../../Textures/gui/bevel/environmentPanelExpand.png");
+  text-indent: 15px;
+  line-height: 38px;
+  font-size: 15pt;
   white-space: nowrap;
   overflow-y: auto;
   overflow-x: hidden;
+}
+
+
+#agentsPanel {
+  position: relative;
+  width: 332px;
+  height: 90px;
+  margin-top: 10px;
+  background-image: url("../../Textures/gui/bevel/agentsPanel.png");
+  text-indent: 45px;
+  line-height: 42px;
+  font-size: 15pt;
+  white-space: nowrap;
+  background-repeat: no-repeat;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#bottomBar {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  width: 750px;
+  height: 43px;
+  background-image: url("../../Textures/gui/bevel/bottomBar.png");
 }
 
 #ATPIcon {
   background-image: url("../../Textures/gui/bevel/ATP.png");
 }
 
-#ATPBar {
-  background-color: #6edd6b;
-}
-
 #OxygenIcon {
-  position: absolute;
-  width: 30px;
-  height: 30px;
-  top: 5px;
-  left: 610px;
-  background-size: 30px 30px;
   background-image: url("../../Textures/gui/bevel/Oxygen.png");
 }
 
-#OxygenNormalIcon {
-  background-image: url("../../Textures/gui/bevel/Oxygen.png");
-  background-repeat: no-repeat;
-}
-
-
-#OxygenBar {
-  background-color: #2dcbf0;
+#microbeHUDPlayerOxygenBar {
+  background-color: #0098c3;
 }
 
 #NitrogenIcon {
-  position: absolute;
-  width: 30px;
-  height: 30px;
-  top: 5px;
-  left: 850px;
-  background-size: 30px 30px;
   background-image: url("../../Textures/gui/bevel/Nitrogen.png");
 }
 
-#NitrogenNormalIcon {
-  background-image: url("../../Textures/gui/bevel/Nitrogen.png");
-  background-repeat: no-repeat;
+.TempIcon {
+  background-image: url("../../Textures/gui/bevel/Temperature.png");
+}
+
+#microbeHUDPlayerNitrogenBar {
+  background-color: #68b26e;
 }
 
 #AminoAcidsBar {
@@ -497,11 +975,10 @@ div::-webkit-scrollbar-thumb:hover {
 
 #AmmoniaIcon {
   background-image: url("../../Textures/gui/bevel/Ammonia.png");
-  background-repeat: no-repeat;
 }
 
 #microbeHUDPlayerAmmoniaBar {
-  background-color: #d9c55d;
+  background-color: #a16500;
 }
 
 #GlucoseIcon {
@@ -509,39 +986,20 @@ div::-webkit-scrollbar-thumb:hover {
   background-repeat: no-repeat;
 }
 
-.tooltiptext .compoundIcon {
-  position: relative;
-  display: inline-block;
-  top: 4px;
-  left: 1px;
-}
-
 #microbeHUDPlayerGlucoseBar {
-  background-color: #c4c4c4;
+  background-color: #657071;
 }
 
 #CO2Icon {
-  position: absolute;
-  width: 30px;
-  height: 30px;
-  top: 5px;
-  left: 730px;
-  background-size: 30px 30px;
   background-image: url("../../Textures/gui/bevel/CO2.png");
 }
 
-#CO2NormalIcon {
-  background-image: url("../../Textures/gui/bevel/CO2.png");
-  background-repeat: no-repeat;
-}
-
-#CO2Bar {
-  background-color: #153665;
+#microbeHUDPlayerCO2Bar {
+  background-color: #2447ae;
 }
 
 #FattyAcidsIcon {
   background-image: url("../../Textures/gui/bevel/FattyAcids.png");
-  background-repeat: no-repeat;
 }
 
 #FattyAcidsBar {
@@ -550,30 +1008,41 @@ div::-webkit-scrollbar-thumb:hover {
 
 #OxyToxyIcon {
   background-image: url("../../Textures/gui/bevel/OxyToxy.png");
-  background-repeat: no-repeat;
 }
 
 #microbeHUDPlayerOxytoxyBar {
-  background-color: #a02355;
+  background-color: #9f1360;
 }
 
 #IronIcon {
   background-image: url("../../Textures/gui/bevel/Iron.png");
-  background-repeat: no-repeat;
 }
 
 #microbeHUDPlayerIronBar {
-  background-color: #b7410e;
+  background-color: #792011;
 }
 
 #HealthIcon {
+  position: absolute;
+  width: 19px;
+  height: 19px;
+  bottom: -18px;
+  right: 172px;
   background-image: url("../../Textures/gui/bevel/Hitpoints.png");
-  background-repeat: no-repeat;
+}
+
+
+#ATPIconBar {
+  position: absolute;
+  width: 19px;
+  height: 19px;
+  bottom: 0;
+  right: 158px;
+  background-image: url("../../Textures/gui/bevel/AtpIconBar.png");
 }
 
 #microbeHUDPlayerHitpointsBar {
-  background-image: url("../../Textures/gui/bevel/HitpointsBar.png");
-  background-color: #004001;
+  background-color: #9c0860;
 }
 
 #MutationPointsIcon {
@@ -605,38 +1074,50 @@ div::-webkit-scrollbar-thumb:hover {
 }
 
 #PhosphatesIcon {
-  background-image: url("../../Textures/gui/bevel/Phosphates.png");
-  background-repeat: no-repeat;
+  background-image: url("../../Textures/gui/bevel/Phosphate.png");
 }
 
 #microbeHUDPlayerPhosphatesBar {
-  background-color: #3b167b;
+  background-color: #6124cc;
 }
 
 #HydrogenSulfideIcon {
   background-image: url("../../Textures/gui/bevel/HydrogenSulfide.png");
-  background-repeat: no-repeat;
 }
 
 #microbeHUDPlayerHydrogenSulfideBar {
-  background-color: #464925;
+  background-color: #646b28;
 }
 
-#microbeToEditorButton,
-#microbeEditorFinishButton {
+#microbeToEditorButton {
   position: absolute;
-  right: 0;
-  top: 0;
+  right: 50px;
+  bottom: 50px;
   width: 120px;
   height: 120px;
   background-image: url("../../Textures/gui/bevel/LargeTwoNormal.png");
-  font-size: 8pt;
+  font-size: 0;
   text-align: center;
   line-height: 30px;
 }
 
-#microbeToEditorButton:hover,
-#microbeEditorFinishButton:hover {
+#microbeEditorFinishButton {
+  width: 150px;
+  height: 44px;
+  vertical-align: middle;
+  line-height: 44px;
+  text-align: center;
+  background-color: #008a42;
+  border-style: solid;
+  border-width: 2px;
+  border-radius: 5px;
+  border-color: rgba(17, 255, 213, 1);
+  position: absolute;
+  right: 20px;
+  bottom: 5px;
+}
+
+#microbeToEditorButton:hover {
   background-image: url("../../Textures/gui/bevel/LargeTwoHover.png");
 }
 
@@ -649,20 +1130,20 @@ div::-webkit-scrollbar-thumb:hover {
 }
 
 #microbeEditorIcon {
-  background-image: url("../../Textures/gui/bevel/EditorIcon.png");
   width: 120px;
   height: 80px;
 }
 
 #microbeHealthBox {
   position: absolute;
-  width: 480px;
-  height: 40px;
-  top: 0;
-  left: 0;
-  background-image: url("../../Textures/gui/bevel/HealthPanel.png");
+  right: 0;
+  bottom: 40px;
+  width: 200px;
+  height: 200px;
   text-indent: 40px;
   line-height: 40px;
+  font-size: 18pt;
+  white-space: nowrap;
 }
 
 #ATPCount {
@@ -703,7 +1184,13 @@ div::-webkit-scrollbar-thumb:hover {
   z-index: 2;
 }
 
-#closeHelp,
+#closeHelp {
+  vertical-align: middle;
+  position: relative;
+  margin: 50px auto;
+  margin-top: 50px;
+}
+
 #closeHelpEditor {
   vertical-align: middle;
   position: relative;
@@ -745,28 +1232,31 @@ div::-webkit-scrollbar-thumb:hover {
   left: 0;
 }
 
-#populationText {
+.dataValue {
   position: absolute;
-  height: 40px;
-  width: 160px;
-  top: 0;
-  left: 960px;
-  font-size: 10pt;
-  line-height: 40px;
-  background-image: url("../../Textures/gui/bevel/LongTwoNormal.png");
-  background-repeat: no-repeat;
-  text-indent: 10px;
+  bottom: 150px;
+  right: 65px;
+  width: 200px;
+  height: 120px;
+}
+
+.population {
+  position: absolute;
+  width: 200px;
+  height: 30px;
+  right: 0;
+  bottom: 120px;
+}
+
+
+#populationText {
+  display: inline;
+  font-size: 9pt;
 }
 
 #populationCount {
-  position: absolute;
-  height: 40px;
-  width: 150px;
-  top: 0;
-  left: 1040px;
-  font-size: 10pt;
-  line-height: 40px;
-  text-indent: 10px;
+  display: inline;
+  font-size: 9pt;
 }
 
 #oxygenTab {
@@ -898,24 +1388,8 @@ div::-webkit-scrollbar-thumb:hover {
   display: none;
 }
 
-#suicideButton {
-  position: absolute;
-  height: 40px;
-  width: 120px;
-  top: 0;
-  left: 480px;
-  background-image: url("../../Textures/gui/bevel/EditPanelHeaderNormal.png");
-  font-size: 8pt;
-  line-height: 40px;
-  text-indent: 40px;
-}
-
-#suicideButton:hover {
-  background-image: url("../../Textures/gui/bevel/EditPanelHeaderHover.png");
-}
 
 #suicideIcon {
-  background-image: url("../../Textures/gui/bevel/SuicideIcon.png");
   width: 40px;
   height: 40px;
   top: 0;
@@ -925,14 +1399,14 @@ div::-webkit-scrollbar-thumb:hover {
 
 #mouseHoverPanel {
   position: absolute;
-  top: 40px;
-  left: 0;
+  background-image: url("../../Textures/gui/bevel/mouseHoverBg.png");
+  top: 5px;
+  right: 5px;
   width: 300px;
   height: 210px;
   padding-left: 3px;
-  padding-top: 2px;
-  background-color: rgb(0, 125, 125, 0.4);
-  border: 3px solid rgb(112, 159, 159, 0.6);
+  padding-top: 10px;
+  background-repeat: no-repeat;
 }
 
 #topLevelMicrobeStage {
@@ -1068,7 +1542,6 @@ div::-webkit-scrollbar-thumb:hover {
 }
 
 
-
 #Redo.DisabledButton {
   background-image: url("../../Textures/gui/bevel/SmallFourDisabled.png");
 }
@@ -1079,7 +1552,7 @@ div::-webkit-scrollbar-thumb:hover {
   width: 480px;
   height: 40px;
   top: 0;
-  left: 0;
+  left: 500px;
   background-image: url("../../Textures/gui/bevel/HealthPanel.png");
   text-indent: 40px;
   line-height: 40px;
@@ -1090,7 +1563,7 @@ div::-webkit-scrollbar-thumb:hover {
   height: 40px;
   width: 120px;
   top: 0;
-  left: 480px;
+  left: 980px;
   background-image: url("../../Textures/gui/bevel/MediumTwoNormal.png");
   font-size: 8pt;
   line-height: 40px;
@@ -1121,7 +1594,7 @@ div::-webkit-scrollbar-thumb:hover {
 #microbeEditorLeftPanel {
   position: absolute;
   left: 0;
-  top: 40px;
+  top: 50px;
   width: 400px;
   height: calc(100% - 80px);
 }
@@ -1177,17 +1650,17 @@ div::-webkit-scrollbar-thumb:hover {
   position: relative;
   top: 0;
   left: 0;
-  width: 360px;
-  height: calc(100% - 40px);
+  width: 500px;
+  height: calc(100% - 65px);
   background-image: url("../../Textures/gui/bevel/EditPanelMid.png");
   overflow-y: scroll;
 }
 
 .OrganelleListTitle {
-  font-size: 18pt;
-  text-indent: 20px;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  font-size: 14pt;
+  text-indent: 5px;
+  margin-top: 0;
+  margin-bottom: 5px;
 }
 
 .OrganelleTable {
@@ -1197,10 +1670,11 @@ div::-webkit-scrollbar-thumb:hover {
 
 .OrganelleListItem {
   position: relative;
-  width: 120px;
-  height: 120px;
+  width: 104px;
+  height: 110px;
   font-size: 8pt;
   text-align: center;
+  background-repeat: no-repeat;
   background-image: url("../../Textures/gui/bevel/OrganelleNormal.png");
 }
 
@@ -1286,6 +1760,13 @@ div::-webkit-scrollbar-thumb:hover {
   font-size: 190%;
 }
 
+.tooltiptext .compoundIcon {
+  position: relative;
+  display: inline-block;
+  top: 4px;
+  left: 1px;
+}
+
 .OrganelleListItem:hover .tooltiptext {
   visibility: visible;
 }
@@ -1337,8 +1818,6 @@ div::-webkit-scrollbar-thumb:hover {
   background-size: contain;
   background-image: url("../../Textures/gui/bevel/VacuoleIcon.png");
 }
-
-/* Used to place the vacuole's icon inside tooltips as an icon for storage. */
 
 #VacuoleTooltipIcon {
   background-image: url("../../Textures/gui/bevel/VacuoleIcon.png");
@@ -1405,6 +1884,7 @@ div::-webkit-scrollbar-thumb:hover {
   background-image: url("../../Textures/gui/bevel/NitrogenaseIcon.png");
 }
 
+
 #ChromatophorIcon {
   position: relative;
   left: calc(50% - 30px);
@@ -1429,7 +1909,7 @@ div::-webkit-scrollbar-thumb:hover {
   width: 60px;
   height: 60px;
   background-size: contain;
-  background-image: url("../../Textures/gui/bevel/RusticyaninIcon.png");
+  background-image: url("../../Textures/gui/bevel/ChemoproteinsIcon.png");
 }
 
 #PilusIcon {
@@ -1449,6 +1929,41 @@ div::-webkit-scrollbar-thumb:hover {
   background-size: contain;
   background-image: url("../../Textures/gui/bevel/CiliaIcon.png");
 }
+
+
+#value {
+  position: absolute;
+  width: 90px;
+  height: 30px;
+  left: 50px;
+  bottom: 50px;
+}
+
+
+/* ANIMATION */
+.minus {
+  background-image: url("../../Textures/gui/bevel/minusButton.png");
+}
+
+.plus {
+  background-image: url("../../Textures/gui/bevel/plusButton.png");
+}
+
+.plus:hover {
+  background-image: url("../../Textures/gui/bevel/plusButtonHover.png");
+}
+
+/* END animation */
+
+
+#circleBars {
+  transform: scale(1.35);
+  position: absolute;
+  bottom: -40px;
+  right: 12px;
+}
+
+/* Used for the scientific description text in the final blurb. */
 
 /* Used in formulas in tooltips. */
 

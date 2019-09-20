@@ -20,6 +20,12 @@ var Thrive = {};
     native function freebuildEditorButtonClicked();
     Thrive.freebuildEditorButtonClicked = freebuildEditorButtonClicked;
 
+    native function patchButtonClicked();
+    Thrive.patchButtonClicked = patchButtonClicked;
+
+    native function changePatchButtonClicked();
+    Thrive.changePatchButtonClicked = changePatchButtonClicked;
+
     native function finishEditingClicked();
     Thrive.finishEditingClicked = finishEditingClicked;
 

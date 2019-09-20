@@ -336,11 +336,11 @@ void
     PatchManager::updateCurrentPatchInfoForGUI(const Patch& patch)
 {
     auto event = GenericEvent::MakeShared<GenericEvent>("UpdatePatchDetails");
-
     auto vars = event->GetVariables();
 
+    int32_t id = patch.getId();
     vars->Add(std::make_shared<NamedVariableList>(
-        "patchName", new Leviathan::StringBlock(patch.getName())));
+        "patchId", new Leviathan::IntBlock(patch.getId())));
 
     Engine::Get()->GetEventHandler()->CallEvent(event);
 }
