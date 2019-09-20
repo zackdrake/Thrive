@@ -42,7 +42,10 @@ export function setupMicrobePatch(){
     }
 
     // Event for drawning patchMap
-    Leviathan.OnGeneric("MicrobeEditorPatchEnter", doDrawPatchMap);
+    if(common.isInEngine()){
+
+        Leviathan.OnGeneric("MicrobeEditorPatchEnter", doDrawPatchMap);
+    }
 }
 
 // Next Button clicked
@@ -86,7 +89,9 @@ function onPatchReportClicked() {
                     document.getElementById("EditorPanelTop").style.display = "block";
                     document.getElementById("EditorPanelBottom").style.visibility = "visible";
                     document.getElementById("next").style.visibility = "hidden";
-                    Thrive.editorButtonClicked();
+                    if(common.isInEngine()){
+                        Thrive.editorButtonClicked();
+                    }
                 } else if(this.id == "patch") {
 
                     // Where we are where we can go
