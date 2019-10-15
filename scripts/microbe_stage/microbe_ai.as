@@ -106,6 +106,235 @@ class MicrobeAISystem : ScriptSystem{
         if (passedTime >= AI_TIME_INTERVAL){
             passedTime=0;
 
+            // TODO: this could be cached better
+            CompoundId oxytoxyId = SimulationParameters::compoundRegistry().getTypeId("oxytoxy");
+            CompoundId atpID = SimulationParameters::compoundRegistry().getTypeId("atp");
+            // This list is quite expensive to build each frame but
+            // there's currently no good way to cache this
+            array<ObjectID>@ allMicrobes = world.GetScriptComponentHolder("MicrobeComponent").GetIndex();
+            array<ObjectID>@ allChunks = world.GetComponentIndex_EngulfableComponent();
+
+            for(uint i = 0; i < CachedComponents.length(); ++i){
+
+                MicrobeAISystemCached@ components = CachedComponents[i];
+
+                ObjectID microbeEntity = components.entity;
+                MicrobeAIControllerComponent@ aiComponent = components.first;
+                MicrobeComponent@ microbeComponent = components.second;
+                Position@ position = components.third;
+                // ai interval
+                aiComponent.intervalRemaining += logicTime;
+
+                // TODO: Species is now reference counted and could be stored directly
+                // Cache behaviour values as we dont want to be calling "getSpecies" every frame for every microbe
+                if (aiComponent.speciesAggression==-1.0f)
+                {
+                    Species@ ourSpecies = MicrobeOperations::getSpecies(world, microbeEntity);
+                    if (ourSpecies !is null){
+                        if (aiComponent.speciesAggression == -1.0f){
+                            aiComponent.speciesAggression = ourSpecies.aggression;
+                        }
+                        if (aiComponent.speciesFear == -1.0f){
+                            aiComponent.speciesFear = ourSpecies.fear;
+                        }
+                        if (aiComponent.speciesActivity == -1.0f){
+                            aiComponent.speciesActivity =ourSpecies.activity;
+                        }
+                        if (aiComponent.speciesFocus == -1.0f){
+                            aiComponent.speciesFocus = ourSpecies.focus;
+                        }
+                        if (aiComponent.speciesOpportunism == -1.0f){
+                            aiComponent.speciesOpportunism = ourSpecies.opportunism;
+                        }
+                    }
+                }
+
+                //1. do reflexes and check if you should flee, this should override everything else
+                aiComponent.predator = getNearestPredator(components,allMicrobes);
+                if (aiComponent.predator != NULL_OBJECT){
+                  fleeFromPredator(microbeEntity, aiComponent, microbeComponent, position, aiComponent.predator);
+                }
+
+                //2. check if you are out of ATP and if so stop moving
+                double myATP = MicrobeOperations::getCompoundAmount(world,microbeEntity,atpID);
+                if (myATP < 0.5)
+                {
+                    aiComponent.lifeState = PLANTLIKE_STATE;
+                    aiComponent.intervalRemaining = aiComponent.reevalutationInterval + 1;
+                }
+
+                //update which state you are in
+                // For debugging
+                /*LOG_INFO("AI aggression"+aiComponent.speciesAggression);
+                LOG_INFO("AI fear"+aiComponent.speciesFear);
+                LOG_INFO("AI Focus"+aiComponent.speciesFocus);
+                LOG_INFO("AI Activity"+aiComponent.speciesActivity);*/
+
+            if (aiComponent.intervalRemaining > aiComponent.reevalutationInterval){
+                aiComponent.intervalRemaining = 0;
+                int numberOfAgentVacuoles = int(
+                    microbeComponent.specialStorageOrganelles[formatUInt(oxytoxyId)]);
+
+                // Clear the lists
+                aiComponent.predatoryMicrobes.removeRange(0,aiComponent.predatoryMicrobes.length());
+                aiComponent.preyMicrobes.removeRange(0,aiComponent.preyMicrobes.length());
+                aiComponent.chunkList.removeRange(0,aiComponent.chunkList.length());
+                ObjectID prey = NULL_OBJECT;
+                //30 seconds about
+                if (aiComponent.boredom == GetEngine().GetRandom().GetNumber(aiComponent.speciesFocus*2,1000.0f+aiComponent.speciesFocus*2)){
+                    // Occassionally you need to reevaluate things
+                    aiComponent.boredom = 0;
+                    if (rollCheck(aiComponent.speciesActivity, 400)){
+                        //LOG_INFO("gather only");
+                        aiComponent.lifeState = PLANTLIKE_STATE;
+                    }
+                    else{
+                        aiComponent.lifeState = NEUTRAL_STATE;
+                        }
+                }
+                else{
+                    aiComponent.boredom++;
+                }
+
+                switch (aiComponent.lifeState)
+                    {
+                    case PLANTLIKE_STATE:
+                        {
+                        // This ai would ideally just sit there, until it sees a nice opportunity pop-up unlike neutral, which wanders randomly (has a gather chance) until something interesting pops up
+                        aiStopMoving(aiComponent, microbeComponent);
+                        break;
+                        }
+                    case NEUTRAL_STATE:
+                        {
+                        // Before these would run every time, now they just run for the states that need them.
+                        aiComponent.boredom=0;
+                        aiComponent.preyPegged=false;
+                        prey = NULL_OBJECT;
+                        if (aiComponent.predator==NULL_OBJECT){
+                            aiComponent.predator = getNearestPredator(components,allMicrobes);
+                        }
+
+                        // Peg your prey
+                        if (!aiComponent.preyPegged){
+                            aiComponent.prey=NULL_OBJECT;
+                            prey = getNearestPreyItem(components,allMicrobes);
+                            aiComponent.prey = prey;
+                            if (prey != NULL_OBJECT){
+                                aiComponent.preyPegged=true;
+                            }
+                        }
+
+                        if (aiComponent.targetChunk==NULL_OBJECT){
+                            aiComponent.targetChunk = getNearestChunkItem(components,allChunks);
+                        }
+
+                        evaluateEnvironment(components,aiComponent.prey,aiComponent.predator);
+                        break;
+                        }
+                    case GATHERING_STATE:
+                        {
+                        //In this state you gather compounds
+                        if (rollCheck(aiComponent.speciesOpportunism,400.0f)){
+                            aiComponent.lifeState= SCAVENGING_STATE;
+                            aiComponent.boredom = 0;
+                            }
+                        else {
+                            doRunAndTumble(components);
+                            }
+                        break;
+                        }
+                    case FLEEING_STATE:
+                        {
+
+                        if (aiComponent.predator==NULL_OBJECT){
+                            aiComponent.predator = getNearestPredator(components,allMicrobes);
+                        }
+
+                        //In this state you run from predatory microbes
+                        if (aiComponent.predator != NULL_OBJECT){
+                            //aiComponent.hasTargetPosition = false;
+                            //dealWithPredators(components);
+                            }
+                        else{
+                            if (rollCheck(aiComponent.speciesActivity, 400)){
+                                //LOG_INFO("gather only");
+                                aiComponent.lifeState = PLANTLIKE_STATE;
+                                aiComponent.boredom=0;
+                                }
+                            else{
+                                aiComponent.lifeState = NEUTRAL_STATE;
+                                }
+                            }
+                        break;
+                        }
+                    case PREDATING_STATE:
+                        {
+
+                        // Peg your prey
+                        if (!aiComponent.preyPegged){
+                            aiComponent.prey=NULL_OBJECT;
+                            prey = getNearestPreyItem(components,allMicrobes);
+                            aiComponent.prey = prey;
+                            if (prey != NULL_OBJECT){
+                                aiComponent.preyPegged=true;
+                            }
+                        }
+
+                        if (aiComponent.preyPegged && aiComponent.prey != NULL_OBJECT){
+                            dealWithPrey(components, aiComponent.prey, allMicrobes);
+                            }
+                        else{
+                            if (rollCheck(aiComponent.speciesActivity, 400)){
+                                //LOG_INFO("gather only");
+                                aiComponent.lifeState = PLANTLIKE_STATE;
+                                aiComponent.boredom=0;
+                                }
+                            else{
+                                aiComponent.lifeState = NEUTRAL_STATE;
+                                }
+                            }
+                        break;
+                        }
+                     case SCAVENGING_STATE:
+                        {
+
+                        if (aiComponent.targetChunk==NULL_OBJECT){
+                            aiComponent.targetChunk = getNearestChunkItem(components,allChunks);
+                        }
+
+                        if (aiComponent.targetChunk != NULL_OBJECT){
+                            dealWithChunks(components, aiComponent.targetChunk, allChunks);
+                            }
+                        else{
+                            if (!rollCheck(aiComponent.speciesOpportunism, 400)){
+                                //LOG_INFO("gather only");
+                                aiComponent.lifeState = NEUTRAL_STATE;
+                                aiComponent.boredom=0;
+                                }
+                            else{
+                                aiComponent.lifeState = SCAVENGING_STATE;
+                                }
+                            }
+                        break;
+                        }
+                    }
+                  }
+
+            //cache stored compounds for use in the next frame (For Run and tumble)
+            aiComponent.compoundDifference = microbeComponent.stored-aiComponent.previousStoredCompounds;
+            aiComponent.previousStoredCompounds = microbeComponent.stored;
+
+            }
+        }
+    }
+/*
+
+    void Run2(){
+        const int logicTime = TICKSPEED;
+        passedTime+=logicTime;
+        if (passedTime >= AI_TIME_INTERVAL){
+            passedTime=0;
+
         // TODO: this could be cached better
         CompoundId oxytoxyId = SimulationParameters::compoundRegistry().getTypeId("oxytoxy");
         // This list is quite expensive to build each frame but
@@ -147,10 +376,10 @@ class MicrobeAISystem : ScriptSystem{
                 }
             }
                 // Were for debugging
-                /*LOG_INFO("AI aggression"+aiComponent.speciesAggression);
-                LOG_INFO("AI fear"+aiComponent.speciesFear);
-                LOG_INFO("AI Focus"+aiComponent.speciesFocus);
-                LOG_INFO("AI Activity"+aiComponent.speciesActivity);*/
+                //LOG_INFO("AI aggression"+aiComponent.speciesAggression);
+                //LOG_INFO("AI fear"+aiComponent.speciesFear);
+                //LOG_INFO("AI Focus"+aiComponent.speciesFocus);
+                //LOG_INFO("AI Activity"+aiComponent.speciesActivity);
 
             while(aiComponent.intervalRemaining > aiComponent.reevalutationInterval){
                 aiComponent.intervalRemaining -= aiComponent.reevalutationInterval;
@@ -309,16 +538,86 @@ class MicrobeAISystem : ScriptSystem{
     }
     }
 }
+*/
+
+void fleeFromPredator(ObjectID microbeEntity, MicrobeAIControllerComponent@ aiComponent,
+    MicrobeComponent@ microbeComponent, Position@ position, ObjectID predator)
+{
+    Float3 predatorPosition = world.GetComponent_Position(predator)._Position;
+    Float3 myPosition = position._Position;
+    Float3 targetPosition = myPosition + (myPosition - predatorPosition).Normalize()*20.0f;
+    aiGotoPosition(aiComponent, microbeComponent, position, targetPosition);
+}
+
+// Building the predator list and retruning the scariest one
+ObjectID getNearestPredator(MicrobeAISystemCached@ components, array<ObjectID>@ allMicrobes){
+    // Set Components
+    ObjectID microbeEntity = components.entity;
+    MicrobeAIControllerComponent@ aiComponent = components.first;
+    MicrobeComponent@ microbeComponent = components.second;
+    Position@ position = components.third;
+    ObjectID predator = NULL_OBJECT;
+
+    // Retrive the nearest predator
+    // For our desires lets just say all microbes bigger are potential predators
+    // and later extend this to include those with toxins and pilus
+
+    double closestPredator = 500;
+    for (uint i = 0; i < allMicrobes.length(); i++)
+        {
+        // Get the microbe component
+        MicrobeComponent@ secondMicrobeComponent = cast<MicrobeComponent>(
+            world.GetScriptComponentHolder("MicrobeComponent").Find(allMicrobes[i]));
+        // Is this an expensive lookup?, ill come up with a more efficient means of doing this.
+        CompoundId oxytoxyId = SimulationParameters::compoundRegistry().getTypeId("oxytoxy");
+
+        // if the microbe is not yourself and it is not dead
+        Position@ predatorPosition = world.GetComponent_Position(allMicrobes[i]);
+        if (allMicrobes[i] != microbeEntity
+          //&& (secondMicrobeComponent.speciesName != microbeComponent.speciesName)
+          && !secondMicrobeComponent.dead
+          && predatorPosition !is null){
+              double distanceToPredator =  (predatorPosition._Position - position._Position).LengthSquared();
+              if (distanceToPredator < closestPredator){
+                  closestPredator = distanceToPredator;
+                  predator = allMicrobes[i];
+              }
+          }
+    }
+    return predator;
+}
+
+//tell an ai microbe to go to a specific position
+void aiGotoPosition(MicrobeAIControllerComponent@ aiComponent,
+    MicrobeComponent@ microbeComponent, Position@ position, Float3 targetPosition)
+{
+    //aiComponent.targetPosition = position._Position - world.GetComponent_Position(predator)._Position;
+    aiComponent.targetPosition = targetPosition;
+    auto vec = (aiComponent.targetPosition - position._Position);
+    aiComponent.direction = vec.Normalize();
+    microbeComponent.facingTargetPoint = aiComponent.targetPosition;
+    microbeComponent.movementDirection = Float3(0.0f,0.0f,-AI_BASE_MOVEMENT);
+    aiComponent.hasTargetPosition = true;
+}
+
+void aiStopMoving(MicrobeAIControllerComponent@ aiComponent,
+    MicrobeComponent@ microbeComponent)
+{
+    aiComponent.hasTargetPosition = false;
+    microbeComponent.movementDirection = Float3(0.0f,0.0f,0.0f);
+}
 
 
+//------------------------//
+/*
     void doReflexes(MicrobeAISystemCached@ components){
             //For times when its best to tell the microbe directly what to do (Life threatening, attaching to things etc);
             MicrobeAIControllerComponent@ aiComponent = components.first;
             MicrobeComponent@ microbeComponent = components.second;
             Position@ position = components.third;
-            /* Check if we are willing to run, and there is a predator nearby, if so, flee for your life
-               If it was ran in evaluate environment, it would only work if the microbe was in the neutral state.
-               because we may need more of these very specific things in the future for things like latching onto rocks */
+            // Check if we are willing to run, and there is a predator nearby, if so, flee for your life
+            //   If it was ran in evaluate environment, it would only work if the microbe was in the neutral state.
+            //   because we may need more of these very specific things in the future for things like latching onto rocks
             // If you are predating and not being engulfed, don't run away until you switch state (keeps predators chasing you even when their predators are nearby)
             // Its not a good survival strategy but it makes the game more fun.
             if (aiComponent.predator != NULL_OBJECT && (aiComponent.lifeState != PREDATING_STATE || microbeComponent.isBeingEngulfed)){
@@ -337,6 +636,7 @@ class MicrobeAISystem : ScriptSystem{
                     }
             }
     }
+*/
     // deal with chunks
     ObjectID getNearestChunkItem(MicrobeAISystemCached@ components, array<ObjectID>@ allChunks){
         ObjectID microbeEntity = components.entity;
@@ -434,7 +734,7 @@ class MicrobeAISystem : ScriptSystem{
 
     return chosenPrey;
     }
-
+/*
     // Building the predator list and retruning the scariest one
     ObjectID getNearestPredatorItem(MicrobeAISystemCached@ components, array<ObjectID>@ allMicrobes){
         // Set Components
@@ -487,7 +787,7 @@ class MicrobeAISystem : ScriptSystem{
             }
     return predator;
     }
-
+*/
     // For chasing down and killing prey in various ways
     void dealWithPrey(MicrobeAISystemCached@ components, ObjectID prey,
         array<ObjectID>@ allMicrobes)
@@ -679,7 +979,7 @@ class MicrobeAISystem : ScriptSystem{
             }
         }
     }
-
+/*
     // For self defense (not necessarily fleeing)
     void dealWithPredators(MicrobeAISystemCached@ components)
     {
@@ -706,7 +1006,9 @@ class MicrobeAISystem : ScriptSystem{
                 }
         }
     }
+*/
 
+/*
     void preyFlee(ObjectID microbeEntity, MicrobeAIControllerComponent@ aiComponent,
         MicrobeComponent@ microbeComponent, Position@ position, ObjectID predator)
     {
@@ -749,7 +1051,7 @@ class MicrobeAISystem : ScriptSystem{
           }
 
     }
-
+*/
     // For for firguring out which state to enter
     void evaluateEnvironment(MicrobeAISystemCached@ components, ObjectID prey, ObjectID predator){
         //LOG_INFO("evaluating");
