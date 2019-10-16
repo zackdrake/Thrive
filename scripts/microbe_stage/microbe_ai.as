@@ -149,9 +149,10 @@ class MicrobeAISystem : ScriptSystem{
                     }
                 }
 
-                //1. do reflexes and check if you should flee, this should override everything else
+                //1. do reflexes and check if you should flee.
                 aiComponent.predator = getNearestPredator(components,allMicrobes);
-                if (aiComponent.predator != NULL_OBJECT){
+                if (aiComponent.predator != NULL_OBJECT)
+                {
                   fleeFromPredator(microbeEntity, aiComponent, microbeComponent, position, aiComponent.predator);
                 }
 
@@ -161,6 +162,12 @@ class MicrobeAISystem : ScriptSystem{
                 {
                     aiComponent.lifeState = PLANTLIKE_STATE;
                     aiComponent.intervalRemaining = aiComponent.reevalutationInterval + 1;
+                }
+
+                //3. if you are being ungulfed then aiStopMoving
+                if (microbeComponent.isBeingEngulfed)
+                {
+                    aiStopMoving(aiComponent, microbeComponent);
                 }
 
                 //update which state you are in
