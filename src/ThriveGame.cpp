@@ -336,7 +336,7 @@ void
     if(layer)
         layer->SetInputMode(Leviathan::GUI::INPUT_MODE::Gameplay);
 
-    // TODO: unpause, if it was paused
+    // Unpaused in exitToMenuClicked
 
     // Main camera that will be attached to the player
     m_cellCamera = Leviathan::ObjectLoader::LoadCamera(*m_impl->m_cellStage,
@@ -512,9 +512,14 @@ void
 {
     playerData().enterFreeBuild();
 
-    LOG_INFO("Generating new map and some initial species for freebuild");
+    // To prevent problems if a run was already started
+    if(m_impl->m_autoEvoRun) {
+        m_impl->m_autoEvoRun->abort();
+    }
 
-    const auto map = generateNewPatchMap();
+    LOG_INFO("Generating initial species for freebuild");
+
+    const auto map = m_impl->m_cellStage->GetPatchManager().getCurrentMap();
 
     ScriptRunningSetup setup("generateRandomSpeciesForFreeBuild");
 
@@ -524,14 +529,6 @@ void
     if(result.Result != SCRIPT_RUN_RESULT::Success) {
 
         LOG_ERROR("Failed to run generateRandomSpeciesForFreeBuild");
-    }
-
-    try {
-        m_impl->m_cellStage->GetPatchManager().setNewMap(map);
-    } catch(const Leviathan::Exception& e) {
-        LOG_ERROR("Something is wrong with the patch map, exception: ");
-        e.PrintToLog();
-        return;
     }
 
     // Apply patch settings
@@ -726,6 +723,8 @@ void
         if(m_impl->m_microbeEditor)
             m_impl->m_microbeEditor->ClearEntities();
 
+        pause(false);
+
         if(m_impl->m_autoEvoRun) {
             LOG_INFO("Stopping auto evo run, returning to menu");
             m_impl->m_autoEvoRun->abort();
@@ -748,6 +747,16 @@ void
     // Fire an event to switch over the GUI
     Engine::Get()->GetEventHandler()->CallEvent(
         new Leviathan::GenericEvent("ExitedToMenu"));
+}
+
+void
+    ThriveGame::pause(bool pause)
+{
+    if(m_impl->m_cellStage) {
+        m_impl->m_cellStage->SetPaused(pause);
+    } else {
+        LOG_ERROR("Tried to pause but the cell stage was not initialized");
+    }
 }
 
 // ------------------------------------ //
