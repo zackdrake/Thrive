@@ -123,7 +123,7 @@ class MicrobeAISystem : ScriptSystem{
                 MicrobeComponent@ microbeComponent = components.second;
                 Position@ position = components.third;
                 // ai interval
-                aiComponent.intervalRemaining += logicTime;
+                aiComponent.intervalRemaining += elapsed;
 
                 // TODO: Species is now reference counted and could be stored directly
                 // Cache behaviour values as we dont want to be calling "getSpecies" every frame for every microbe
@@ -160,8 +160,7 @@ class MicrobeAISystem : ScriptSystem{
                 double myATP = MicrobeOperations::getCompoundAmount(world,microbeEntity,atpID);
                 if (myATP < 0.5)
                 {
-                    aiComponent.lifeState = PLANTLIKE_STATE;
-                    aiComponent.intervalRemaining = aiComponent.reevalutationInterval + 1;
+                    aiStopMoving(aiComponent, microbeComponent);
                 }
 
                 //3. if you are being ungulfed then aiStopMoving
