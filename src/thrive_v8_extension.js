@@ -35,11 +35,8 @@ var Thrive = {};
     native function disconnectFromServer();
     Thrive.disconnectFromServer = disconnectFromServer;
     
-    native function enterPlanetEditor();
-    Thrive.enterPlanetEditor = enterPlanetEditor;
-
-    native function editPlanet(editType, value);
-    Thrive.editPlanet = editPlanet;
+    native function enterGameSetup();
+    Thrive.enterGameSetup = enterGameSetup;
 
     native function pause(value);
     Thrive.pause = pause;

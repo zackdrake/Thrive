@@ -57,6 +57,11 @@ public:
 
     // start of the functions the player can call from the gui
     void
+        randomize()
+    {
+        generateProperties(0);
+    }
+    void
         setSol();
     void
         setMass(double newMass)
@@ -132,6 +137,14 @@ public:
 
     // start of the functions the player can call from the gui
     void
+        randomize()
+    {
+        boost::static_pointer_cast<Star>(orbitingBody)->randomize();
+        generatePropertiesOrbitalRadius(0);
+        generatePropertiesPlanetMass(0);
+        generatePropertiesAtmosphere(0);
+    }
+    void
         setEarth();
     void
         setOrbitalRadius(double newRadius)
@@ -180,8 +193,6 @@ private:
         generatePropertiesPlanetMass(int step);
     void
         setSphereMasses();
-    void
-        setPlanetMass();
     void
         setPlanetRadius();
 

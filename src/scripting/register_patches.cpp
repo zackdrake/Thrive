@@ -136,8 +136,27 @@ bool
     }
 
     // ------------------------------------ //
+    // Star
+    ANGELSCRIPT_REGISTER_REF_TYPE("Star", Star);
+
+    if(engine->RegisterObjectMethod("Star", "void setMass(double newMass)",
+           asMETHOD(Star, setMass), asCALL_THISCALL) < 0) {
+        ANGELSCRIPT_REGISTERFAIL;
+    }
+
+    if(engine->RegisterObjectMethod("Star", "void setSol()",
+           asMETHOD(Star, setSol), asCALL_THISCALL) < 0) {
+        ANGELSCRIPT_REGISTERFAIL;
+    }
+
+    // ------------------------------------ //
     // Planet
     ANGELSCRIPT_REGISTER_REF_TYPE("Planet", Planet);
+
+    if(engine->RegisterObjectProperty("Planet", "Star@ orbitingBody",
+           asOFFSET(Planet, orbitingBody)) < 0) {
+        ANGELSCRIPT_REGISTERFAIL;
+    }
 
     if(engine->RegisterObjectProperty("Planet", "double atmosphereMass",
            asOFFSET(Planet, atmosphereMass)) < 0) {
@@ -157,6 +176,26 @@ bool
 
     if(engine->RegisterObjectProperty("Planet", "double atmosphereNitrogen",
            asOFFSET(Planet, atmosphereNitrogen)) < 0) {
+        ANGELSCRIPT_REGISTERFAIL;
+    }
+
+    if(engine->RegisterObjectMethod("Planet", "void randomize()",
+           asMETHOD(Planet, randomize), asCALL_THISCALL) < 0) {
+        ANGELSCRIPT_REGISTERFAIL;
+    }
+
+    if(engine->RegisterObjectMethod("Planet", "void setPlanetMass(double newMass)",
+           asMETHOD(Planet, setPlanetMass), asCALL_THISCALL) < 0) {
+        ANGELSCRIPT_REGISTERFAIL;
+    }
+
+    if(engine->RegisterObjectMethod("Planet", "void setEarth()",
+           asMETHOD(Planet, setEarth), asCALL_THISCALL) < 0) {
+        ANGELSCRIPT_REGISTERFAIL;
+    }
+
+    if(engine->RegisterObjectMethod("Planet", "string toJSONString()",
+           asMETHOD(Planet, toJSONString), asCALL_THISCALL) < 0) {
         ANGELSCRIPT_REGISTERFAIL;
     }
 

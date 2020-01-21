@@ -142,27 +142,10 @@ bool
 
         Owner->SendCustomExtensionMessage(message);
         return true;
-    } else if(name == "enterPlanetEditor") {
+    } else if(name == "enterGameSetup") {
         auto message = CefProcessMessage::Create("Custom");
         auto args = message->GetArgumentList();
-        args->SetString(0, "enterPlanetEditor");
-
-        Owner->SendCustomExtensionMessage(message);
-        return true;
-    } else if(name == "editPlanet") {
-
-        if(arguments.size() < 2 || !arguments[0]->IsString() ||
-            !arguments[1]->IsDouble()) {
-            // Invalid arguments //
-            exception = "Invalid arguments passed, expected: string, double";
-            return true;
-        }
-
-        auto message = CefProcessMessage::Create("Custom");
-        auto args = message->GetArgumentList();
-        args->SetString(0, "editPlanet");
-        args->SetString(1, arguments[0]->GetStringValue());
-        args->SetDouble(2, arguments[1]->GetDoubleValue());
+        args->SetString(0, "enterGameSetup");
 
         Owner->SendCustomExtensionMessage(message);
         return true;
@@ -243,14 +226,9 @@ bool
         ThriveGame::Get()->disconnectFromServer(true);
         return true;
 
-    } else if(customType == "enterPlanetEditor") {
+    } else if(customType == "enterGameSetup") {
 
-        ThriveGame::Get()->enterPlanetEditor();
-        return true;
-
-    } else if(customType == "editPlanet") {
-
-        ThriveGame::Get()->editPlanet(args->GetString(1), args->GetDouble(2));
+        ThriveGame::Get()->enterGameSetup();
         return true;
 
     } else if(customType == "pause") {

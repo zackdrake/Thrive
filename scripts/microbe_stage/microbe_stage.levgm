@@ -46,6 +46,10 @@ o GameModule "microbe_stage"{
         
         // TODO: This should be easy to move to another module
         utility.as
+
+        // Not really a microbe stage specific thing, but... /shrug
+        game_setup/game_setup.as
+        game_setup/setup.as
     }
 
     t import{

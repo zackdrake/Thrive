@@ -5,88 +5,66 @@ import * as common from "./gui_common.mjs";
 
 let freebuild = false;
 
-function updatePlanetValues(data){
-    // Add the star GetVariables
-    document.getElementById("starMassSlider").value = data.orbitingBody.mass;
-    document.getElementById("starMassValueBox").innerHTML =
-        "Star Mass <br>" + scienceNumber(data.orbitingBody.mass) + " kg.";
-    document.getElementById("starRadiusValueBox").innerHTML =
-        "Star Radius <br>" + scienceNumber(data.orbitingBody.radius) + " meters.";
-    document.getElementById("starGravitationalParameterValueBox").innerHTML =
-        "Star Gravitational Parameter <br>" +
-        scienceNumber(data.orbitingBody.gravitationalParameter);
-    document.getElementById("starLifespanValueBox").innerHTML =
-        "Star Lifespan <br>" + scienceNumber(data.orbitingBody.lifeSpan) + " earth years.";
-    document.getElementById("starTemperatureValueBox").innerHTML =
-        "Star Temperature <br>" + scienceNumber(data.orbitingBody.temperature) + " kelvin.";
+//! These are all the organelle selection buttons
+const generationTypeSelectionElements = [
+    {
+        element: document.getElementById("gameSetupRandom"),
+        generationType: "random"
+    },
+    {
+        element: document.getElementById("gameSetupRandomizedPreset"),
+        generationType: "randomizedPreset"
+    },
+    {
+        element: document.getElementById("gameSetupPreset"),
+        generationType: "preset"
+    },
+    {
+        element: document.getElementById("gameSetupScriptedPreset"),
+        generationType: "scriptedPreset"
+    }
+];
 
+function updatePlanetValues(data) {
+    document.getElementById("starMassSlider").value = data.orbitingBody.mass;
     drawGraph(document.getElementById("stellarSpectrumGraph"),
         data.orbitingBody.stellarSpectrum);
-
-    // Add the planet variables
     document.getElementById("planetMassSlider").value = data.mass;
-    document.getElementById("planetMassValueBox").innerHTML =
-        "Planet Mass <br>" + scienceNumber(data.mass) + " kg.";
-    document.getElementById("planetRadiusValueBox").innerHTML =
-        "Planet Radius <br>" + scienceNumber(data.radius) + " meters";
-    document.getElementById("planetOceanMassValueBox").innerHTML =
-        "Ocean Mass <br>" + scienceNumber(data.oceanMass) + " kg.";
-    document.getElementById("planetLithosphereMassValueBox").innerHTML =
-        "Lithosphere Mass <br>" + scienceNumber(data.lithosphereMass) + " kg.";
-    document.getElementById("planetAtmosphereMassValueBox").innerHTML =
-        "Atmosphere Mass <br>" + scienceNumber(data.atmosphereMass) + " kg.";
-
     const oxygenPercentage = parseInt(100 * data.atmosphereOxygen / data.atmosphereMass);
     const carbonDioxidePercentage =
         parseInt(100 * data.atmosphereCarbonDioxide / data.atmosphereMass);
-
-    // UNUSED: const waterPercentage =
-    // parseInt(100 * data.atmosphereWater / data.atmosphereMass);
-    const nitrogenPercentage = parseInt(100 * data.atmosphereNitrogen / data.atmosphereMass);
-    document.getElementById("planetOxygenPercentageValueBox").innerHTML =
-        "Percentage of Oxygen in Atmosphere <br>" + oxygenPercentage + "%.";
-    document.getElementById("planetCarbonDioxidePercentageValueBox").innerHTML =
-        "Percentage of Carbon Dioxide in Atmosphere <br>" + carbonDioxidePercentage + " %.";
-    document.getElementById("planetNitrogenPercentageValueBox").innerHTML =
-        "Percentage of Nitrogen in Atmosphere <br>" + nitrogenPercentage + " %.";
     document.getElementById("planetAtmosphereOxygenSlider").value = oxygenPercentage;
     document.getElementById("planetAtmosphereCarbonDioxideSlider").value =
         carbonDioxidePercentage;
-
-    document.getElementById("planetAtmosphereWaterValueBox").innerHTML =
-        "Mass of Water in Atmosphere <br>" + scienceNumber(data.atmosphereWater) + " kg.";
-    document.getElementById("planetAtmosphereOxygenValueBox").innerHTML =
-        "Mass of Oxygen in Atmosphere <br>" + scienceNumber(data.atmosphereOxygen) + " kg.";
-    document.getElementById("planetAtmosphereNitrogenValueBox").innerHTML =
-        "Mass of Nitrogen in Atmosphere <br>" + scienceNumber(data.atmosphereNitrogen) +
-        " kg.";
-    document.getElementById("planetCarbonDioxideValueBox").innerHTML =
-        "Mass of Carbon Dioxide in Atmosphere <br>" +
-        scienceNumber(data.atmosphereCarbonDioxide) + " kg.";
-
     drawGraph(document.getElementById("habitabilityGraph"),
         data.orbitingBody.habitabilityScore);
     drawPointOnGraph(document.getElementById("habitabilityGraph"),
         data.orbitalRadiusGraphFraction);
-    document.getElementById("planetHabitabilityValueBox").innerHTML =
-        "Habitability Score <br>" + data.habitability + "%.";
-
     document.getElementById("planetOrbitalRadiusSlider").value = data.orbit.radius;
-    document.getElementById("planetOrbitalRadiusValueBox").innerHTML =
-        "Orbital Radius <br>" + scienceNumber(data.orbit.radius) + " meters.";
-    document.getElementById("planetOrbitalPeriodValueBox").innerHTML =
-        "Orbital Period <br>" + scienceNumber(data.orbit.period) + " earth years.";
-
-    document.getElementById("planetTemperatureValueBox").innerHTML =
-        "Planet Average Temperature <br>" + data.planetTemperature.toPrecision(3) + " kelvin.";
-
-    // DrawGraph(document.getElementById("atmosphericFilterGraph"), data.atmosphericFilter);
     drawGraph(document.getElementById("atmosphericFilterGraph"), data.atmosphericFilter);
     drawGraph(document.getElementById("terrestrialSpectrumGraph"), data.terrestrialSpectrum);
-
 }
 
-export function setupPlanetEditor(fromFreebuild){
+export function setupGameSetup(fromFreebuild) {
+    document.getElementById("gameSetupBack").addEventListener("click",
+        Thrive.exitToMenuClicked, true);
+
+    document.getElementById("gameSetupConfigure").addEventListener("click",
+        showAdvanced, true);
+
+    document.getElementById("gameSetupStartGame").addEventListener("click",
+        startGame, true);
+
+    // All of the generation type selection buttons
+    for(const element of generationTypeSelectionElements){
+        element.element.addEventListener("click", (event) => {
+            event.stopPropagation();
+            if(!element.element.classList.contains("DisabledButton")) {
+                generationTypeSelected(element.generationType);
+            }
+        }, true);
+    }
+
     document.getElementById("starMassSlider").addEventListener("input",
         onStarMassInput, true);
 
@@ -108,16 +86,8 @@ export function setupPlanetEditor(fromFreebuild){
     document.getElementById("planetOrbitalRadiusSlider").addEventListener("input",
         onPlanetOrbitalRadiusInput, true);
 
-    document.getElementById("planetEditorBack").addEventListener("click",
-        Thrive.exitToMenuClicked, true);
-
-    document.getElementById("planetEditorStartGame").addEventListener("click",
-        startGame, true);
-
-    Leviathan.OnGeneric("PlanetEditorPlanetModified", (event, vars) => {
-        const data = JSON.parse(vars.data);
-        updatePlanetValues(data);
-    });
+    document.getElementById("advancedSetupBack").addEventListener("click",
+        showMain, true);
 
     document.addEventListener("keydown", (event) => {
         if(event.key === "Escape"){
@@ -128,18 +98,38 @@ export function setupPlanetEditor(fromFreebuild){
     }, true);
 
     freebuild = fromFreebuild;
+
+    if(common.isInEngine()){
+        // Event for detecting the active generation type
+        Leviathan.OnGeneric("GameSetupGenerationTypeSelected", (event, vars) => {
+            updateSelectedGenerationType(vars.generationType);
+        });
+
+        // Event for detecting changed planet data
+        Leviathan.OnGeneric("GameSetupPlanetModified", (event, vars) => {
+            const data = JSON.parse(vars.data);
+            updatePlanetValues(data);
+        });
+    } else {
+        generationTypeSelected("random");
+    }
 }
 
 function onStarMassInput(event){
-    Thrive.editPlanet("onStarMassInput", parseFloat(event.target.value));
+    if (common.isInEngine())
+        Leviathan.CallGenericEvent("GameSetupStarMassInput",
+            {mass: parseFloat(event.target.value)});
 }
 
 function onStarSetSolInput(event){
-    Thrive.editPlanet("onStarSetSolInput", parseFloat(event.target.value));
+    if(common.isInEngine())
+        Leviathan.CallGenericEvent("GameSetupStarSetSol", {});
 }
 
 function onPlanetMassInput(event){
-    Thrive.editPlanet("onPlanetMassInput", parseFloat(event.target.value));
+    if (common.isInEngine())
+        Leviathan.CallGenericEvent("GameSetupPlanetMassInput",
+            {mass: parseFloat(event.target.value)});
 }
 
 function onPlanetSetOxygenInput(event){
@@ -151,11 +141,50 @@ function onPlanetSetCarbonDioxideInput(event){
 }
 
 function onPlanetSetEarthInput(event){
-    Thrive.editPlanet("onPlanetSetEarthInput", parseFloat(event.target.value));
+    if(common.isInEngine())
+        Leviathan.CallGenericEvent("GameSetupPlanetSetEarth", {});
 }
 
 function onPlanetOrbitalRadiusInput(event){
     Thrive.editPlanet("onPlanetOrbitalRadiusInput", parseFloat(event.target.value));
+}
+
+function generationTypeSelected(newGenerationType){
+    common.playButtonPressSound();
+
+    if(common.isInEngine()){
+        Leviathan.CallGenericEvent("GameSetupGenerationTypeSelected", {generationType: newGenerationType});
+    } else {
+        updateSelectedGenerationType(newGenerationType);
+    }
+}
+
+//! Updates the GUI buttons based on selected generation type
+function updateSelectedGenerationType(generationType){
+    // Make all buttons unselected except the one that is now selected
+    for(const element of generationTypeSelectionElements){
+        if(element.generationType === generationType){
+            element.element.classList.add("Selected");
+        } else {
+            element.element.classList.remove("Selected");
+        }
+    }
+
+    if(generationType === "random"){
+        document.getElementById("gameSetupPresetDropdown").style.display = "none";
+    } else {
+        document.getElementById("gameSetupPresetDropdown").style.display = "inline-block";
+    }
+}
+
+function showAdvanced(){
+    document.getElementById("mainSetup").style.display = "none";
+    document.getElementById("advancedSetup").style.display = "block";
+}
+
+function showMain(){
+    document.getElementById("mainSetup").style.display = "block";
+    document.getElementById("advancedSetup").style.display = "none";
 }
 
 function startGame(){
@@ -210,7 +239,7 @@ function onMicrobeIntroEnded(error){
 function switchToMicrobeHUD(){
     // Hide planet editor
     // If this is ever restored this needs to be set to "flex"
-    document.getElementById("topLevelPlanetEditor").style.display = "none";
+    document.getElementById("topLevelGameSetup").style.display = "none";
 
     // And show microbe gui
     document.getElementById("topLevelMicrobeStage").style.display = "block";

@@ -527,58 +527,61 @@ PlayerMicrobeControl*
 }
 // ------------------------------------ //
 void
-    ThriveGame::enterPlanetEditor()
+    ThriveGame::enterGameSetup()
 {
-    LOG_INFO("Entering planet editor in preparation of starting new game");
+    LOG_INFO("Entering game setup in preparation of starting new game");
 
     m_impl->m_planet = Planet::MakeShared<Planet>(Star::MakeShared<Star>());
 
-    // Notify GUI
-    auto event = Leviathan::GenericEvent::MakeShared<Leviathan::GenericEvent>(
-        "PlanetEditorPlanetModified");
+    ScriptRunningSetup setup("onGameSetupEntry");
 
-    auto vars = event->GetVariables();
+    auto result = getMicrobeScripts()->ExecuteOnModule<void>(
+        setup, false, m_impl->m_planet.get());
 
-    vars->Add(std::make_shared<NamedVariableList>(
-        "data", new Leviathan::StringBlock(m_impl->m_planet->toJSONString())));
+    if(result.Result != SCRIPT_RUN_RESULT::Success) {
 
-    Engine::Get()->GetEventHandler()->CallEvent(event.detach());
-}
-
-void
-    ThriveGame::editPlanet(const std::string& editType, double value)
-{
-    auto planet = m_impl->m_planet;
-    Star::pointer orbitingStar =
-        boost::static_pointer_cast<Star>(planet->orbitingBody);
-
-    if(editType == "onStarMassInput") {
-        orbitingStar->setMass(value);
-    } else if(editType == "onStarSetSolInput") {
-        orbitingStar->setSol();
-    } else if(editType == "onPlanetMassInput") {
-        planet->setPlanetMass(value);
-    } else if(editType == "onPlanetSetEarthInput") {
-        planet->setEarth();
-    } else if(editType == "onPlanetSetOxygenInput") {
-        planet->setOxygen(value);
-    } else if(editType == "onPlanetSetCarbonDioxideInput") {
-        planet->setCarbonDioxide(value);
-    } else if(editType == "onPlanetOrbitalRadiusInput") {
-        planet->setOrbitalRadius(value);
+        LOG_ERROR(
+            "Failed to run editor setup function: " + setup.Entryfunction);
+        return;
     }
-
-    // Notify GUI
-    auto event = Leviathan::GenericEvent::MakeShared<Leviathan::GenericEvent>(
-        "PlanetEditorPlanetModified");
-
-    auto vars = event->GetVariables();
-
-    vars->Add(std::make_shared<NamedVariableList>(
-        "data", new Leviathan::StringBlock(planet->toJSONString())));
-
-    Engine::Get()->GetEventHandler()->CallEvent(event.detach());
 }
+
+// void
+//     ThriveGame::editPlanet(const std::string& editType, double value)
+// {
+//     auto planet = m_impl->m_planet;
+//     Star::pointer orbitingStar =
+//         boost::static_pointer_cast<Star>(planet->orbitingBody);
+
+//     if(editType == "onStarMassInput") {
+//         orbitingStar->setMass(value);
+//     } else if(editType == "onStarSetSolInput") {
+//         orbitingStar->setSol();
+//     } else if(editType == "onPlanetMassInput") {
+//         planet->setPlanetMass(value);
+//     } else if(editType == "onPlanetSetEarthInput") {
+//         planet->setEarth();
+//     } else if(editType == "onPlanetSetOxygenInput") {
+//         planet->setOxygen(value);
+//     } else if(editType == "onPlanetSetCarbonDioxideInput") {
+//         planet->setCarbonDioxide(value);
+//     } else if(editType == "onPlanetOrbitalRadiusInput") {
+//         planet->setOrbitalRadius(value);
+//     } else if(editType == "randomize") {
+//         planet->randomize();
+//     }
+
+//     // Notify GUI
+//     auto event = Leviathan::GenericEvent::MakeShared<Leviathan::GenericEvent>(
+//         "GameSetupPlanetModified");
+
+//     auto vars = event->GetVariables();
+
+//     vars->Add(std::make_shared<NamedVariableList>(
+//         "data", new Leviathan::StringBlock(planet->toJSONString())));
+
+//     Engine::Get()->GetEventHandler()->CallEvent(event.detach());
+// }
 
 void
     ThriveGame::killPlayerCellClicked()

@@ -2,7 +2,7 @@
 import * as common from "./gui_common.mjs";
 import * as microbe_hud from "./microbe_hud.mjs";
 import {doEnterMicrobeEditor, setupMicrobeEditor} from "./microbe_editor.mjs";
-import {setupPlanetEditor} from "./planet_editor.mjs";
+import {setupGameSetup} from "./game_setup.mjs";
 
 let jams = null;
 
@@ -258,10 +258,10 @@ function newGame(){
     }
 
     document.getElementById("topLevelMenuContainer").style.display = "none";
-    document.getElementById("topLevelPlanetEditor").style.display = "block";
+    document.getElementById("topLevelGameSetup").style.display = "block";
 
-    Thrive.enterPlanetEditor();
-    setupPlanetEditor();
+    Thrive.enterGameSetup();
+    setupGameSetup();
 
     // MASTER: if(common.isInEngine()){
     //     Leviathan.PlayCutscene("Data/Videos/microbe_intro.mkv", onMicrobeIntroEnded,
@@ -278,11 +278,11 @@ function enterFreebuildEditor(){
     }
 
     document.getElementById("topLevelMenuContainer").style.display = "none";
-    document.getElementById("topLevelPlanetEditor").style.display = "block";
+    document.getElementById("topLevelGameSetup").style.display = "block";
 
     if(common.isInEngine()){
-        Thrive.enterPlanetEditor();
-        setupPlanetEditor(true);
+        Thrive.enterGameSetup();
+        setupGameSetup(true);
     } else {
         doEnterMicrobeEditor();
     }
@@ -388,7 +388,7 @@ export function updateLoadingScreen(vars){
 //! Called once C++ has finished exiting to menu
 export function doExitToMenu() {
     document.getElementById("topLevelMenuContainer").style.display = "";
-    document.getElementById("topLevelPlanetEditor").style.display = "none";
+    document.getElementById("topLevelGameSetup").style.display = "none";
     document.getElementById("topLevelMicrobeEditor").style.display = "none";
     document.getElementById("topLevelMicrobeStage").style.display = "none";
     document.getElementById("pauseOverlay").style.display = "none";
