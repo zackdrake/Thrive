@@ -15,6 +15,7 @@ Biome::Biome() {}
 
 Biome::Biome(Json::Value value)
 {
+    name = value["name"].asString();
     background = value["background"].asString();
 
 

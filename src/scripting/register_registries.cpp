@@ -203,6 +203,11 @@ bool
     // ------------------------------------ //
     // Biome
     // TODO: bind new light properties
+    if(engine->RegisterObjectProperty("Biome", "const string name",
+           asOFFSET(Biome, name)) < 0) {
+        ANGELSCRIPT_REGISTERFAIL;
+    }
+
     if(engine->RegisterObjectProperty("Biome", "const string background",
            asOFFSET(Biome, background)) < 0) {
         ANGELSCRIPT_REGISTERFAIL;

@@ -1,89 +1,212 @@
 // The patch map generator is defined in this script file to make modifying it easier
-PatchMap@ generatePatchMap()
+PatchMap@ generatePatchMap(Planet@ planet)
 {
-    return PatchMapGenerator::runGeneration();
+    return PatchMapGenerator::runGeneration(planet);
 }
 
 // Private hidden functions
 namespace PatchMapGenerator{
 
-PatchMap@ runGeneration()
+int height = 650;
+int level1 = 15;
+int level2 = 500;
+
+double interpolate(double maxi, double mini, double value)
+{
+    return ((value - mini) / (maxi - mini));
+}
+
+int getDepth(int y, int oceanDepth, double landPercentage)
+{
+    double waterPercentage = 1 - landPercentage;
+    double percentage = y / float(height);
+
+    if(percentage < landPercentage)
+    {
+        return int(-(height * landPercentage - y) * 15 / (height * landPercentage));
+    } else if(percentage < (landPercentage + 0.30 * waterPercentage)){
+        return int(level1 * interpolate(landPercentage + 0.30 * waterPercentage, landPercentage, percentage));
+    } else if(percentage < (landPercentage + 0.70 * waterPercentage)){
+        return int(level1 + height * interpolate(landPercentage + 0.70 * waterPercentage, landPercentage + 0.30 * waterPercentage, percentage));
+    }
+
+    return int(level2 + (oceanDepth - level2) * interpolate(1, landPercentage + 0.70 * waterPercentage, percentage));
+}
+
+string getType(int oceanDepth, int patchDepth)
+{
+    if(patchDepth < 0)
+    {
+        return GetEngine().GetRandom().GetNumber(0, 3) == 0 ? "ice_shelf" : (GetEngine().GetRandom().GetNumber(0, 1) == 0 ? "tidepool" : "estuary");
+    } else if(patchDepth < level1){
+        return GetEngine().GetRandom().GetNumber(0, 1) == 0 ? "epipelagic" : "coastal";
+    } else if(patchDepth < level2){
+        return GetEngine().GetRandom().GetNumber(0, 7) == 0 ? "underwater_cave" : "mesopelagic";
+    } else if (patchDepth >= level2 && patchDepth < 0.8 * oceanDepth){
+        return GetEngine().GetRandom().GetNumber(0, 7) == 0 ? "underwater_cave" : "bathypelagic";
+    }
+
+    switch (GetEngine().GetRandom().GetNumber(0, 3))
+    {
+    case 0:
+    case 1:
+        return "seafloor";
+    case 2:
+        return "volcanic_vent";
+    case 3:
+        return "abyssopelagic";
+    }
+    
+    return "invalid";
+}
+
+PatchMap@ runGeneration(Planet@ planet)
 {
     PatchMap@ map = PatchMap();
+    map.setPlanet(planet);
+    int id = 0;
+    array<Patch@> patches;
 
-    Patch@ patch0 = Patch("Pangonian vents", 0, getBiomeTemplate("aavolcanic_vent"));
+    while(true){
+        bool madePatch = false;
+        Float2 pos = Float2(0, 0);
+        int depth = 0;
+        string type = "invalid";
+
+        for(uint tries = 0; tries < 1000 && !madePatch; tries++){
+            pos = Float2(GetEngine().GetRandom().GetNumber(50, 800), GetEngine().GetRandom().GetNumber(30, height));
+            depth = getDepth(int(pos.Y), int(planet.oceanDepth), planet.landPercentage);
+            type = getType(int(planet.oceanDepth), depth);
+            madePatch = true;
+
+            for(uint i = 0; i < patches.length(); ++i){
+                Float2 otherPos = patches[i].getScreenCoordinates();
+
+                if((otherPos.X - pos.X)**2 + (otherPos.Y - pos.Y)**2 < 5625)
+                {
+                    madePatch = false;
+                    break;
+                }
+            }
+        }
+
+        if(!madePatch)
+        {
+            LOG_INFO("A patch failed to generate, ceasing patch generation");
+            break;
+        }
+        
+        const Biome@ biome = getBiomeTemplate(type);
+        Patch@ patch = Patch("Pangonian " + biome.name, id, biome);
+        patch.setScreenCoordinates(pos);
+        patches.insertLast(patch);
+        LOG_INFO("Added patch " + patch.getId() + " " + patch.getName());
+        id++;
+    }
+
+    int bestDist = 500;
+    Patch@ bestPatch;
+
+    for(uint i = 0; i < patches.length(); ++i){
+        Patch@ patch = patches[i];
+        int dist = int(abs((50 + 800) / 2 - patch.getScreenCoordinates().X));
+
+        if(patch.getBiome().internalName == "volcanic_vent" && dist < bestDist)
+        {
+            bestDist = dist;
+            @bestPatch = patch;
+        }
+    }
+
+    if(bestPatch is null)
+    {
+        int lowestHeight = 0;
+        int lowestPatchIdx = 0;
+
+        for(uint i = 0; i < patches.length(); ++i){
+            Patch@ patch = patches[i];
+            
+            if(patch.getScreenCoordinates().Y > lowestHeight)
+            {
+                lowestHeight = int(patch.getScreenCoordinates().Y);
+                lowestPatchIdx = i;
+            }
+        }
+
+        Patch@ lowestPatch = patches[lowestPatchIdx];
+        Float2 oldScreenCoordinates = lowestPatch.getScreenCoordinates();
+        const Biome@ biome = getBiomeTemplate("volcanic_vent");
+        @patches[lowestPatchIdx] = Patch("Pangonian " + biome.name, lowestPatch.getId(), biome);
+        patches[lowestPatchIdx].setScreenCoordinates(oldScreenCoordinates);
+        @bestPatch = patches[lowestPatchIdx];
+    }
+
+    LOG_INFO("Selected starter patch: " + bestPatch.getId() + " " + bestPatch.getName());
+
     auto defaultSpecies = Species::createDefaultSpecies();
     for(uint i = 0; i < defaultSpecies.length(); ++i){
-        patch0.addSpecies(defaultSpecies[i]);
+        bestPatch.addSpecies(defaultSpecies[i]);
     }
-    patch0.setScreenCoordinates(Float2(100, 400));
-    patch0.addNeighbour(10);
 
-    Patch@ patch1 = Patch("Pangonian Mesopelagic", 1, getBiomeTemplate("mesopelagic"));
-    patch1.setScreenCoordinates(Float2(200, 200));
-    patch1.addNeighbour(4);
-    patch1.addNeighbour(2);
-    patch1.addNeighbour(8);
+    // Add neighbor patches
+    for(uint i = 0; i < patches.length(); ++i){
+        Patch@ patch = patches[i];
+        Float2 pos = patch.getScreenCoordinates();
+        int depth = getDepth(int(pos.Y), int(planet.oceanDepth), planet.landPercentage);
+        bool wasNeighborAdded = false;
 
-    Patch@ patch2 = Patch("Pangonian Epipelagic", 2, getBiomeTemplate("default"));
-    patch2.setScreenCoordinates(Float2(200, 100));
-    patch2.addNeighbour(1);
-    patch2.addNeighbour(3);
-    patch2.addNeighbour(6);
-    patch2.addNeighbour(9);
+        for(uint j = 0; j < patches.length(); ++j){
+            Patch@ otherPatch = patches[j];
+            Float2 otherPos = otherPatch.getScreenCoordinates();
+            int otherDepth = getDepth(int(otherPos.Y), int(planet.oceanDepth), planet.landPercentage);
 
-    Patch@ patch3 = Patch("Pangonian Tidepool", 3, getBiomeTemplate("tidepool"));
-    patch3.setScreenCoordinates(Float2(300, 100));
-    patch3.addNeighbour(2);
+            if(abs(pos.X - otherPos.X) < 100 && abs(pos.Y - otherPos.Y) < 120 && otherPatch !is patch)
+            {
+                if(depth < level1 && otherDepth < level1)
+                {
+                    patch.addNeighbour(otherPatch.getId());
+                    wasNeighborAdded = true;
+                } else if(depth > 0 && otherDepth > 0 && depth < level2 && otherDepth < level2){
+                    patch.addNeighbour(otherPatch.getId());
+                    wasNeighborAdded = true;
+                } else if(depth > level1 && otherDepth > level1){
+                    patch.addNeighbour(otherPatch.getId());
+                    wasNeighborAdded = true;
+                }
+            }
+        }
 
-    Patch@ patch4 = Patch("Pangonian Bathypalagic", 4, getBiomeTemplate("bathypalagic"));
-    patch4.setScreenCoordinates(Float2(200, 300));
-    patch4.addNeighbour(5);
-    patch4.addNeighbour(1);
-    patch4.addNeighbour(10);
+        // Wasn't close enough to any other patches to get a neighbor, so just add the nearest
+        if(!wasNeighborAdded)
+        {
+            LOG_WARNING("Patch " + patch.getId() + " " + patch.getName() + " was not connected by normal connection process, so adding closest patch as neighbor");
+            double closestDist = 1000000000;
+            Patch@ closestPatch;
 
-    Patch@ patch5 = Patch("Pangonian Abyssopelagic", 5, getBiomeTemplate("abyssopelagic"));
-    patch5.setScreenCoordinates(Float2(300, 400));
-    patch5.addNeighbour(10);
-    patch5.addNeighbour(4);
+            for(uint j = 0; j < patches.length(); ++j){
+                Patch@ otherPatch = patches[j];
+                Float2 otherPos = otherPatch.getScreenCoordinates();
+                double dist = (otherPos.X - pos.X)**2 + (otherPos.Y - pos.Y)**2;
 
+                if(dist < closestDist && otherPatch !is patch)
+                {
+                    closestDist = dist;
+                    @closestPatch = otherPatch;
+                }
+            }
 
-    Patch@ patch6 = Patch("Pangonian Coast", 6, getBiomeTemplate("coastal"));
-    patch6.setScreenCoordinates(Float2(100, 100));
-    patch6.addNeighbour(2);
-    patch6.addNeighbour(7);
+            patch.addNeighbour(closestPatch.getId());
+            closestPatch.addNeighbour(patch.getId());
+        }
+    }
 
-    Patch@ patch7 = Patch("Pangonian Estuary", 7, getBiomeTemplate("estuary"));
-    patch7.setScreenCoordinates(Float2(70, 160));
-    patch7.addNeighbour(6);
+    // Actually add them to the map
+    for(uint i = 0; i < patches.length(); ++i){
+        map.addPatch(patches[i]);
+    }
 
-    Patch@ patch8 = Patch("Cave", 8, getBiomeTemplate("underwater_cave"));
-    patch8.setScreenCoordinates(Float2(300, 200));
-    patch8.addNeighbour(1);
-
-    Patch@ patch9 = Patch("Ice Shelf", 9, getBiomeTemplate("ice_shelf"));
-    patch9.setScreenCoordinates(Float2(200, 30));
-    patch9.addNeighbour(2);
-
-
-    Patch@ patch10 = Patch("Pangonian Sea Floor", 10, getBiomeTemplate("seafloor"));
-    patch10.setScreenCoordinates(Float2(200, 400));
-    patch10.addNeighbour(4);
-    patch10.addNeighbour(5);
-    patch10.addNeighbour(0);
-
-
-    map.addPatch(patch0);
-    map.addPatch(patch1);
-    map.addPatch(patch2);
-    map.addPatch(patch3);
-    map.addPatch(patch4);
-    map.addPatch(patch5);
-    map.addPatch(patch6);
-    map.addPatch(patch7);
-    map.addPatch(patch8);
-    map.addPatch(patch9);
-    map.addPatch(patch10);
+    map.setCurrentPatch(bestPatch.getId());
+    LOG_INFO("Completed patch generation");
 
     return map;
 }

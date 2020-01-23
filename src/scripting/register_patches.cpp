@@ -160,6 +160,21 @@ bool
         ANGELSCRIPT_REGISTERFAIL;
     }
 
+    if(engine->RegisterObjectProperty("Planet", "double planetTemperature",
+           asOFFSET(Planet, planetTemperature)) < 0) {
+        ANGELSCRIPT_REGISTERFAIL;
+    }
+
+    if(engine->RegisterObjectProperty("Planet", "double landPercentage",
+           asOFFSET(Planet, landPercentage)) < 0) {
+        ANGELSCRIPT_REGISTERFAIL;
+    }
+
+    if(engine->RegisterObjectProperty("Planet", "double oceanDepth",
+           asOFFSET(Planet, oceanDepth)) < 0) {
+        ANGELSCRIPT_REGISTERFAIL;
+    }
+
     // ------------------------------------ //
     // PatchMap
     ANGELSCRIPT_REGISTER_REF_TYPE("PatchMap", PatchMap);
@@ -171,6 +186,11 @@ bool
 
     if(engine->RegisterObjectMethod("PatchMap", "Patch@ getCurrentPatch()",
            asMETHOD(PatchMap, getCurrentPatchWrapper), asCALL_THISCALL) < 0) {
+        ANGELSCRIPT_REGISTERFAIL;
+    }
+
+    if(engine->RegisterObjectMethod("PatchMap", "bool setCurrentPatch(int newId)",
+           asMETHOD(PatchMap, setCurrentPatch), asCALL_THISCALL) < 0) {
         ANGELSCRIPT_REGISTERFAIL;
     }
 
@@ -198,6 +218,11 @@ bool
 
     if(engine->RegisterObjectMethod("PatchMap", "Planet@ getPlanet()",
            asMETHOD(PatchMap, getPlanetWrapper), asCALL_THISCALL) < 0) {
+        ANGELSCRIPT_REGISTERFAIL;
+    }
+
+    if(engine->RegisterObjectMethod("PatchMap", "void setPlanet(Planet@ planet)",
+           asMETHOD(PatchMap, setPlanetWrapper), asCALL_THISCALL) < 0) {
         ANGELSCRIPT_REGISTERFAIL;
     }
 

@@ -43,12 +43,12 @@ float
 }
 
 PatchMap::pointer
-    generateNewPatchMap()
+    generateNewPatchMap(Planet* planet)
 {
     ScriptRunningSetup setup("generatePatchMap");
     auto returned =
         ThriveGame::Get()->getMicrobeScripts()->ExecuteOnModule<PatchMap*>(
-            setup, false);
+            setup, false, planet);
 
     if(returned.Result != SCRIPT_RUN_RESULT::Success) {
         LOG_ERROR("Failed to run generatePatchMap");
@@ -442,8 +442,7 @@ void
     // Create a PatchMap (it will also contain the initial species)
     LOG_INFO("Generating new PatchMap");
 
-    const auto map = generateNewPatchMap();
-    map->setPlanet(m_impl->m_planet);
+    const auto map = generateNewPatchMap(m_impl->m_planet.get());
 
     if(!map)
         return;

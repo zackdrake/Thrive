@@ -306,9 +306,15 @@ public:
     }
 
     void
-        setPlanet(Planet::pointer& newPlanet)
+        setPlanet(const Planet::pointer& newPlanet)
     {
         planet = newPlanet;
+    }
+
+    void
+        setPlanetWrapper(Planet* planet)
+    {
+        setPlanet(Planet::WrapPtr(planet));
     }
 
     CScriptArray*

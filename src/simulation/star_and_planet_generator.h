@@ -118,6 +118,8 @@ public:
     int habitability = 0;
     // where to draw the current orbital radius on the habitavility graph
     double orbitalRadiusGraphFraction = 0;
+    double landPercentage = 0;
+    double oceanDepth = 0;
 
     // Limit to star for now (may eventually want to allow binary planetary
     // systems, though that would need a "Barycenter" CelestialBody)

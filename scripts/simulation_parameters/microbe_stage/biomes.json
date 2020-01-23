@@ -1,5 +1,5 @@
 {
-    "default": {
+    "epipelagic": {
         "name": "Epipelagic",
         "background": "ocean",
         "skybox": "Thrive_ocean_skybox",
@@ -22,7 +22,6 @@
             "min": 0.003,
             "max": 2.0
         },
-
         "chunks":{
             "floatingToxin": {
                 "name": "Floating Hazard",
@@ -79,52 +78,43 @@
                 }
             }
         },
-
 		"averageTemperature": 8,
-
         "compounds": {
             "ammonia": {
                 "amount": 200000,
                 "density": 0.00002,
                 "dissolved": 0.0
             },
-
             "glucose": {
                 "amount": 250000,
                 "density": 0.00002,
                 "dissolved": 0.0
             },
-
             "phosphates": {
                 "amount": 200000,
                 "density": 0.00002,
                 "dissolved": 0.0
             },
-
             "hydrogensulfide": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.0
             },
-
             "oxygen": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.21
             },
-
             "carbondioxide": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.09
             },
-
             "nitrogen": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.70
             },
-
             "sunlight": {
                 "amount": 0,
                 "density": 0.0,
@@ -132,9 +122,8 @@
             }
         }
     },
-
-    "aavolcanic_vent": {
-        "name": "Volcanic vent",
+    "volcanic_vent": {
+        "name": "Volcanic Vent",
         "background": "vent",
         "skybox": "Thrive_vent_skybox",
         "skyboxLightIntensity": 0.5,
@@ -156,7 +145,6 @@
             "min": 0.003,
             "max": 0.8
         },
-
         "chunks":{
             "floatingToxin": {
                 "name": "Floating Hazard",
@@ -253,52 +241,43 @@
                 }
             }
         },
-
 		"averageTemperature": 98,
-
         "compounds": {
             "ammonia": {
                 "amount": 300000,
                 "density": 0.00004,
                 "dissolved": 0.0
             },
-
             "glucose": {
                 "amount": 250000,
                 "density": 0.00002,
                 "dissolved": 0.0
             },
-
             "phosphates": {
                 "amount": 300000,
                 "density": 0.00004,
                 "dissolved": 0.0
             },
-
             "hydrogensulfide": {
                 "amount": 300000,
                 "density": 0.00004,
                 "dissolved": 0.0
             },
-
             "oxygen": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.21
             },
-
             "carbondioxide": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.09
             },
-
             "nitrogen": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.70
             },
-
             "sunlight": {
                 "amount": 0,
                 "density": 0.0,
@@ -329,7 +308,6 @@
             "min": 0.003,
             "max": 2.0
         },
-
         "chunks":{
             "floatingToxin": {
                 "name": "Floating Hazard",
@@ -386,52 +364,43 @@
                 }
             }
         },
-
 		"averageTemperature": 23,
-
         "compounds": {
             "ammonia": {
                 "amount": 200000,
                 "density": 0.00002,
                 "dissolved": 0.0
             },
-
             "glucose": {
                 "amount": 250000,
                 "density": 0.00002,
                 "dissolved": 0.0
             },
-
             "phosphates": {
                 "amount": 200000,
                 "density": 0.00002,
                 "dissolved": 0.0
             },
-
             "hydrogensulfide": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.0
             },
-
             "oxygen": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.21
             },
-
             "carbondioxide": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.09
             },
-
             "nitrogen": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.70
             },
-
             "sunlight": {
                 "amount": 0,
                 "density": 0.0,
@@ -439,9 +408,9 @@
             }
         }
     },
-    "bathypalagic": {
-        "name": "Bathypalagic",
-        "background": "bathypalagic",
+    "bathypelagic": {
+        "name": "Bathypelagic",
+        "background": "bathypelagic",
         "skybox": "Thrive_bathy_skybox",
         "skyboxLightIntensity": 0.5,
         "sunlight": {
@@ -462,7 +431,6 @@
             "min": 0.003,
             "max": 1.5
         },
-
         "chunks":{
             "floatingToxin": {
                 "name": "Floating Hazard",
@@ -559,7 +527,6 @@
                 }
             }
         },
-
 		"averageTemperature": 4,
         "compounds": {
             "ammonia": {
@@ -567,43 +534,36 @@
                 "density": 0.00002,
                 "dissolved": 0.0
             },
-
             "glucose": {
                 "amount": 250000,
                 "density": 0.00002,
                 "dissolved": 0.0
             },
-
             "phosphates": {
                 "amount": 200000,
                 "density": 0.00002,
                 "dissolved": 0.0
             },
-
             "hydrogensulfide": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.0
             },
-
             "oxygen": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.21
             },
-
             "carbondioxide": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.09
             },
-
             "nitrogen": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.70
             },
-
             "sunlight": {
                 "amount": 0,
                 "density": 0.0,
@@ -611,7 +571,7 @@
             }
         }
     },
- "abyssopelagic": {
+    "abyssopelagic": {
         "name": "Abyssopelagic",
         "background": "abyssopelagic",
         "skybox": "Thrive_abyss_skybox",
@@ -634,7 +594,6 @@
             "min": 0.003,
             "max": 0.8
         },
-
         "chunks":{
             "floatingToxin": {
                 "name": "Floating Hazard",
@@ -731,7 +690,6 @@
                 }
             }
         },
-
 		"averageTemperature": 2,
         "compounds": {
             "ammonia": {
@@ -739,43 +697,36 @@
                 "density": 0.00002,
                 "dissolved": 0.0
             },
-
             "glucose": {
                 "amount": 250000,
                 "density": 0.00002,
                 "dissolved": 0.0
             },
-
             "phosphates": {
                 "amount": 200000,
                 "density": 0.00002,
                 "dissolved": 0.0
             },
-
             "hydrogensulfide": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.0
             },
-
             "oxygen": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.21
             },
-
             "carbondioxide": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.09
             },
-
             "nitrogen": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.70
             },
-
             "sunlight": {
                 "amount": 0,
                 "density": 0.0,
@@ -783,7 +734,6 @@
             }
         }
     },
-
     "mesopelagic": {
         "name": "Mesopelagic",
         "background": "mesopelagic",
@@ -807,7 +757,6 @@
             "min": 0.003,
             "max": 1.7
         },
-
         "chunks":{
             "floatingToxin": {
                 "name": "Floating Hazard",
@@ -904,7 +853,6 @@
                 }
             }
         },
-
 		"averageTemperature": 2,
         "compounds": {
             "ammonia": {
@@ -912,43 +860,36 @@
                 "density": 0.00002,
                 "dissolved": 0.0
             },
-
             "glucose": {
                 "amount": 250000,
                 "density": 0.00002,
                 "dissolved": 0.0
             },
-
             "phosphates": {
                 "amount": 200000,
                 "density": 0.00002,
                 "dissolved": 0.0
             },
-
             "hydrogensulfide": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.0
             },
-
             "oxygen": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.21
             },
-
             "carbondioxide": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.09
             },
-
             "nitrogen": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.70
             },
-
             "sunlight": {
                 "amount": 0,
                 "density": 0.0,
@@ -956,7 +897,6 @@
             }
         }
     },
-
     "coastal": {
         "name": "Coastal",
         "background": "coastal",
@@ -980,7 +920,6 @@
             "min": 0.003,
             "max": 2.0
         },
-
         "chunks":{
             "floatingToxin": {
                 "name": "Floating Hazard",
@@ -1037,7 +976,6 @@
                 }
             }
         },
-
 		"averageTemperature": 17,
         "compounds": {
             "ammonia": {
@@ -1045,43 +983,36 @@
                 "density": 0.00002,
                 "dissolved": 0.0
             },
-
             "glucose": {
                 "amount": 250000,
                 "density": 0.00002,
                 "dissolved": 0.0
             },
-
             "phosphates": {
                 "amount": 200000,
                 "density": 0.00002,
                 "dissolved": 0.0
             },
-
             "hydrogensulfide": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.0
             },
-
             "oxygen": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.21
             },
-
             "carbondioxide": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.09
             },
-
             "nitrogen": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.70
             },
-
             "sunlight": {
                 "amount": 0,
                 "density": 0.0,
@@ -1089,9 +1020,8 @@
             }
         }
     },
-
 	"underwater_cave": {
-        "name": "UnderwaterCave",
+        "name": "Underwater Cave",
         "background": "cave",
         "skybox": "Thrive_cave_skybox",
         "skyboxLightIntensity": 0.5,
@@ -1113,7 +1043,6 @@
             "min": 0.003,
             "max": 0.8
         },
-
         "chunks":{
             "floatingToxin": {
                 "name": "Floating Hazard",
@@ -1170,7 +1099,6 @@
                 }
             }
         },
-
 		"averageTemperature": 23,
         "compounds": {
             "ammonia": {
@@ -1178,43 +1106,36 @@
                 "density": 0.00002,
                 "dissolved": 0.0
             },
-
             "glucose": {
                 "amount": 250000,
                 "density": 0.00002,
                 "dissolved": 0.0
             },
-
             "phosphates": {
                 "amount": 200000,
                 "density": 0.00002,
                 "dissolved": 0.0
             },
-
             "hydrogensulfide": {
                 "amount": 225000,
                 "density": 0.00002,
                 "dissolved": 0.0
             },
-
             "oxygen": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.21
             },
-
             "carbondioxide": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.09
             },
-
             "nitrogen": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.70
             },
-
             "sunlight": {
                 "amount": 0,
                 "density": 0.0,
@@ -1222,7 +1143,6 @@
             }
         }
     },
-
 	"ice_shelf": {
         "name": "IceShelf",
         "background": "iceshelf",
@@ -1246,7 +1166,6 @@
             "min": 0.003,
             "max": 2.0
         },
-
         "chunks":{
             "floatingToxin": {
                 "name": "Floating Hazard",
@@ -1318,52 +1237,43 @@
                 }
             }
         },
-
 		"averageTemperature": -1,
-
         "compounds": {
             "ammonia": {
                 "amount": 200000,
                 "density": 0.00002,
                 "dissolved": 0.0
             },
-
             "glucose": {
                 "amount": 250000,
                 "density": 0.00002,
                 "dissolved": 0.0
             },
-
             "phosphates": {
                 "amount": 200000,
                 "density": 0.00002,
                 "dissolved": 0.0
             },
-
             "hydrogensulfide": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.0
             },
-
             "oxygen": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.21
             },
-
             "carbondioxide": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.09
             },
-
             "nitrogen": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.70
             },
-
             "sunlight": {
                 "amount": 0,
                 "density": 0.0,
@@ -1371,7 +1281,6 @@
             }
         }
     },
-
     "estuary": {
         "name": "Estuary",
         "background": "estuary",
@@ -1395,7 +1304,6 @@
             "min": 0.003,
             "max": 2.0
         },
-
         "chunks":{
             "floatingToxin": {
                 "name": "Floating Hazard",
@@ -1452,52 +1360,43 @@
                 }
             }
         },
-
 		"averageTemperature": 17,
-
         "compounds": {
             "ammonia": {
                 "amount": 200000,
                 "density": 0.00002,
                 "dissolved": 0.0
             },
-
             "glucose": {
                 "amount": 250000,
                 "density": 0.00002,
                 "dissolved": 0.0
             },
-
             "phosphates": {
                 "amount": 200000,
                 "density": 0.00002,
                 "dissolved": 0.0
             },
-
             "hydrogensulfide": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.0
             },
-
             "oxygen": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.21
             },
-
             "carbondioxide": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.09
             },
-
             "nitrogen": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.78
             },
-
             "sunlight": {
                 "amount": 0,
                 "density": 0.0,
@@ -1505,7 +1404,6 @@
             }
         }
     },
-
     "seafloor": {
         "name": "Sea Floor",
         "background": "seafloor",
@@ -1529,7 +1427,6 @@
             "min": 0.003,
             "max": 1.0
         },
-
         "chunks":{
             "floatingToxin": {
                 "name": "Floating Hazard",
@@ -1626,7 +1523,6 @@
                 }
             }
         },
-
 		"averageTemperature": 4,
         "compounds": {
             "ammonia": {
@@ -1634,43 +1530,36 @@
                 "density": 0.00002,
                 "dissolved": 0.0
             },
-
             "glucose": {
                 "amount": 250000,
                 "density": 0.00002,
                 "dissolved": 0.0
             },
-
             "phosphates": {
                 "amount": 200000,
                 "density": 0.00002,
                 "dissolved": 0.0
             },
-
             "hydrogensulfide": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.0
             },
-
             "oxygen": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.21
             },
-
             "carbondioxide": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.09
             },
-
             "nitrogen": {
                 "amount": 0,
                 "density": 0.0,
                 "dissolved": 0.70
             },
-
             "sunlight": {
                 "amount": 0,
                 "density": 0.0,

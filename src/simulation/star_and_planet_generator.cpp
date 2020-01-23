@@ -420,6 +420,8 @@ void
     generatePropertiesPlanetMass(1);
     setAtmosphereConstituentsEarth();
     generatePropertiesAtmosphere(1);
+    landPercentage = 0.28;
+    oceanDepth = 3688;
 }
 
 void
@@ -461,6 +463,8 @@ void
 {
     if(step <= 0) {
         mass = fRand(MIN_PLANET_MASS, MAX_PLANET_MASS);
+        landPercentage = fRand(0, 0.4);
+        oceanDepth = fRand(2000, 4000);
     }
     if(step <= 1) {
         setPlanetRadius();

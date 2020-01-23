@@ -150,6 +150,7 @@ public:
     std::map<size_t, BiomeCompoundData> compounds;
     // No clue why this is a maps
     std::map<size_t, ChunkData> chunks;
+    std::string name = "";
     std::string background = "error";
 
     // skybox
