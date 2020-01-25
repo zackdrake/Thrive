@@ -1802,11 +1802,12 @@ function updateEnergyBalanceBars(data){
     const consumptionBar = document.getElementById("atpConsumptionBar");
     consumptionBar.style.width = (consumptionBarFillAmount * 100).toFixed(1) + "%";
 
+    //ProductionBar Segmentation
     let widthCounter = 0;
-    for (var i = 0; i < Object.keys(data.consumption).length; i++)
+    for (var i = 0; i < Object.keys(data.production).length; i++)
     {
-        var barWidth = data.consumption[Object.keys(data.consumption)[i]]*(100/endPointInBar);
-        var productionName = Object.keys(data.consumption)[i] + "Bar";
+        var barWidth = (data.production[Object.keys(data.production)[i]] / endPointInBar * 100).toFixed(1);
+        var productionName = Object.keys(data.production)[i] + "ProductionBar";
         var productionNode = document.createElement("div");
         productionNode.id = productionName;
         productionBar.appendChild(productionNode);
@@ -1815,6 +1816,25 @@ function updateEnergyBalanceBars(data){
         document.getElementById(productionName).style.height = "15px";
         document.getElementById(productionName).style.position = "absolute";
         document.getElementById(productionName).style.left = String(widthCounter)+"%";
+        document.getElementById(productionName).textContent = data.production[Object.keys(data.production)[i]].toFixed(1);
+        widthCounter += barWidth;
+    }
+    widthCounter = 0;
+
+    //ConsumptionBar Segmentation
+    for (var i = 0; i < Object.keys(data.consumption).length; i++)
+    {
+        var barWidth = (data.consumption[Object.keys(data.consumption)[i]] / endPointInBar * 100).toFixed(1);
+        var consumptionName = Object.keys(data.consumption)[i] + "ConsumptionBar";
+        var consumptionNode = document.createElement("div");
+        consumptionNode.id = consumptionName;
+        consumptionBar.appendChild(consumptionNode);
+        document.getElementById(consumptionName).style.backgroundColor = "#"+((1<<24)*Math.random()|0).toString(16);
+        document.getElementById(consumptionName).style.width = String(barWidth)+"%";
+        document.getElementById(consumptionName).style.height = "15px";
+        document.getElementById(consumptionName).style.position = "absolute";
+        document.getElementById(consumptionName).style.left = String(widthCounter)+"%";
+        document.getElementById(consumptionName).textContent = data.consumption[Object.keys(data.consumption)[i]].toFixed(1);
         widthCounter += barWidth;
     }
     widthCounter = 0;

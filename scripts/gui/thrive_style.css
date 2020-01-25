@@ -1725,7 +1725,6 @@ div::-webkit-scrollbar-thumb:hover {
 #atpProductionBar {
   text-align: center;
   height: 15px;
-  display: inline-block;
 }
 
 #atpConsumptionBar {
