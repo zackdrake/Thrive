@@ -135,13 +135,13 @@ function onPlanetMassInput(event){
 function onPlanetSetOxygenInput(event){
     if (common.isInEngine())
         Leviathan.CallGenericEvent("GameSetupPlanetOxygenInput",
-            {oxygenPercentage: parseFloat(event.target.value)});
+            {oxygenPercentage: 0.01 * parseFloat(event.target.value)});
 }
 
 function onPlanetSetCarbonDioxideInput(event){
     if (common.isInEngine())
         Leviathan.CallGenericEvent("GameSetupPlanetCarbonDioxideInput",
-            {carbonDioxidePercentage: parseFloat(event.target.value)});
+            {carbonDioxidePercentage: 0.01 * parseFloat(event.target.value)});
 }
 
 function onPlanetSetEarthInput(event){
