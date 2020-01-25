@@ -1725,13 +1725,12 @@ div::-webkit-scrollbar-thumb:hover {
 #atpProductionBar {
   text-align: center;
   height: 15px;
-  background: #61bd13;
+  display: inline-block;
 }
 
 #atpConsumptionBar {
   text-align: center;
   height: 15px;
-  background: #ce3830;
 }
 
 .Red {

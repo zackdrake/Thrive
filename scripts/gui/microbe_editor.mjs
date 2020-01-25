@@ -1798,9 +1798,24 @@ function updateEnergyBalanceBars(data){
     // Set the bar lengths
     const productionBar = document.getElementById("atpProductionBar");
     productionBar.style.width = (productionBarFillAmount * 100).toFixed(1) + "%";
-    productionBar.textContent = data.total.production.toFixed(1);
 
     const consumptionBar = document.getElementById("atpConsumptionBar");
     consumptionBar.style.width = (consumptionBarFillAmount * 100).toFixed(1) + "%";
-    consumptionBar.textContent = data.total.consumption.toFixed(1);
+
+    let widthCounter = 0;
+    for (var i = 0; i < Object.keys(data.consumption).length; i++)
+    {
+        var barWidth = data.consumption[Object.keys(data.consumption)[i]]*(100/endPointInBar);
+        var productionName = Object.keys(data.consumption)[i] + "Bar";
+        var productionNode = document.createElement("div");
+        productionNode.id = productionName;
+        productionBar.appendChild(productionNode);
+        document.getElementById(productionName).style.backgroundColor = "#"+((1<<24)*Math.random()|0).toString(16);
+        document.getElementById(productionName).style.width = String(barWidth)+"%";
+        document.getElementById(productionName).style.height = "15px";
+        document.getElementById(productionName).style.position = "absolute";
+        document.getElementById(productionName).style.left = String(widthCounter)+"%";
+        widthCounter += barWidth;
+    }
+    widthCounter = 0;
 }
