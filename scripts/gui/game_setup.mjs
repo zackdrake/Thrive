@@ -25,24 +25,84 @@ const generationTypeSelectionElements = [
     }
 ];
 
-function updatePlanetValues(data) {
+function updatePlanetValues(data){
+    // Add the star GetVariables
     document.getElementById("starMassSlider").value = data.orbitingBody.mass;
+    document.getElementById("starMassValueBox").innerHTML =
+        "Star Mass <br>" + scienceNumber(data.orbitingBody.mass) + " kg.";
+    document.getElementById("starRadiusValueBox").innerHTML =
+        "Star Radius <br>" + scienceNumber(data.orbitingBody.radius) + " meters.";
+    document.getElementById("starGravitationalParameterValueBox").innerHTML =
+        "Star Gravitational Parameter <br>" +
+        scienceNumber(data.orbitingBody.gravitationalParameter);
+    document.getElementById("starLifespanValueBox").innerHTML =
+        "Star Lifespan <br>" + scienceNumber(data.orbitingBody.lifeSpan) + " earth years.";
+    document.getElementById("starTemperatureValueBox").innerHTML =
+        "Star Temperature <br>" + scienceNumber(data.orbitingBody.temperature) + " kelvin.";
+
     drawGraph(document.getElementById("stellarSpectrumGraph"),
         data.orbitingBody.stellarSpectrum);
+
+    // Add the planet variables
     document.getElementById("planetMassSlider").value = data.mass;
+    document.getElementById("planetMassValueBox").innerHTML =
+        "Planet Mass <br>" + scienceNumber(data.mass) + " kg.";
+    document.getElementById("planetRadiusValueBox").innerHTML =
+        "Planet Radius <br>" + scienceNumber(data.radius) + " meters";
+    document.getElementById("planetOceanMassValueBox").innerHTML =
+        "Ocean Mass <br>" + scienceNumber(data.oceanMass) + " kg.";
+    document.getElementById("planetLithosphereMassValueBox").innerHTML =
+        "Lithosphere Mass <br>" + scienceNumber(data.lithosphereMass) + " kg.";
+    document.getElementById("planetAtmosphereMassValueBox").innerHTML =
+        "Atmosphere Mass <br>" + scienceNumber(data.atmosphereMass) + " kg.";
+
     const oxygenPercentage = parseInt(100 * data.atmosphereOxygen / data.atmosphereMass);
     const carbonDioxidePercentage =
         parseInt(100 * data.atmosphereCarbonDioxide / data.atmosphereMass);
+
+    // UNUSED: const waterPercentage =
+    // parseInt(100 * data.atmosphereWater / data.atmosphereMass);
+    const nitrogenPercentage = parseInt(100 * data.atmosphereNitrogen / data.atmosphereMass);
+    document.getElementById("planetOxygenPercentageValueBox").innerHTML =
+        "Percentage of Oxygen in Atmosphere <br>" + oxygenPercentage + "%.";
+    document.getElementById("planetCarbonDioxidePercentageValueBox").innerHTML =
+        "Percentage of Carbon Dioxide in Atmosphere <br>" + carbonDioxidePercentage + " %.";
+    document.getElementById("planetNitrogenPercentageValueBox").innerHTML =
+        "Percentage of Nitrogen in Atmosphere <br>" + nitrogenPercentage + " %.";
     document.getElementById("planetAtmosphereOxygenSlider").value = oxygenPercentage;
     document.getElementById("planetAtmosphereCarbonDioxideSlider").value =
         carbonDioxidePercentage;
+
+    document.getElementById("planetAtmosphereWaterValueBox").innerHTML =
+        "Mass of Water in Atmosphere <br>" + scienceNumber(data.atmosphereWater) + " kg.";
+    document.getElementById("planetAtmosphereOxygenValueBox").innerHTML =
+        "Mass of Oxygen in Atmosphere <br>" + scienceNumber(data.atmosphereOxygen) + " kg.";
+    document.getElementById("planetAtmosphereNitrogenValueBox").innerHTML =
+        "Mass of Nitrogen in Atmosphere <br>" + scienceNumber(data.atmosphereNitrogen) +
+        " kg.";
+    document.getElementById("planetCarbonDioxideValueBox").innerHTML =
+        "Mass of Carbon Dioxide in Atmosphere <br>" +
+        scienceNumber(data.atmosphereCarbonDioxide) + " kg.";
+
     drawGraph(document.getElementById("habitabilityGraph"),
         data.orbitingBody.habitabilityScore);
     drawPointOnGraph(document.getElementById("habitabilityGraph"),
         data.orbitalRadiusGraphFraction);
+    document.getElementById("planetHabitabilityValueBox").innerHTML =
+        "Habitability Score <br>" + data.habitability + "%.";
+
     document.getElementById("planetOrbitalRadiusSlider").value = data.orbit.radius;
+    document.getElementById("planetOrbitalRadiusValueBox").innerHTML =
+        "Orbital Radius <br>" + scienceNumber(data.orbit.radius) + " meters.";
+    document.getElementById("planetOrbitalPeriodValueBox").innerHTML =
+        "Orbital Period <br>" + scienceNumber(data.orbit.period) + " earth years.";
+
+    document.getElementById("planetTemperatureValueBox").innerHTML =
+        "Planet Average Temperature <br>" + data.planetTemperature.toPrecision(3) + " kelvin.";
+
     drawGraph(document.getElementById("atmosphericFilterGraph"), data.atmosphericFilter);
     drawGraph(document.getElementById("terrestrialSpectrumGraph"), data.terrestrialSpectrum);
+
 }
 
 export function setupGameSetup(fromFreebuild) {
