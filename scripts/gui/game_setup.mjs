@@ -46,6 +46,21 @@ function updatePlanetValues(data) {
 }
 
 export function setupGameSetup(fromFreebuild) {
+    if(common.isInEngine()){
+        // Event for detecting the active generation type
+        Leviathan.OnGeneric("GameSetupGenerationTypeSelected", (event, vars) => {
+            updateSelectedGenerationType(vars.generationType);
+        });
+
+        // Event for detecting changed planet data
+        Leviathan.OnGeneric("GameSetupPlanetModified", (event, vars) => {
+            const data = JSON.parse(vars.data);
+            updatePlanetValues(data);
+        });
+    }
+
+    generationTypeSelected("random");
+
     document.getElementById("gameSetupBack").addEventListener("click",
         Thrive.exitToMenuClicked, true);
 
@@ -98,21 +113,6 @@ export function setupGameSetup(fromFreebuild) {
     }, true);
 
     freebuild = fromFreebuild;
-
-    if(common.isInEngine()){
-        // Event for detecting the active generation type
-        Leviathan.OnGeneric("GameSetupGenerationTypeSelected", (event, vars) => {
-            updateSelectedGenerationType(vars.generationType);
-        });
-
-        // Event for detecting changed planet data
-        Leviathan.OnGeneric("GameSetupPlanetModified", (event, vars) => {
-            const data = JSON.parse(vars.data);
-            updatePlanetValues(data);
-        });
-    } else {
-        generationTypeSelected("random");
-    }
 }
 
 function onStarMassInput(event){
@@ -133,11 +133,15 @@ function onPlanetMassInput(event){
 }
 
 function onPlanetSetOxygenInput(event){
-    Thrive.editPlanet("onPlanetSetOxygenInput", parseFloat(0.01 * event.target.value));
+    if (common.isInEngine())
+        Leviathan.CallGenericEvent("GameSetupPlanetOxygenInput",
+            {oxygenPercentage: parseFloat(event.target.value)});
 }
 
 function onPlanetSetCarbonDioxideInput(event){
-    Thrive.editPlanet("onPlanetSetCarbonDioxideInput", parseFloat(0.01 * event.target.value));
+    if (common.isInEngine())
+        Leviathan.CallGenericEvent("GameSetupPlanetCarbonDioxideInput",
+            {carbonDioxidePercentage: parseFloat(event.target.value)});
 }
 
 function onPlanetSetEarthInput(event){
@@ -146,14 +150,17 @@ function onPlanetSetEarthInput(event){
 }
 
 function onPlanetOrbitalRadiusInput(event){
-    Thrive.editPlanet("onPlanetOrbitalRadiusInput", parseFloat(event.target.value));
+    if (common.isInEngine())
+        Leviathan.CallGenericEvent("GameSetupPlanetOrbitalRadiusInput",
+            {orbitalRadius: parseFloat(event.target.value)});
 }
 
 function generationTypeSelected(newGenerationType){
     common.playButtonPressSound();
 
     if(common.isInEngine()){
-        Leviathan.CallGenericEvent("GameSetupGenerationTypeSelected", {generationType: newGenerationType});
+        Leviathan.CallGenericEvent("GameSetupGenerationTypeSelected",
+            {generationType: newGenerationType});
     } else {
         updateSelectedGenerationType(newGenerationType);
     }

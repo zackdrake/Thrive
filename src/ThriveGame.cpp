@@ -572,7 +572,8 @@ void
 //     }
 
 //     // Notify GUI
-//     auto event = Leviathan::GenericEvent::MakeShared<Leviathan::GenericEvent>(
+//     auto event =
+//     Leviathan::GenericEvent::MakeShared<Leviathan::GenericEvent>(
 //         "GameSetupPlanetModified");
 
 //     auto vars = event->GetVariables();

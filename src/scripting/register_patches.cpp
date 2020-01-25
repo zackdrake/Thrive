@@ -184,8 +184,27 @@ bool
         ANGELSCRIPT_REGISTERFAIL;
     }
 
-    if(engine->RegisterObjectMethod("Planet", "void setPlanetMass(double newMass)",
+    if(engine->RegisterObjectMethod("Planet",
+           "void setOrbitalRadius(double newRadius)",
+           asMETHOD(Planet, setOrbitalRadius), asCALL_THISCALL) < 0) {
+        ANGELSCRIPT_REGISTERFAIL;
+    }
+
+    if(engine->RegisterObjectMethod("Planet",
+           "void setPlanetMass(double newMass)",
            asMETHOD(Planet, setPlanetMass), asCALL_THISCALL) < 0) {
+        ANGELSCRIPT_REGISTERFAIL;
+    }
+
+    if(engine->RegisterObjectMethod("Planet",
+           "void setOxygen(double percentageAtmosphereOxygen)",
+           asMETHOD(Planet, setOxygen), asCALL_THISCALL) < 0) {
+        ANGELSCRIPT_REGISTERFAIL;
+    }
+
+    if(engine->RegisterObjectMethod("Planet",
+           "void setCarbonDioxide(double percentageAtmosphereCarbonDioxide)",
+           asMETHOD(Planet, setCarbonDioxide), asCALL_THISCALL) < 0) {
         ANGELSCRIPT_REGISTERFAIL;
     }
 

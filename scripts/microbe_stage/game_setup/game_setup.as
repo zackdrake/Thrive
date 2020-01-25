@@ -6,12 +6,16 @@ class GameSetup{
 		eventListener.RegisterForEvent("GameSetupStarSetSol");
 		eventListener.RegisterForEvent("GameSetupPlanetMassInput");
 		eventListener.RegisterForEvent("GameSetupPlanetSetEarth");
+		eventListener.RegisterForEvent("GameSetupPlanetOxygenInput");
+		eventListener.RegisterForEvent("GameSetupPlanetCarbonDioxideInput");
+		eventListener.RegisterForEvent("GameSetupPlanetOrbitalRadiusInput");
 		@planet = planetIn;
+		generationType = "";
     }
 
-	void init()
-	{
-		// Reset to random if nothing is selected
+    void init()
+    {
+    	// Reset to random if nothing is selected
         if(generationType == ""){
             LOG_INFO("Selecting generator type 'random'");
 
@@ -23,19 +27,19 @@ class GameSetup{
             GetEngine().GetEventHandler().CallEvent(event);
         }
 
-		updateGui();
-	}
+    	updateGui();
+    }
 
-	void updateGui()
-	{
-		LOG_INFO("Sending event to update game setup GUI");
-		GenericEvent@ event = GenericEvent("GameSetupPlanetModified");
+    void updateGui()
+    {
+    	LOG_INFO("Sending event to update game setup GUI");
+    	GenericEvent@ event = GenericEvent("GameSetupPlanetModified");
         NamedVars@ vars = event.GetNamedVars();
         vars.AddValue(ScriptSafeVariableBlock("data", planet.toJSONString()));
         GetEngine().GetEventHandler().CallEvent(event);
-	}
+    }
 
-	int onGeneric(GenericEvent@ event)
+    int onGeneric(GenericEvent@ event)
     {
 		auto type = event.GetType();
 		LOG_INFO("Game setup got event of type " + type);
@@ -47,10 +51,10 @@ class GameSetup{
 
 			if(generationType == "random")
 			{
-				planet.randomize();
+			planet.randomize();
 			}
 
-            updateGui();
+			updateGui();
 			return 1;
 		} else if(type == "GameSetupStarMassInput"){
 			NamedVars@ vars = event.GetNamedVars();
@@ -70,13 +74,28 @@ class GameSetup{
 			planet.setEarth();
 			updateGui();
 			return 1;
+		} else if(type == "GameSetupPlanetOxygenInput"){
+			NamedVars@ vars = event.GetNamedVars();
+			planet.setOxygen(double(vars.GetSingleValueByName("oxygenPercentage")));
+			updateGui();
+			return 1;
+		} else if(type == "GameSetupPlanetCarbonDioxideInput"){
+			NamedVars@ vars = event.GetNamedVars();
+			planet.setCarbonDioxide(double(vars.GetSingleValueByName("carbonDioxidePercentage")));
+			updateGui();
+			return 1;
+		} else if(type == "GameSetupPlanetOrbitalRadiusInput"){
+			NamedVars@ vars = event.GetNamedVars();
+			planet.setOrbitalRadius(double(vars.GetSingleValueByName("orbitalRadius")));
+			updateGui();
+			return 1;
 		}
 
 		LOG_ERROR("Game setup got unknown event: " + type);
-        return -1;
-	}
+		return -1;
+    }
 
-	private Planet@ planet;
-	private string generationType;
-	private EventListener@ eventListener;
+    private Planet@ planet;
+    private string generationType;
+    private EventListener@ eventListener;
 }
