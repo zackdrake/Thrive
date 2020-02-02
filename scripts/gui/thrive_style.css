@@ -61,6 +61,12 @@ video {
   display: flex;
 }
 
+hr {
+  border: 0;
+  height: 2px;
+  background-image: linear-gradient(to right, #4dd5ff, #52e5ff);
+}
+
 /* scrollbar style */
 div::-webkit-scrollbar {
   width: 15px;
@@ -80,38 +86,76 @@ div::-webkit-scrollbar-thumb:hover {
 
 /* CSS for Star and Planet editor screen */
 .planetButton {
-  width: 20%;
-  height: 60px;
-  background-color: blue;
-  float: left;
+  width: auto;
+  height: 40px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  background-color: rgb(0, 51, 77);
+  text-align: center;
+  line-height: 40px;
+  font-size: 15pt;
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgb(0, 153, 153)
+}
+
+.planetButton:hover {
+  background-color: rgb(0, 153, 204);
 }
 
 .planetValueBox {
-  width: 20%;
-  background-color: green;
-  float: left;
+  width: 100%;
 }
 
+/* Star generator slider styling */
 .planetSlider {
-  width: 75%;
-  height: 30px;
+  -webkit-appearance: none;
+  margin: 18px 0;
+  width: 50%;
+}
+
+.planetSlider:focus {
+  outline: none;
+}
+
+.planetSlider::-webkit-slider-thumb {
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+  height: 36px;
+  width: 8px;
+  border-radius: 3px;
+  background: rgb(51, 204, 204);
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -17px;
+}
+
+.planetSlider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 2.4px;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+  background: rgb(0, 153, 153);
+  border-radius: 1.3px;
+  border: 0.2px solid #010101;
 }
 
 .planetValuesContainer {
-  width: 100%;
-  background-color: #404040;
+  width: 96%;
   display: inline-block;
-  font-size: 25px;
+  margin: 15px;
+  border-radius: 10px;
+  font-size: 23px;
 }
 
 .planetTitle {
   width: 100%;
-  float: left;
 }
 
 #topLevelGameSetup {
   width: 100%;
   height: 100%;
+  background-image: url("../../Textures/gui/BG_Menu01.png");
+  background-size: cover;
 }
 
 #mainSetup {
@@ -148,6 +192,11 @@ div::-webkit-scrollbar-thumb:hover {
 
 #advancedSetup {
   display: none;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: scroll;
+  background-color: rgba(0, 26, 26, 0.5);
 }
 
 /* Common quick classes */
