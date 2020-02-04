@@ -43,6 +43,7 @@ class MicrobeEditor{
         eventListener.RegisterForEvent("MicrobeEditorOrganelleSelected");
         eventListener.RegisterForEvent("SymmetryClicked");
         eventListener.RegisterForEvent("MicrobeEditorClicked");
+        eventListener.RegisterForEvent("MicrobeEditorHovered");
         eventListener.RegisterForEvent("MicrobeEditorExited");
         eventListener.RegisterForEvent("PressedRightRotate");
         eventListener.RegisterForEvent("PressedLeftRotate");
@@ -375,6 +376,7 @@ class MicrobeEditor{
                 PlacedOrganelle@ organelle = cast<PlacedOrganelle>(action.data["organelle"]);
                 // Need to set this here to make sure the pointer is updated
                 @action.data["organelle"]=organelle;
+                array<PlacedOrganelle@> replacedCytos;
                 // Check if there is cytoplasm under this organelle.
                 auto hexes = organelle.organelle.getRotatedHexes(organelle.rotation);
                 for(uint i = 0; i < hexes.length(); ++i){
@@ -388,14 +390,15 @@ class MicrobeEditor{
                         organelleHere.organelle.name == "cytoplasm")
                     {
                         // First we save the organelle data and then delete it
-                        @action.data["replacedCyto"] = organelleHere;
+                        replacedCytos.insertLast(organelleHere);
 
-                        LOG_INFO("replaced cytoplasm");
+                        LOG_INFO("replaced cytoplasm at " + posQ + ", " + posR);
                         OrganellePlacement::removeOrganelleAt(editor.editedMicrobeOrganelles,
                             Int2(posQ, posR));
                     }
                 }
 
+                @action.data["replacedCytos"] = replacedCytos;
                 LOG_INFO("Placing organelle '" + organelle.organelle.name + "' at: " +
                     organelle.q + ", " + organelle.r);
                 editor.editedMicrobeOrganelles.insertLast(organelle);
@@ -418,17 +421,19 @@ class MicrobeEditor{
                     if(organelleHere !is null){
                         OrganellePlacement::removeOrganelleAt(editor.editedMicrobeOrganelles,
                             Int2(posQ, posR));
-
-                        // If an cyto was replaced here, we have to replace it back on undo of this action
-                        if(action.data.exists("replacedCyto")) {
-                            PlacedOrganelle@ replacedCyto =  cast<PlacedOrganelle>(action.data["replacedCyto"]);
-
-                            LOG_INFO("Replacing " + replacedCyto.organelle.name + "' at: " +
-                                replacedCyto.q + ", " + replacedCyto.r);
-                            editor.editedMicrobeOrganelles.insertLast(replacedCyto);
-                        }
                     }
                 }
+
+                array<PlacedOrganelle@> replacedCytos = array<PlacedOrganelle@>(action.data["replacedCytos"]);
+
+                for(uint i = 0; i < replacedCytos.length(); i++){
+                    PlacedOrganelle@ replacedCyto = replacedCytos[i];
+                    LOG_INFO("Replacing " + replacedCyto.organelle.name + "' at: " +
+                        replacedCyto.q + ", " + replacedCyto.r);
+                    editor.editedMicrobeOrganelles.insertLast(replacedCyto);
+                }
+
+                LOG_INFO("Finished replacing cyto");
 
                 editor._onEditedCellChanged();
                 // send to gui current status of cell
@@ -1171,7 +1176,19 @@ class MicrobeEditor{
             }
 
             return 1;
+        } else if(type == "MicrobeEditorHovered"){
 
+            NamedVars@ vars = event.GetNamedVars();
+
+            bool hovered = bool(vars.GetSingleValueByName("hovered"));
+
+            if(!hovered){
+                showHover = false;
+            } else {
+                showHover = true;
+            }
+
+            return 1;
         } else if(type == "MicrobeEditorExited"){
             LOG_INFO("MicrobeEditor: applying changes to player Species");
 
