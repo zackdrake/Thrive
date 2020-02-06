@@ -30,16 +30,16 @@ function updatePlanetValues(data){
     // Add the star GetVariables
     document.getElementById("starMassSlider").value = data.orbitingBody.mass;
     document.getElementById("starMassValueBox").innerHTML =
-        "Star Mass: <b>" + scienceNumber(data.orbitingBody.mass) + " kg.";
+        "Star Mass: &emsp;<b>" + scienceNumber(data.orbitingBody.mass) + " kg.";
     document.getElementById("starRadiusValueBox").innerHTML =
-        "Star Radius: <b>" + scienceNumber(data.orbitingBody.radius) + " meters.";
+        "<b>" + scienceNumber(data.orbitingBody.radius) + " meters.";
     document.getElementById("starGravitationalParameterValueBox").innerHTML =
-        "Star Gravitational Parameter: <b>" +
+        "<b>" +
         scienceNumber(data.orbitingBody.gravitationalParameter);
     document.getElementById("starLifespanValueBox").innerHTML =
-        "Star Lifespan: <b>" + scienceNumber(data.orbitingBody.lifeSpan) + " earth years.";
+        "<b>" + scienceNumber(data.orbitingBody.lifeSpan) + " earth years.";
     document.getElementById("starTemperatureValueBox").innerHTML =
-        "Star Temperature: <b>" + scienceNumber(data.orbitingBody.temperature) + " kelvin.";
+        "<b>" + scienceNumber(data.orbitingBody.temperature) + " kelvin.";
 
     drawGraph(document.getElementById("stellarSpectrumGraph"),
         data.orbitingBody.stellarSpectrum);
@@ -47,15 +47,15 @@ function updatePlanetValues(data){
     // Add the planet variables
     document.getElementById("planetMassSlider").value = data.mass;
     document.getElementById("planetMassValueBox").innerHTML =
-        "Planet Mass: <b>" + scienceNumber(data.mass) + " kg.";
+        "Planet Mass: &emsp;<b>" + scienceNumber(data.mass) + " kg.";
     document.getElementById("planetRadiusValueBox").innerHTML =
-        "Planet Radius: <b>" + scienceNumber(data.radius) + " meters";
+        "<b>" + scienceNumber(data.radius) + " meters";
     document.getElementById("planetOceanMassValueBox").innerHTML =
-        "Ocean Mass: <b>" + scienceNumber(data.oceanMass) + " kg.";
+        "<b>" + scienceNumber(data.oceanMass) + " kg.";
     document.getElementById("planetLithosphereMassValueBox").innerHTML =
-        "Lithosphere Mass: <b>" + scienceNumber(data.lithosphereMass) + " kg.";
+        "<b>" + scienceNumber(data.lithosphereMass) + " kg.";
     document.getElementById("planetAtmosphereMassValueBox").innerHTML =
-        "Atmosphere Mass: <b>" + scienceNumber(data.atmosphereMass) + " kg.";
+        "<b>" + scienceNumber(data.atmosphereMass) + " kg.";
 
     const oxygenPercentage = parseInt(100 * data.atmosphereOxygen / data.atmosphereMass);
     const carbonDioxidePercentage =
@@ -65,7 +65,7 @@ function updatePlanetValues(data){
     // parseInt(100 * data.atmosphereWater / data.atmosphereMass);
     const nitrogenPercentage = parseInt(100 * data.atmosphereNitrogen / data.atmosphereMass);
     document.getElementById("planetOxygenPercentageValueBox").innerHTML =
-        "Percentage of Oxygen in Atmosphere:</small> <b>" + oxygenPercentage + "%.";
+        "Percentage of Oxygen in Atmosphere: <b>" + oxygenPercentage + "%.";
     document.getElementById("planetCarbonDioxidePercentageValueBox").innerHTML =
         "Percentage of Carbon Dioxide in Atmosphere: <b>" + carbonDioxidePercentage + " %.";
     document.getElementById("planetNitrogenPercentageValueBox").innerHTML =
@@ -75,39 +75,29 @@ function updatePlanetValues(data){
         carbonDioxidePercentage;
 
     document.getElementById("planetAtmosphereWaterValueBox").innerHTML =
-        "Mass of Water in Atmosphere: <b>" + scienceNumber(data.atmosphereWater) + " kg.";
+        "<b>" + scienceNumber(data.atmosphereWater) + " kg.";
     document.getElementById("planetAtmosphereOxygenValueBox").innerHTML =
-        "Mass of Oxygen in Atmosphere: <b>" + scienceNumber(data.atmosphereOxygen) + " kg.";
+        "<b>" + scienceNumber(data.atmosphereOxygen) + " kg.";
     document.getElementById("planetAtmosphereNitrogenValueBox").innerHTML =
-        "Mass of Nitrogen in Atmosphere: <b>" + scienceNumber(data.atmosphereNitrogen) +
-        " kg.";
+        "<b>" + scienceNumber(data.atmosphereNitrogen) + " kg.";
     document.getElementById("planetCarbonDioxideValueBox").innerHTML =
-        "Mass of Carbon Dioxide in Atmosphere: <b>" +
-        scienceNumber(data.atmosphereCarbonDioxide) + " kg.";
+        "<b>" + scienceNumber(data.atmosphereCarbonDioxide) + " kg.";
 
     drawGraph(document.getElementById("habitabilityGraph"),
         data.orbitingBody.habitabilityScore);
     drawPointOnGraph(document.getElementById("habitabilityGraph"),
         data.orbitalRadiusGraphFraction);
     document.getElementById("planetHabitabilityValueBox").innerHTML =
-        "Habitability Score: <b><span style='color:" + habitabilityColor + "'>" + data.habitability + "%.</span>";
-
-    if(data.habitability > 70 || data.habitability == 70){
-        habitabilityColor = "green";
-    }else if(data.habitability > 40 || data.habitability == 40){
-        habitabilityColor = "yellow";
-    }else if(data.habitability > 0 || data.habitability == 0){
-        habitabilityColor = "red";
-    }
+        "<b><span style='color:" + habitabilityColor + "'>" + data.habitability + "%.</span>";
 
     document.getElementById("planetOrbitalRadiusSlider").value = data.orbit.radius;
     document.getElementById("planetOrbitalRadiusValueBox").innerHTML =
-        "Orbital Radius: <b>" + scienceNumber(data.orbit.radius) + " meters.";
+        "Orbital Radius: &emsp;<b>" + scienceNumber(data.orbit.radius) + " meters.";
     document.getElementById("planetOrbitalPeriodValueBox").innerHTML =
-        "Orbital Period: <b>" + scienceNumber(data.orbit.period) + " earth years.";
+        "<b>" + scienceNumber(data.orbit.period) + " earth years.";
 
     document.getElementById("planetTemperatureValueBox").innerHTML =
-        "Planet Average Temperature: <b>" + data.planetTemperature.toPrecision(3) + "kelvin.";
+        "<b>" + data.planetTemperature.toPrecision(3) + " kelvin.";
 
     drawGraph(document.getElementById("atmosphericFilterGraph"), data.atmosphericFilter);
     drawGraph(document.getElementById("terrestrialSpectrumGraph"), data.terrestrialSpectrum);
@@ -374,7 +364,7 @@ function drawGraph(graph, data) {
     for (const i in data) {
         newX = oldX + xStep;
         newY = (height - offset) - yStep * data[i];
-        drawLine(graph, oldX, oldY, newX, newY, "rgb(200,10,50)", "3");
+        drawLine(graph, oldX, oldY, newX, newY, "rgb(145, 253, 243)", "3");
         oldX = newX;
         oldY = newY;
     }

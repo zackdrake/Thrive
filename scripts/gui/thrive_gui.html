@@ -120,97 +120,145 @@
       <div class="MenuButton DisabledButton" id="lawkSwitch">LAWK (Life As We Know it)</div>
     </div>
     <div id="advancedSetup">
-      <div class="Centered"><h1>Configure</h1></div>
-      <h1 style="margin-left: 15px; border-bottom: 2px solid #4dd5ff">Star</h1>
+      <div class="Centered"><h1><big>Configure</big></h1></div>
+      <hr class="stargenerator">
+      <h1 class="stargenerator">Star</h1>
       <!-- elements for displaying star values and sliders for input -->
       <div class="planetValuesContainer">
-        <div class="planetTitle">Choose a mass for your star</div>
-        <div class="planetSliderContainer">
-          <input type="range" min="9.945e+29" max="5.967e+30" id="starMassSlider" class="planetSlider">
-        </div>
-        <div id="starMassValueBox" class="planetValueBox"></div>
+        <div class="planetText">Choose a mass for your star</div>
+        <input type="range" min="9.945e+29" max="5.967e+30" id="starMassSlider" class="planetSlider">
+        <div id="starMassValueBox" class="planetText"></div>
         <br>
         <div id="starMassSetSolButton" class="planetButton" style="width: 400px">Set the star to be like Sol (Our sun)</div>
       </div>
-
-      <ul class="planetValuesContainer" style="position: absolute; left: 55%; width: 35%; list-style-type: none;
-      background-color: rgba(0, 20, 20, 0.8);">
-        <li style="margin-bottom: 10px"><div class="planetTitle">This mass leads to a star with these properties. </div></li>
-        <li style="margin-bottom: 10px"><div id="starRadiusValueBox" class="planetValueBox"></div></li>
-        <li style="margin-bottom: 10px"><div id="starGravitationalParameterValueBox" class="planetValueBox"></div></li>
-        <li style="margin-bottom: 10px"><div id="starLifespanValueBox" class="planetValueBox"></div></li>
-        <li style="margin-bottom: 10px"><div id="starTemperatureValueBox" class="planetValueBox"></div></li>
-      </ul>
-
+      <br><br>
       <div class="planetValuesContainer">
-        <div class="planetTitle">Spectrum</div>
+        <div class="planetTitle" style="width: 50%;">Spectrum</div>
+        <br>
         <svg id="stellarSpectrumGraph" height="200" width="400"></svg>
         <br>
-        <div class="planetTitle" style="width: 50%">This is a graph of the spectrum of light emitted by your star (x axis wavelength, y axis intenstiy) </div>
+        <div class="planetText" style="width: 50%">This is a graph of the spectrum of light emitted by your star (x axis wavelength, y axis intenstiy) </div>
       </div>
-
-      <h1 style="margin-left: 15px; border-bottom: 2px solid #4dd5ff">Planet</h1>
+      
+      <ul class="planetValuesList">
+        <div class="planetTitle" style="position: relative; top: -20px;">Stats</div>
+        <div class="planetListBox">
+        <li style="margin: 10px">
+          <div class="planetTextInline" style="width: 250px">Radius</div>
+          <div id="starRadiusValueBox" class="planetTextInline" style="margin-left: 40px"></div></li>
+        </li>
+        <li style="margin: 10px">
+          <div class="planetTextInline" style="width: 250px">Grav. Parameter</div>
+          <div id="starGravitationalParameterValueBox" class="planetTextInline" style="margin-left: 40px"></div>
+        </li>
+        <li style="margin: 10px">
+          <div class="planetTextInline" style="width: 250px">Lifespan</div>
+          <div id="starLifespanValueBox" class="planetTextInline" style="margin-left: 40px"></div>
+        </li>
+        <li style="margin: 10px">
+          <div class="planetTextInline" style="width: 250px">Temperature</div>
+          <div id="starTemperatureValueBox" class="planetTextInline" style="margin-left: 40px"></div>
+        </li>
+      </div>
+      </ul>
+      <br><br>
+      <h1 class="stargenerator">Planet</h1>
       <!-- elements for displaying planet values and sliders for input -->
       <div class="planetValuesContainer">
-        <div class="planetTitle">Choose a mass for your planet</div>
+        <div class="planetText">Choose a mass for your planet</div>
         <input type="range" min="3.588910102735962e+24" max="1.7937313085760207e+25" id="planetMassSlider" class="planetSlider">
         <div id="planetMassValueBox" class="planetValueBox"></div>
         <br>
         <div id="planetMassSetEarthButton" class="planetButton" style="width: 350px">Set the planet to be like the Earth</div>
       </div>
 
-       <ul class="planetValuesContainer" style="position: absolute; left: 55%; width: 35%; list-style-type: none;
-       background-color: rgba(0, 20, 20, 0.8);">
-        <li style="margin-bottom: 10px"><div class="planetTitle">This mass leads to a planet with these properties.</div></li>
-        <li style="margin-bottom: 10px"><div id="planetRadiusValueBox" class="planetValueBox"></div></li>
-        <li style="margin-bottom: 10px"><div id="planetOceanMassValueBox" class="planetValueBox"></div></li>
-        <li style="margin-bottom: 10px"><div id="planetLithosphereMassValueBox" class="planetValueBox"></div></li>
-        <li style="margin-bottom: 10px"><div id="planetAtmosphereMassValueBox" class="planetValueBox"></div></li>
+      <ul class="planetValuesList">
+        <div class="planetTitle" style="position: relative; top: -20px;">Stats</div>
+        <div class="planetListBox">
+        <li style="margin: 10px">
+          <div class="planetTextInline" style="width: 300px">Radius</div>
+          <div id="planetRadiusValueBox" class="planetTextInline"></div>
+        </li>
+        <li style="margin: 10px">
+          <div class="planetTextInline" style="width: 300px">Ocean Mass</div>
+          <div id="planetOceanMassValueBox" class="planetTextInline"></div>
+        </li>
+        <li style="margin: 10px">
+          <div class="planetTextInline" style="width: 300px">Lithosphere Mass</div>
+          <div id="planetLithosphereMassValueBox" class="planetTextInline"></div>
+        </li>
+        <li style="margin: 10px">
+          <div class="planetTextInline" style="width: 300px">Atmosphere Mass</div>
+          <div id="planetAtmosphereMassValueBox" class="planetTextInline"></div>
+        </li>
+        <br>
+        <li style="margin: 10px">
+          <div class="planetTextInline" style="width: 300px">Mass of Water</div>
+          <div id="planetAtmosphereWaterValueBox" class="planetTextInline"></div>
+        </li>
+        <li style="margin: 10px">
+          <div class="planetTextInline" style="width: 300px">Mass of Oxygen</div>
+          <div id="planetAtmosphereOxygenValueBox" class="planetTextInline"></div>
+        </li>
+        <li style="margin: 10px">
+          <div class="planetTextInline" style="width: 300px">Mass of Nitrogen</div>
+          <div id="planetAtmosphereNitrogenValueBox" class="planetTextInline"></div>
+        </li>
+        <li style="margin: 10px">
+          <div class="planetTextInline" style="width: 300px">Mass of Carbon Dioxide</div>
+          <div id="planetCarbonDioxideValueBox" class="planetTextInline"></div>
+        </li>
+        <br>
+        <li style="margin: 10px">
+          <div class="planetTextInline" style="width: 300px">Orbital Period</div>
+          <div id="planetOrbitalPeriodValueBox" class="planetTextInline"></div>
+        </li>
+        <li style="margin: 10px">
+          <div class="planetTextInline" style="width: 300px">Average Temperature</div>
+          <div id="planetTemperatureValueBox" class="planetTextInline"></div>
+        </li>
+        <li style="margin: 10px">
+          <div class="planetTextInline" style="width: 300px">Habitability Score</div>
+          <div id="planetHabitabilityValueBox" class="planetTextInline"></div>
+        </li>
+      </div>
       </ul>
+
       <div class="planetValuesContainer">
-        <div class="planetTitle">Set the proportion of Oxygen in your atmosphere.</div>
+        <div class="planetText">Set the proportion of Oxygen in your atmosphere.</div>
         <input type="range" min="0" max="100" id="planetAtmosphereOxygenSlider" class="planetSlider">
       </div>
+
       <div class="planetValuesContainer">
-        <div class="planetTitle">Set the proportion of Carbon Dioxide in your atmosphere.</div>
+        <div class="planetText">Set the proportion of Carbon Dioxide in your atmosphere.</div>
         <input type="range" min="0" max="100" id="planetAtmosphereCarbonDioxideSlider" class="planetSlider">
       </div>
+
       <div class="planetValuesContainer">
         <div id="planetOxygenPercentageValueBox" class="planetValueBox"></div>
         <div id="planetNitrogenPercentageValueBox" class="planetValueBox"></div>
         <div id="planetCarbonDioxidePercentageValueBox" class="planetValueBox"></div>
-      </div>
-      <div class="planetValuesContainer">
-        <div id="planetAtmosphereWaterValueBox" class="planetValueBox"></div>
-        <div id="planetAtmosphereOxygenValueBox" class="planetValueBox"></div>
-        <div id="planetAtmosphereNitrogenValueBox" class="planetValueBox"></div>
-        <div id="planetCarbonDioxideValueBox" class="planetValueBox"></div>
-      </div>
-
-      <div class="planetValuesContainer">
-        <div class="planetTitle">Choose an orbital radius for your planet.</div>
+        <br>
+        <div class="planetText">Choose an orbital radius for your planet.</div>
         <input type="range" min="2.25e+10" max="2.334e+12" id="planetOrbitalRadiusSlider" class="planetSlider">
         <div id="planetOrbitalRadiusValueBox" class="planetValueBox"></div>
       </div>
-      <ul class="planetValuesContainer" style="position: absolute; left: 55%; width: 35%; list-style-type: none;
-      background-color: rgba(0, 20, 20, 0.8);">
-        <li style="margin-bottom: 10px"><div class="planetTitle">This leads to a planet with the following
-            properties.</div></li>
-        <li style="margin-bottom: 10px"><div id="planetOrbitalPeriodValueBox" class="planetValueBox"></div></li>
-        <li style="margin-bottom: 10px"><div id="planetTemperatureValueBox" class="planetValueBox"></div></li>
-        <li style="margin-bottom: 10px"><div id="planetHabitabilityValueBox" class="planetValueBox"></div></li>
-      </ul>
-
-      <div class="planetValuesContainer">
-        <div class="planetTitle" style="width: 55%">These graphs are 1. orbital distance (x axis)
-            vs habitability percentage score (y-axis). 2. wavelength (x axis) vs
-            percentage of absorbed by the atmosphere (y axis) and 3. Wavelength
-            (x axis) vs amount of light hitting the planet's surface (y axis).
-            </div>
+      <br><br>
+      <hr class="stargenerator2">
+      <div class="planetValuesContainer" style="width: 100%">
         <br>
+        <div class="planetTextInline" style="padding-left: 30px;">Habitability Score</div>
+        <div class="planetTextInline" style="padding-left: 230px;">Light absorbed by the atmosphere</div>
+        <div class="planetTextInline" style="padding-left: 40px;">Light reaching the surface</div>
+        <br>
+        <div class="planetTextInline" style="position: relative; bottom: 170px">%</div>
         <svg id="habitabilityGraph" height="200" width="400"></svg>
+        <div class="planetTextInline" style="position: relative; bottom: 170px;">%</div>
         <svg id="atmosphericFilterGraph" height="200" width="400"></svg>
+        <div class="planetTextInline" style="position: relative; margin-right: 15px">&lambda;</div>
         <svg id="terrestrialSpectrumGraph" height="200" width="400"></svg>
+        <div class="planetTextInline" style="position: relative;">&lambda;</div>
+        <img src="../../Textures/gui/bevel/spectrumtransparent.png" class="lightSpectrum" alt="spectrum">
       </div>
       <div class="MenuButton" id="advancedSetupBack">Back</div>
     </div>
