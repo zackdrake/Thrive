@@ -629,6 +629,18 @@ bool
         ANGELSCRIPT_REGISTERFAIL;
     }
 
+	if(engine->RegisterObjectMethod("ThriveGame",
+           "void storeMicrobeTemplate(const string &in name, const string &in "
+           "stringCode)",
+           asMETHOD(ThriveGame, storeMicrobeTemplate), asCALL_THISCALL) < 0) {
+        ANGELSCRIPT_REGISTERFAIL;
+    }
+
+	if(engine->RegisterObjectMethod(
+           "ThriveGame", "string loadMicrobeTemplate(const string &in name)",
+        asMETHOD(ThriveGame, loadMicrobeTemplate), asCALL_THISCALL) < 0) {
+	}
+
     // if(engine->RegisterObjectMethod("Client",
     //         "bool Connect(const string &in address, string &out
     //         errormessage)", asMETHODPR(Client, Connect, (const std::string&,

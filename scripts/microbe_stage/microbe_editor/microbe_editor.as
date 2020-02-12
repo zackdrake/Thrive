@@ -2,6 +2,7 @@
 #include "microbe_operations.as"
 #include "organelle_placement.as"
 #include "calculate_effectiveness.as"
+#include "procedural_microbes.as"
 
 /*
 ////////////////////////////////////////////////////////////////////////////////
@@ -50,6 +51,8 @@ class MicrobeEditor{
         eventListener.RegisterForEvent("NewCellClicked");
         eventListener.RegisterForEvent("RedoClicked");
         eventListener.RegisterForEvent("UndoClicked");
+        eventListener.RegisterForEvent("SaveMicrobeClicked");
+        eventListener.RegisterForEvent("LoadMicrobeClicked");
         eventListener.RegisterForEvent("MicrobeEditorSelectedTab");
         eventListener.RegisterForEvent("MicrobeEditorSelectedNewPatch");
         eventListener.RegisterForEvent("MicrobeEditorNameChanged");
@@ -770,23 +773,70 @@ class MicrobeEditor{
             OrganellePlacement::getOrganelleAt(editedMicrobeOrganelles, Int2(q - 1, r + 0)) !is null;
     }
 
-    void loadMicrobe(int entityId){
-        mutationPoints = 0;
-        // organelleCount = 0;
-        //     if (currentMicrobeEntity != null){
-        //         currentMicrobeEntity.destroy();
-        //     }
-        //     currentMicrobeEntity = Entity(entityId, g_luaEngine.currentGameState.wrapper);
-        //     MicrobeSystem.initializeMicrobe(currentMicrobeEntity, true);
-        //     currentMicrobeEntity.stealName("working_microbe");
-        //     auto sceneNodeComponent = getComponent(currentMicrobeEntity, OgreSceneNodeComponent);
-        //     sceneNodeComponent.transform.orientation = Quaternion(Radian(Degree(0)),
-        //     Vector3(0, 0, 1)); //Orientation
-        //     sceneNodeComponent.transform.touch();
-        //     Engine.playerData().setActiveCreature(entityId, GameState.MICROBE_EDITOR);
-        //     //resetting the action history - it should not become entangled with the local file system
-        //     actionHistory = {};
-        //     actionIndex = 0;
+    void saveMicrobe()
+    {
+        auto playerSpecies = MicrobeOperations::getSpecies(
+            GetThriveGame().getCellStage(), "Default");
+
+        string genes = "";
+
+        for(uint i = 0; i < editedMicrobeOrganelles.length(); i++){
+            auto organelle = cast<PlacedOrganelle>(editedMicrobeOrganelles[i]);
+            genes += organelle.organelle.gene;
+            genes += "," + organelle.q +"," +
+            organelle.r + "," +
+            organelle.rotation;
+            if (i != editedMicrobeOrganelles.length()-1){
+                genes += "|";
+            }
+        }
+
+        genes += ";" + membrane + ";" +
+        rigidity + ";" + colour.X + "," +
+        colour.Y + "," + colour.Z;
+
+        GetThriveGame().storeMicrobeTemplate(newName, genes);
+    }
+
+    // TODO: do validation process and maybe make a function called
+    // getMicrobeTemplates() (called once when opening the editor and
+    // return a string array/container) to load all existing .dna files?
+    // and loadMicrobe(speciesname) will then access one of its elements with a
+    // given name to create it in the editor
+    void loadMicrobe()
+    {
+        string code = GetThriveGame().loadMicrobeTemplate(newName);
+
+        if(code == ""){
+            LOG_ERROR("Gene code is empty!");
+            return;
+        }
+
+        array<string>@ gene = code.split(";");
+        array<string>@ colourCodes = gene[3].split(",");
+
+        membrane = parseInt(gene[1]);
+        rigidity = parseFloat(gene[2]);
+
+        colour.X = parseFloat(colourCodes[0]);
+        colour.Y = parseFloat(colourCodes[1]);
+        colour.Z = parseFloat(colourCodes[2]);
+
+        array<PlacedOrganelle@> loadedOrganelles = positionOrganelles(gene[0]);
+
+        editedMicrobeOrganelles.resize(0);
+
+        for(uint i = 0; i < loadedOrganelles.length(); ++i){
+            auto organelle = cast<PlacedOrganelle>(loadedOrganelles[i]);
+            editedMicrobeOrganelles.insertLast(organelle);
+        }
+
+        _onEditedCellChanged();
+
+        mutationPoints = BASE_MUTATION_POINTS;
+        actionHistory.resize(0);
+
+        actionIndex = 0;
     }
 
     void redo()
@@ -1392,7 +1442,13 @@ class MicrobeEditor{
             }
 
             return 1;
-        }
+        } else if(type == "SaveMicrobeClicked"){
+            saveMicrobe();
+            return 1;
+        } else if(type == "LoadMicrobeClicked"){
+            loadMicrobe();
+            return 1;
+        } else if(type == "")
 
         LOG_ERROR("Microbe editor got unknown event: " + type);
         return -1;

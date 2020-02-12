@@ -1431,6 +1431,30 @@ div::-webkit-scrollbar-thumb:hover {
   text-indent: 40px;
 }
 
+#saveMicrobeButton {
+  position: absolute;
+  height: 40px;
+  width: 120px;
+  top: 40px;
+  left: calc(440px + 386px);
+  background-image: url("../../Textures/gui/bevel/MediumTwoNormal.png");
+  font-size: 8pt;
+  line-height: 40px;
+  text-indent: 40px;
+}
+
+#loadMicrobeButton {
+  position: absolute;
+  height: 40px;
+  width: 80px;
+  top: 40px;
+  left: calc(360px + 386px);
+  background-image: url("../../Textures/gui/bevel/MediumTwoNormal.png");
+  font-size: 8pt;
+  line-height: 40px;
+  text-indent: 40px;
+}
+
 #editorTabBar {
   position: absolute;
   height: 40px;
@@ -1476,6 +1500,30 @@ div::-webkit-scrollbar-thumb:hover {
 
 #newButton:hover {
   background-image: url("../../Textures/gui/bevel/MediumTwoHover.png");
+}
+
+#saveMicrobeButton:hover {
+  background-image: url("../../Textures/gui/bevel/MediumTwoHover.png");
+}
+
+#saveMicrobeButton.DisabledButton {
+  background-image: url("../../Textures/gui/bevel/MediumTwoDisabled.png");
+}
+
+#saveMicrobeButton.DisabledButton:hover {
+  background-image: url("../../Textures/gui/bevel/MediumTwoDisabled.png");
+}
+
+#loadMicrobeButton:hover {
+  background-image: url("../../Textures/gui/bevel/MediumTwoHover.png");
+}
+
+#loadMicrobeButton.DisabledButton {
+  background-image: url("../../Textures/gui/bevel/MediumTwoDisabled.png");
+}
+
+#loadMicrobeButton.DisabledButton:hover {
+  background-image: url("../../Textures/gui/bevel/MediumTwoDisabled.png");
 }
 
 .NewIcon {
@@ -1736,6 +1784,17 @@ div::-webkit-scrollbar-thumb:hover {
 
 .Red {
   color: #f33;
+}
+
+#EditorLoadTemplatePanel {
+  display: block;
+  width: 400px;
+  height: 30%;
+  top: 0;
+  right: 0;
+  background-color: rgba(0, 89, 89, 0);
+  position: absolute;
+  z-index: 1;
 }
 
 

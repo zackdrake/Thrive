@@ -100,6 +100,12 @@ public:
             const std::string& status,
             const std::string& message);
 
+	void
+        storeMicrobeTemplate(const std::string& name, const std::string& genes);
+
+    std::string
+        loadMicrobeTemplate(const std::string& name);
+
     // ------------------------------------ //
     // Player input actions
     void
