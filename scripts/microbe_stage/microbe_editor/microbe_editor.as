@@ -801,8 +801,8 @@ class MicrobeEditor{
     // TODO: do validation process and maybe make a function called
     // getMicrobeTemplates() (called once when opening the editor and
     // return a string array/container) to load all existing .dna files?
-    // and loadMicrobe(speciesname) will then access one of its elements with a
-    // given name to create it in the editor
+    // and loadMicrobe(speciesname) will then access one of its elements with
+    // the given name for the cell layout to be created in the editor
     void loadMicrobe()
     {
         string code = GetThriveGame().loadMicrobeTemplate(newName);
