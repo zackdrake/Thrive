@@ -28,7 +28,7 @@ void
 
     fs->GetFilesInDirectory(filesInDirectory, MICROBE_TEMPLATE_FOLDER);
 
-	if(!m_templateFiles.empty())
+    if(!m_templateFiles.empty())
         m_templateFiles.clear();
 
     for(auto& files : filesInDirectory) {
@@ -40,7 +40,7 @@ void
         }
     }
 
-	LOG_INFO("Found " + Leviathan::Convert::ToString(m_templateFiles.size()) +
+    LOG_INFO("Found " + Leviathan::Convert::ToString(m_templateFiles.size()) +
              " DNA files");
 
     if(!m_templateData.empty())
@@ -50,7 +50,7 @@ void
         loadMicrobeTemplate(files);
     }
 
-	LOG_INFO("Loaded " + Leviathan::Convert::ToString(m_templateData.size()) +
+    LOG_INFO("Loaded " + Leviathan::Convert::ToString(m_templateData.size()) +
              " microbe templates");
 }
 // ------------------------------------ //
@@ -76,15 +76,14 @@ void
 
     auto fs = Engine::Get()->GetFileSystem();
 
-	std::string path =
+    std::string path =
         std::filesystem::path(MICROBE_TEMPLATE_FOLDER + data.name + "." + "dna")
             .string();
 
-    if(fs->WriteToFile(
-           stringData, path)) {
+    if(fs->WriteToFile(stringData, path)) {
         LOG_INFO("Saved player microbe");
 
-		// Load the template right after saving so it will appear
+        // Load the template right after saving so it will appear
         // on the template list, might need a better way to do this
         loadMicrobeTemplate(path);
 
@@ -94,27 +93,27 @@ void
 }
 // ------------------------------------ //
 void
-	MicrobeTemplates::loadMicrobeTemplate(const std::string& filepath)
+    MicrobeTemplates::loadMicrobeTemplate(const std::string& filepath)
 {
     MicrobeTemplateData::pointer data = parseMicrobeTemplate(filepath);
 
-	if(data == nullptr) {
+    if(data == nullptr) {
         LOG_INFO("Failed to load template file");
         return;
-	}
+    }
 
-	// If the template is already loaded then remove it from the vector
+    // If the template is already loaded then remove it from the vector
     for(auto iter = m_templateData.begin(); iter != m_templateData.end();) {
         if(iter->get()->name == data->name) {
             m_templateData.erase(iter);
         } else {
             ++iter;
-		}
+        }
     }
 
-	m_templateData.push_back(data);
+    m_templateData.push_back(data);
 
-	// Send data to GUI
+    // Send data to GUI
     auto event =
         GenericEvent::MakeShared<GenericEvent>("MicrobeTemplateListUpdated");
 
@@ -141,29 +140,29 @@ MicrobeTemplateData::pointer
     std::vector<std::string> genes;
     std::vector<std::string> colourGenes;
 
-	Leviathan::StringOperations::CutString<std::string>(
+    Leviathan::StringOperations::CutString<std::string>(
         stream, std::string(";"), genes);
     Leviathan::StringOperations::CutString<std::string>(
         genes[4], std::string(","), colourGenes);
 
-	if(genes.size() != 5) {
+    if(genes.size() != 5) {
         LOG_ERROR("Invalid chromosome size, aborting parse!");
         return nullptr;
     }
 
-	for(auto& chromosome : genes) {
+    for(auto& chromosome : genes) {
         if(chromosome == "") {
             LOG_ERROR("Microbe has a missing chromosome, aborting parse!");
             return nullptr;
-		}
-	}
+        }
+    }
 
-	Float4 colourData;
+    Float4 colourData;
     colourData.X = Leviathan::Convert::StringTo<float>(colourGenes[0]);
     colourData.Y = Leviathan::Convert::StringTo<float>(colourGenes[1]);
     colourData.Z = Leviathan::Convert::StringTo<float>(colourGenes[2]);
 
-	auto data = MicrobeTemplateData::MakeShared<MicrobeTemplateData>(genes[0],
+    auto data = MicrobeTemplateData::MakeShared<MicrobeTemplateData>(genes[0],
         genes[1], Leviathan::Convert::StringTo<int>(genes[2]),
         Leviathan::Convert::StringTo<float>(genes[3]), colourData);
 

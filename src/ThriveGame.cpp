@@ -176,7 +176,7 @@ public:
 
     AutoEvo m_autoEvo;
 
-	MicrobeTemplates m_microbeTemplates;
+    MicrobeTemplates m_microbeTemplates;
 
     std::shared_ptr<CellStageWorld> m_cellStage;
     std::shared_ptr<MicrobeEditorWorld> m_microbeEditor;
@@ -1407,7 +1407,7 @@ void
     // Create backgrounds if they don't exist
     m_impl->createBackgroundItem();
 
-	m_impl->m_microbeTemplates.Initialize();
+    m_impl->m_microbeTemplates.Initialize();
 
     // Let the script do setup //
     // This registers all the script defined systems to run and be

@@ -25,51 +25,51 @@ protected:
 public:
     ~MicrobeTemplateData() = default;
 
-	std::string name;
+    std::string name;
     // TODO: Replace with OrganelleTemplatePlaced
     std::string organelles;
     int membrane;
     float rigidity;
     Float4 colour;
 
-	//! Factory for scripts
-	static MicrobeTemplateData*
+    //! Factory for scripts
+    static MicrobeTemplateData*
         factory(std::string& name,
             std::string& organelles,
             int membrane,
             float rigidity,
             Float4 colour);
 
-	REFERENCE_COUNTED_PTR_TYPE(MicrobeTemplateData);
+    REFERENCE_COUNTED_PTR_TYPE(MicrobeTemplateData);
 };
 
 class MicrobeTemplates {
 public:
-	void
+    void
         Initialize();
 
     void
         storeMicrobeTemplate(const MicrobeTemplateData& data);
 
-	void
+    void
         loadMicrobeTemplate(const std::string& filepath);
 
-	MicrobeTemplateData::pointer
+    MicrobeTemplateData::pointer
         parseMicrobeTemplate(const std::string& filepath);
 
-	auto&
+    auto&
         getTemplates()
     {
         return m_templateData;
     }
 
-	const auto&
+    const auto&
         getTemplates() const
     {
         return m_templateData;
     }
 
-	CScriptArray*
+    CScriptArray*
         getTemplatesWrapper();
 
 private:

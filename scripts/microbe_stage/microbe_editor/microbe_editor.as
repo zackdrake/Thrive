@@ -814,7 +814,7 @@ class MicrobeEditor{
                 membrane = templates[i].membrane;
                 rigidity = templates[i].rigidity;
                 colour = templates[i].colour;
-                
+
                 // This doesnt feel right
                 GenericEvent@ event = GenericEvent("MicrobeEditorActivated");
                 NamedVars@ vars = event.GetNamedVars();
