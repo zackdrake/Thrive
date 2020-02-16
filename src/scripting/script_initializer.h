@@ -35,4 +35,7 @@ bool
 bool
     registerSimulationDataAndJsons(asIScriptEngine* engine);
 
+bool
+    registerMicrobeTemplates(asIScriptEngine* engine);
+
 } // namespace thrive

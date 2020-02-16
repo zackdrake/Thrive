@@ -28,6 +28,8 @@ class PlayerMicrobeControl;
 class AutoEvo;
 class Species;
 
+class MicrobeTemplates;
+
 //! This is the main thrive class that is created in main.cpp and then handles
 //! running the engine and the event loop
 class ThriveGame : public Leviathan::ClientApplication, public ThriveCommon {
@@ -62,6 +64,9 @@ public:
 
     AutoEvo&
         autoEvo();
+
+	MicrobeTemplates&
+        microbeTemplates();
 
     void
         setBackgroundMaterial(const std::string& material);
@@ -99,12 +104,6 @@ public:
         updateLoadingScreen(bool enabled,
             const std::string& status,
             const std::string& message);
-
-	void
-        storeMicrobeTemplate(const std::string& name, const std::string& genes);
-
-    std::string
-        loadMicrobeTemplate(const std::string& name);
 
     // ------------------------------------ //
     // Player input actions

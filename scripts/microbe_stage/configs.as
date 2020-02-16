@@ -297,6 +297,7 @@ class OrganelleTemplatePlaced{
     int rotation;
 }
 
+// TODO: Replace this
 class MicrobeTemplate{
 
     MicrobeTemplate(

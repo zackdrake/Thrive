@@ -48,11 +48,11 @@ class MicrobeEditor{
         eventListener.RegisterForEvent("MicrobeEditorExited");
         eventListener.RegisterForEvent("PressedRightRotate");
         eventListener.RegisterForEvent("PressedLeftRotate");
-        eventListener.RegisterForEvent("NewCellClicked");
         eventListener.RegisterForEvent("RedoClicked");
         eventListener.RegisterForEvent("UndoClicked");
         eventListener.RegisterForEvent("SaveMicrobeClicked");
         eventListener.RegisterForEvent("LoadMicrobeClicked");
+        eventListener.RegisterForEvent("TemplateSelected");
         eventListener.RegisterForEvent("MicrobeEditorSelectedTab");
         eventListener.RegisterForEvent("MicrobeEditorSelectedNewPatch");
         eventListener.RegisterForEvent("MicrobeEditorNameChanged");
@@ -106,6 +106,8 @@ class MicrobeEditor{
 
         //Check generation and set it here.
         hudSystem.updateGeneration();
+
+        selectedTemplate = "";
     }
 
     void activate()
@@ -775,10 +777,7 @@ class MicrobeEditor{
 
     void saveMicrobe()
     {
-        auto playerSpecies = MicrobeOperations::getSpecies(
-            GetThriveGame().getCellStage(), "Default");
-
-        string genes = "";
+        string genes;
 
         for(uint i = 0; i < editedMicrobeOrganelles.length(); i++){
             auto organelle = cast<PlacedOrganelle>(editedMicrobeOrganelles[i]);
@@ -791,52 +790,60 @@ class MicrobeEditor{
             }
         }
 
-        genes += ";" + membrane + ";" +
-        rigidity + ";" + colour.X + "," +
-        colour.Y + "," + colour.Z;
+        MicrobeTemplateData@ templateData = MicrobeTemplateData(
+            newName, genes, membrane, rigidity, colour);
 
-        GetThriveGame().storeMicrobeTemplate(newName, genes);
+        GetThriveGame().microbeTemplates().storeMicrobeTemplate(templateData);
     }
 
-    // TODO: do validation process and maybe make a function called
-    // getMicrobeTemplates() (called once when opening the editor and
-    // return a string array/container) to load all existing .dna files?
-    // and loadMicrobe(speciesname) will then access one of its elements with
-    // the given name for the cell layout to be created in the editor
     void loadMicrobe()
     {
-        string code = GetThriveGame().loadMicrobeTemplate(newName);
-
-        if(code == ""){
-            LOG_ERROR("Gene code is empty!");
+        if(selectedTemplate == ""){
             return;
         }
 
-        array<string>@ gene = code.split(";");
-        array<string>@ colourCodes = gene[3].split(",");
+        auto@ templates = GetThriveGame().microbeTemplates().getTemplates();
 
-        membrane = parseInt(gene[1]);
-        rigidity = parseFloat(gene[2]);
+        for(uint i = 0; i < templates.length(); ++i){
+            if(templates[i].name == selectedTemplate){
+                array<PlacedOrganelle@> templateOrganelles =
+                positionOrganelles(templates[i].organelles);
 
-        colour.X = parseFloat(colourCodes[0]);
-        colour.Y = parseFloat(colourCodes[1]);
-        colour.Z = parseFloat(colourCodes[2]);
+                // Set the cell properties
+                newName = templates[i].name;
+                membrane = templates[i].membrane;
+                rigidity = templates[i].rigidity;
+                colour = templates[i].colour;
+                
+                // This doesnt feel right
+                GenericEvent@ event = GenericEvent("MicrobeEditorActivated");
+                NamedVars@ vars = event.GetNamedVars();
 
-        array<PlacedOrganelle@> loadedOrganelles = positionOrganelles(gene[0]);
+                vars.AddValue(ScriptSafeVariableBlock("name", newName));
+                vars.AddValue(ScriptSafeVariableBlock("membrane", SimulationParameters::membraneRegistry().getInternalName(membrane)));
+                vars.AddValue(ScriptSafeVariableBlock("colourR", colour.X));
+                vars.AddValue(ScriptSafeVariableBlock("colourG", colour.Y));
+                vars.AddValue(ScriptSafeVariableBlock("colourB", colour.Z));
+                vars.AddValue(ScriptSafeVariableBlock("rigidity", rigidity));
 
-        editedMicrobeOrganelles.resize(0);
+                GetEngine().GetEventHandler().CallEvent(event);
 
-        for(uint i = 0; i < loadedOrganelles.length(); ++i){
-            auto organelle = cast<PlacedOrganelle>(loadedOrganelles[i]);
-            editedMicrobeOrganelles.insertLast(organelle);
+                // Place the right organelles
+                editedMicrobeOrganelles.resize(0);
+
+                for(uint i = 0; i < templateOrganelles.length(); ++i){
+                    auto organelle = cast<PlacedOrganelle>(templateOrganelles[i]);
+                    editedMicrobeOrganelles.insertLast(organelle);
+                }
+
+                _onEditedCellChanged();
+
+                mutationPoints = BASE_MUTATION_POINTS;
+                actionHistory.resize(0);
+
+                actionIndex = 0;
+            }
         }
-
-        _onEditedCellChanged();
-
-        mutationPoints = BASE_MUTATION_POINTS;
-        actionHistory.resize(0);
-
-        actionIndex = 0;
     }
 
     void redo()
@@ -1448,6 +1455,10 @@ class MicrobeEditor{
         } else if(type == "LoadMicrobeClicked"){
             loadMicrobe();
             return 1;
+        } else if(type == "TemplateSelected"){
+            NamedVars@ vars = event.GetNamedVars();
+            selectedTemplate = string(vars.GetSingleValueByName("templateName"));
+            return 1;
         } else if(type == "")
 
         LOG_ERROR("Microbe editor got unknown event: " + type);
@@ -1517,4 +1528,6 @@ class MicrobeEditor{
 
     private Material@ invalidMaterial;
     private Material@ validMaterial;
+
+    private string selectedTemplate;
 };

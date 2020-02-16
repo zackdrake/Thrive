@@ -11,6 +11,7 @@
 #include "microbe_stage/microbe_editor_key_handler.h"
 #include "microbe_stage/organelle_table.h"
 #include "microbe_stage/simulation_parameters.h"
+#include "microbe_stage/microbe_templates.h"
 #include "scripting/script_initializer.h"
 #include "thrive_net_handler.h"
 #include "thrive_version.h"
@@ -29,9 +30,6 @@
 #include <Script/Bindings/StandardWorldBindHelper.h>
 #include <Script/ScriptExecutor.h>
 #include <Window.h>
-
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/fstream.hpp>
 
 using namespace thrive;
 
@@ -177,6 +175,8 @@ public:
     PlayerData m_playerData;
 
     AutoEvo m_autoEvo;
+
+	MicrobeTemplates m_microbeTemplates;
 
     std::shared_ptr<CellStageWorld> m_cellStage;
     std::shared_ptr<MicrobeEditorWorld> m_microbeEditor;
@@ -494,60 +494,6 @@ void
     // start a new game, then run a loading script
     //(the script will disable the tutorial etc)
 }
-
-void
-    ThriveGame::storeMicrobeTemplate(const std::string& name,
-        const std::string& genes)
-{
-    boost::filesystem::path pth("Data/MicrobeTemplates");
-    boost::system::error_code returnedError;
-    boost::filesystem::create_directories(pth, returnedError);
-
-    if(returnedError) {
-        LOG_ERROR("Could not create necessary directories for saving.");
-    } else {
-        std::ofstream stream((pth / boost::filesystem::path(name + "." + "dna"))
-                                 .string<std::string>());
-        if(stream) {
-            try {
-                stream << genes;
-                stream.flush();
-                stream.close();
-            } catch(const std::ofstream::failure& e) {
-                LOG_ERROR("Error saving file: ", e.what());
-                throw;
-            }
-        } else {
-            LOG_ERROR("Could not open file for saving");
-        }
-    }
-
-    LOG_INFO("Player microbe saved");
-}
-
-std::string
-    ThriveGame::loadMicrobeTemplate(const std::string& name)
-{
-    std::string genes;
-    std::ifstream stream("Data/MicrobeTemplates/" + name + "." + "dna");
-
-    if(stream) {
-        try {
-            std::getline(stream, genes);
-        } catch(const std::ifstream::failure& e) {
-            LOG_ERROR("Error loading saved file: ", e.what());
-            throw;
-		}
-    } else {
-        LOG_ERROR("Failed to open: " + name + " file");
-        return "";
-	}
-
-	LOG_INFO("Loaded microbe with gene code: " + genes);
-
-    return genes;
-}
-
 // ------------------------------------ //
 CellStageWorld*
     ThriveGame::getCellStage()
@@ -559,6 +505,12 @@ PlayerData&
     ThriveGame::playerData()
 {
     return m_impl->m_playerData;
+}
+
+MicrobeTemplates&
+	ThriveGame::microbeTemplates()
+{
+    return m_impl->m_microbeTemplates;
 }
 
 PlayerMicrobeControl*
@@ -721,6 +673,8 @@ void
     // Apply patch settings
     m_impl->m_cellStage->GetPatchManager().applyPatchSettings();
     checkAutoEvoStart();
+
+
 }
 
 void
@@ -1452,6 +1406,8 @@ void
 
     // Create backgrounds if they don't exist
     m_impl->createBackgroundItem();
+
+	m_impl->m_microbeTemplates.Initialize();
 
     // Let the script do setup //
     // This registers all the script defined systems to run and be

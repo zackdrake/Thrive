@@ -84,6 +84,8 @@ set(GROUP_MICROBE_STAGE
   "microbe_stage/organelle_table.cpp"
   "microbe_stage/membrane_types.h"
   "microbe_stage/membrane_types.cpp"
+  "microbe_stage/microbe_templates.h"
+  "microbe_stage/microbe_templates.cpp"
   )
 
 set(GROUP_AUTO-EVO
@@ -114,6 +116,7 @@ set(GROUP_SCRIPTING
   "scripting/register_worlds.cpp"
   "scripting/register_patches.cpp"
   "scripting/register_registries.cpp"
+  "scripting/register_templates.cpp"
   )
 
 set(GROUP_UTIL

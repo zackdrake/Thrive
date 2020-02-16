@@ -310,7 +310,6 @@ bool
         ANGELSCRIPT_REGISTERFAIL;
     }
 
-
     return true;
 }
 // ------------------------------------ //

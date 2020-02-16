@@ -670,7 +670,7 @@ bool
     }
 
     if(engine->SetDefaultNamespace("") < 0) {
-        ANGELSCRIPT_REGISTERFAIL;
+		ANGELSCRIPT_REGISTERFAIL;
     }
 
     return true;
