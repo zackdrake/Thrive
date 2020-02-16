@@ -12,6 +12,7 @@ class CScriptArray;
 namespace thrive {
 
 constexpr auto MICROBE_TEMPLATE_FOLDER = "Data/MicrobeTemplates/";
+constexpr auto TEMPLATE_FILE_FORMAT = "json";
 
 class MicrobeTemplateData : public Leviathan::ReferenceCounted {
 protected:
@@ -52,10 +53,10 @@ public:
         storeMicrobeTemplate(const MicrobeTemplateData& data);
 
     void
-        loadMicrobeTemplate(const std::string& filepath);
+        loadMicrobeTemplate(const std::string filepath);
 
     MicrobeTemplateData::pointer
-        parseMicrobeTemplate(const std::string& filepath);
+        parseMicrobeTemplate(const std::string filepath);
 
     auto&
         getTemplates()

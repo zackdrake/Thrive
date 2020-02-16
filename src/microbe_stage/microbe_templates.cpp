@@ -5,7 +5,7 @@
 #include <Common/StringOperations.h>
 #include <FileSystem.h>
 
-#include <filesystem>
+#include <json/json.h>
 
 using namespace thrive;
 // ------------------------------------ //
@@ -35,13 +35,13 @@ void
         std::string extension =
             Leviathan::StringOperations::GetExtension<std::string>(files);
 
-        if(extension == "dna") {
+        if(extension == TEMPLATE_FILE_FORMAT) {
             m_templateFiles.push_back(files);
         }
     }
 
     LOG_INFO("Found " + Leviathan::Convert::ToString(m_templateFiles.size()) +
-             " DNA files");
+             " template files");
 
     if(!m_templateData.empty())
         m_templateData.clear();
@@ -68,19 +68,23 @@ MicrobeTemplateData*
 void
     MicrobeTemplates::storeMicrobeTemplate(const MicrobeTemplateData& data)
 {
-    std::string stringData =
-        data.name + ";" + data.organelles + ";" +
-        std::to_string(data.membrane) + ";" + std::to_string(data.rigidity) +
-        ";" + std::to_string(data.colour.X) + "," +
-        std::to_string(data.colour.Y) + "," + std::to_string(data.colour.Z);
-
-    auto fs = Engine::Get()->GetFileSystem();
-
     std::string path =
-        std::filesystem::path(MICROBE_TEMPLATE_FOLDER + data.name + "." + "dna")
-            .string();
+        MICROBE_TEMPLATE_FOLDER + data.name + "." + TEMPLATE_FILE_FORMAT;
 
-    if(fs->WriteToFile(stringData, path)) {
+    Json::Value chromosome;
+    Json::StyledWriter styledWriter;
+
+    chromosome["name"] = data.name;
+    chromosome["organelles"] = data.organelles;
+    chromosome["membrane"] = data.membrane;
+    chromosome["rigidity"] = data.rigidity;
+
+    chromosome["colourR"] = data.colour.X;
+    chromosome["colourG"] = data.colour.Y;
+    chromosome["colourB"] = data.colour.Z;
+
+    if(Engine::Get()->GetFileSystem()->WriteToFile(
+           styledWriter.write(chromosome), path)) {
         LOG_INFO("Saved player microbe");
 
         // Load the template right after saving so it will appear
@@ -93,7 +97,7 @@ void
 }
 // ------------------------------------ //
 void
-    MicrobeTemplates::loadMicrobeTemplate(const std::string& filepath)
+    MicrobeTemplates::loadMicrobeTemplate(const std::string filepath)
 {
     MicrobeTemplateData::pointer data = parseMicrobeTemplate(filepath);
 
@@ -126,45 +130,40 @@ void
 }
 // ------------------------------------ //
 MicrobeTemplateData::pointer
-    MicrobeTemplates::parseMicrobeTemplate(const std::string& filepath)
+    MicrobeTemplates::parseMicrobeTemplate(const std::string filepath)
 {
-    auto fs = Engine::Get()->GetFileSystem();
+    std::string extension =
+        Leviathan::StringOperations::GetExtension<std::string>(filepath);
 
-    std::string stream;
-
-    if(!fs->ReadFileEntirely(filepath, stream)) {
-        LOG_ERROR("Failed to read template file!");
+    if(extension != TEMPLATE_FILE_FORMAT) {
+        LOG_ERROR("Invalid file extension, aborting parse!");
         return nullptr;
     }
 
-    std::vector<std::string> genes;
-    std::vector<std::string> colourGenes;
+    std::ifstream file;
+    file.open(filepath);
 
-    Leviathan::StringOperations::CutString<std::string>(
-        stream, std::string(";"), genes);
-    Leviathan::StringOperations::CutString<std::string>(
-        genes[4], std::string(","), colourGenes);
+    LEVIATHAN_ASSERT(file.is_open(), "Failed to open template file!");
 
-    if(genes.size() != 5) {
-        LOG_ERROR("Invalid chromosome size, aborting parse!");
-        return nullptr;
-    }
+    Json::Value chromosomes;
 
-    for(auto& chromosome : genes) {
-        if(chromosome == "") {
-            LOG_ERROR("Microbe has a missing chromosome, aborting parse!");
-            return nullptr;
-        }
+    try {
+        file >> chromosomes;
+    } catch(const Json::RuntimeError& e) {
+        LOG_ERROR(std::string("Syntax error in template file") +
+                  ", description: " + std::string(e.what()));
+        throw e;
     }
 
     Float4 colourData;
-    colourData.X = Leviathan::Convert::StringTo<float>(colourGenes[0]);
-    colourData.Y = Leviathan::Convert::StringTo<float>(colourGenes[1]);
-    colourData.Z = Leviathan::Convert::StringTo<float>(colourGenes[2]);
+    colourData.X = chromosomes["colourR"].asFloat();
+    colourData.Y = chromosomes["colourG"].asFloat();
+    colourData.Z = chromosomes["colourB"].asFloat();
 
-    auto data = MicrobeTemplateData::MakeShared<MicrobeTemplateData>(genes[0],
-        genes[1], Leviathan::Convert::StringTo<int>(genes[2]),
-        Leviathan::Convert::StringTo<float>(genes[3]), colourData);
+    auto data = MicrobeTemplateData::MakeShared<MicrobeTemplateData>(
+        chromosomes["name"].asString(), chromosomes["organelles"].asString(),
+        chromosomes["membrane"].asInt(), chromosomes["rigidity"].asFloat(),
+        colourData);
 
     return data;
 }
