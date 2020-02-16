@@ -35,7 +35,7 @@ void
         std::string extension =
             Leviathan::StringOperations::GetExtension<std::string>(files);
 
-        if(extension == TEMPLATE_FILE_FORMAT) {
+        if(extension == TEMPLATE_FILE_EXTENSION) {
             m_templateFiles.push_back(files);
         }
     }
@@ -69,7 +69,7 @@ void
     MicrobeTemplates::storeMicrobeTemplate(const MicrobeTemplateData& data)
 {
     std::string path =
-        MICROBE_TEMPLATE_FOLDER + data.name + "." + TEMPLATE_FILE_FORMAT;
+        MICROBE_TEMPLATE_FOLDER + data.name + "." + TEMPLATE_FILE_EXTENSION;
 
     Json::Value chromosome;
     Json::StyledWriter styledWriter;
@@ -135,7 +135,7 @@ MicrobeTemplateData::pointer
     std::string extension =
         Leviathan::StringOperations::GetExtension<std::string>(filepath);
 
-    if(extension != TEMPLATE_FILE_FORMAT) {
+    if(extension != TEMPLATE_FILE_EXTENSION) {
         LOG_ERROR("Invalid file extension, aborting parse!");
         return nullptr;
     }

@@ -12,7 +12,7 @@ class CScriptArray;
 namespace thrive {
 
 constexpr auto MICROBE_TEMPLATE_FOLDER = "Data/MicrobeTemplates/";
-constexpr auto TEMPLATE_FILE_FORMAT = "json";
+constexpr auto TEMPLATE_FILE_EXTENSION = "dna";
 
 class MicrobeTemplateData : public Leviathan::ReferenceCounted {
 protected:
