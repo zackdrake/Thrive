@@ -11,14 +11,14 @@ class CScriptArray;
 
 namespace thrive {
 
-constexpr auto MICROBE_TEMPLATE_FOLDER = "Data/MicrobeTemplates/";
+constexpr auto MICROBE_TEMPLATE_DIRECTORY = "Data/MicrobeTemplates/";
 constexpr auto TEMPLATE_FILE_EXTENSION = "dna";
 
 class MicrobeTemplateData : public Leviathan::ReferenceCounted {
 protected:
     friend ReferenceCounted;
-    MicrobeTemplateData(std::string& name,
-        std::string& organelles,
+    MicrobeTemplateData(std::string name,
+        std::string organelles,
         int membrane,
         float rigidity,
         Float4 colour);

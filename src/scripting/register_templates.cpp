@@ -85,7 +85,7 @@ bool
         ANGELSCRIPT_REGISTERFAIL;
     }
 
-	if(engine->RegisterObjectMethod("MicrobeTemplates",
+    if(engine->RegisterObjectMethod("MicrobeTemplates",
            "void loadMicrobeTemplate(const string &in "
            "filepath)",
            asMETHOD(MicrobeTemplates, loadMicrobeTemplate),

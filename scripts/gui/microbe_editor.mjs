@@ -1101,7 +1101,9 @@ function onSaveClicked(){
 }
 
 function onLoadClicked(){
-    if (!document.getElementById("cellTemplateLoadButton").classList.contains("DisabledButton")){
+    if (!document.getElementById("cellTemplateLoadButton").
+        classList.contains("DisabledButton"))
+    {
         common.playButtonPressSound();
         if(common.isInEngine()){
             Leviathan.CallGenericEvent("LoadMicrobeClicked", {});

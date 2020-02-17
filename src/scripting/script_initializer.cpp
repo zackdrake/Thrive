@@ -549,7 +549,7 @@ bool
     if(!registerAutoEvo(engine))
         return false;
 
-	if(!registerMicrobeTemplates(engine))
+    if(!registerMicrobeTemplates(engine))
         return false;
 
     if(engine->RegisterObjectType("ThriveGame", 0, asOBJ_REF | asOBJ_NOCOUNT) <

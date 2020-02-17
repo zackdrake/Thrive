@@ -6,11 +6,12 @@
 #include <FileSystem.h>
 
 #include <json/json.h>
+#include <boost/filesystem.hpp>
 
 using namespace thrive;
 // ------------------------------------ //
-MicrobeTemplateData::MicrobeTemplateData(std::string& name,
-    std::string& organelles,
+MicrobeTemplateData::MicrobeTemplateData(std::string name,
+    std::string organelles,
     int membrane,
     float rigidity,
     Float4 colour) :
@@ -26,7 +27,13 @@ void
 
     std::vector<std::string> filesInDirectory;
 
-    fs->GetFilesInDirectory(filesInDirectory, MICROBE_TEMPLATE_FOLDER);
+    // Create the directory if it doesn't exist/found
+    if(!fs->FileExists(MICROBE_TEMPLATE_DIRECTORY)) {
+        if(!boost::filesystem::create_directory(MICROBE_TEMPLATE_DIRECTORY))
+            LOG_ERROR("Failed to create microbe template directory!");
+    }
+
+    fs->GetFilesInDirectory(filesInDirectory, MICROBE_TEMPLATE_DIRECTORY);
 
     if(!m_templateFiles.empty())
         m_templateFiles.clear();
@@ -69,7 +76,7 @@ void
     MicrobeTemplates::storeMicrobeTemplate(const MicrobeTemplateData& data)
 {
     std::string path =
-        MICROBE_TEMPLATE_FOLDER + data.name + "." + TEMPLATE_FILE_EXTENSION;
+        MICROBE_TEMPLATE_DIRECTORY + data.name + "." + TEMPLATE_FILE_EXTENSION;
 
     Json::Value chromosome;
     Json::StyledWriter styledWriter;
