@@ -3,6 +3,7 @@
 
 #include "simulation_parameters.h"
 
+#include <set>
 using namespace thrive;
 // ------------------------------------ //
 Patch::Patch(const std::string& name, int32_t id, const Biome& biomeTemplate) :

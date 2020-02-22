@@ -1,3 +1,4 @@
+// ------------------------------------ //
 #include "microbe_stage/compound_cloud_system.h"
 #include "microbe_stage/simulation_parameters.h"
 
@@ -8,14 +9,16 @@
 
 #include <Rendering/GeometryHelpers.h>
 #include <Rendering/Graphics.h>
-#include <bsfCore/Image/BsTexture.h>
+
+#include <DiligentCore/Graphics/GraphicsEngine/interface/GraphicsTypes.h>
 
 #include <atomic>
 
 using namespace thrive;
+// ------------------------------------ //
 
 constexpr auto CLOUD_TEXTURE_BYTES_PER_ELEMENT = 4;
-constexpr auto BS_PIXEL_FORMAT = bs::PF_RGBA8;
+constexpr auto CLOUD_PIXEL_FORMAT = Diligent::TEX_FORMAT_RGBA8_UNORM_SRGB;
 
 ////////////////////////////////////////////////////////////////////////////////
 // CompoundCloudComponent
@@ -302,8 +305,8 @@ void
     m_planeMesh = Leviathan::GeometryHelpers::CreateXZPlane(
         CLOUD_X_EXTENT, CLOUD_Y_EXTENT);
 
-    m_perlinNoise = Leviathan::Texture::MakeShared<Leviathan::Texture>(
-        Engine::Get()->GetGraphics()->LoadTextureByName("PerlinNoise.jpg"));
+    m_perlinNoise =
+        Engine::Get()->GetGraphics()->LoadTextureByName("PerlinNoise.jpg");
 
     LEVIATHAN_ASSERT(m_perlinNoise, "failed to load perlin noise texture");
 }
@@ -854,30 +857,22 @@ void
     cloud.m_sceneNode->SetPosition(
         Float3(cloud.m_position.X, CLOUD_Y_COORDINATE, cloud.m_position.Z));
 
-    cloud.m_textureData1 = bs::PixelData::create(
-        CLOUD_SIMULATION_WIDTH, CLOUD_SIMULATION_HEIGHT, 1, BS_PIXEL_FORMAT);
-
-    LEVIATHAN_ASSERT(bs::PixelUtil::getNumElemBytes(BS_PIXEL_FORMAT) ==
-                         CLOUD_TEXTURE_BYTES_PER_ELEMENT,
-        "Pixel format bytes has changed");
-
-    // Fill with zeroes
-    std::memset(static_cast<uint8_t*>(cloud.m_textureData1->getData()), 0,
-        cloud.m_textureData1->getSize());
+    cloud.m_intermediateTextureData.resize(CLOUD_SIMULATION_WIDTH *
+                                               CLOUD_SIMULATION_HEIGHT *
+                                               CLOUD_TEXTURE_BYTES_PER_ELEMENT,
+        0);
 
     // cloud.m_renderable->setCastShadows(false);
 
     // cloud.m_compoundCloudsPlane->setRenderQueueGroup(2);
 
-    cloud.m_texture = Leviathan::Texture::MakeShared<Leviathan::Texture>(
-        bs::Texture::create(cloud.m_textureData1, bs::TU_DYNAMIC));
+    // As our texture is dynamic it needs to be uploaded exactly once per frame
+    cloud.m_texture = Engine::Get()->GetGraphics()->CreateDynamicTexture(
+        CLOUD_SIMULATION_WIDTH, CLOUD_SIMULATION_HEIGHT, CLOUD_PIXEL_FORMAT);
 
     // TODO: this should be loaded just once to be more efficient
-    auto shader =
-        Engine::Get()->GetGraphics()->LoadShaderByName("compound_cloud.bsl");
-
     auto material = Leviathan::Material::MakeShared<Leviathan::Material>(
-        Leviathan::Shader::MakeShared<Leviathan::Shader>(shader));
+        Engine::Get()->GetGraphics()->LoadShaderByName("compound_cloud.bsl"));
     material->SetTexture("gDensityTex", cloud.m_texture);
 
     // Set colour parameters //
@@ -947,22 +942,11 @@ void
     if(!cloud.m_texture)
         return;
 
-    if(cloud.m_textureData1->isLocked()) {
-        // Just skip for now. in the future we'll want two rotating buffers.
-        // When the game lags and updates get queued is when this happens. Which
-        // currently happens a lot so this is commented out
-        // LOG_WARNING("CompoundCloud: texture data buffer is still locked, "
-        //             "skipping writing new data");
-        return;
-    }
-
-    const size_t rowBytes = cloud.m_textureData1->getRowPitch();
-    uint8_t* const pDest = cloud.m_textureData1->getData();
+    const size_t rowBytes =
+        CLOUD_SIMULATION_WIDTH * CLOUD_TEXTURE_BYTES_PER_ELEMENT;
+    uint8_t* const pDest = cloud.m_intermediateTextureData.data();
 
     // Copy the density vector into the buffer.
-
-    // This is probably branch predictor friendly to move each bunch of pixels
-    // separately
 
     // Old Ogre info:
     // Even with that pixel format the actual channel indexes are:
@@ -971,7 +955,6 @@ void
     // G - 1
     // B - 0
     // A - 3
-    // Channels should now be RGBA
 
     if(cloud.m_compoundId1 == NULL_COMPOUND)
         LEVIATHAN_ASSERT(false, "cloud with not even the first compound");
@@ -990,8 +973,19 @@ void
     if(cloud.m_compoundId4 != NULL_COMPOUND)
         fillCloudChannel(cloud.m_density4, 3, rowBytes, pDest);
 
-    // Submit the updated data
-    cloud.m_texture->GetInternal()->writeData(cloud.m_textureData1, 0, 0, true);
+    // Write the updated data to the graphics texture
+    Diligent::Box box;
+    box.MinX = 0;
+    box.MinY = 0;
+    box.MaxX = CLOUD_SIMULATION_WIDTH;
+    box.MaxY = CLOUD_SIMULATION_HEIGHT;
+
+    Diligent::TextureSubResData data;
+    data.Stride = rowBytes;
+    data.pData = cloud.m_intermediateTextureData.data();
+
+    Engine::Get()->GetGraphics()->WriteDynamicTextureData(
+        *cloud.m_texture, 0, 0, box, data);
 }
 
 void

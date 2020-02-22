@@ -1,11 +1,15 @@
 //! Tests compound cloud operations that don't need graphics
+
+// NOTE: these headers are included first due to diligent not namespacing
+// macros. This can probably be changed back at some point
+#include <Entities/Components.h>
+#include <LeviathanTest/PartialEngine.h>
+
 #include "engine/player_data.h"
 #include "generated/cell_stage_world.h"
 #include "microbe_stage/compound_cloud_system.h"
 #include "test_thrive_game.h"
 
-#include <Entities/Components.h>
-#include <LeviathanTest/PartialEngine.h>
 
 #include "catch.hpp"
 using namespace thrive;

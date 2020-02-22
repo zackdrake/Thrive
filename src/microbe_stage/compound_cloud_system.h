@@ -275,10 +275,9 @@ protected:
     //! This is customized with the parameters of this cloud
     Leviathan::Material::pointer m_planeMaterial;
     Leviathan::Texture::pointer m_texture;
-    //! \todo Might have to have two buffers for rotating if it happens often
-    //! that the previous buffer is still locked while processing next frame is
-    //! happening
-    bs::SPtr<bs::PixelData> m_textureData1;
+
+    //! Intermediate data buffer for the texture data
+    std::vector<uint8_t> m_intermediateTextureData;
 
     //! The world position this cloud is at. Used to despawn and spawn new ones
     //! Y is ignored and replaced with CLOUD_Y_COORDINATE

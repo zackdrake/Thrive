@@ -25,6 +25,8 @@
 #include <Physics/PhysicsMaterialManager.h>
 #include <Rendering/GeometryHelpers.h>
 #include <Rendering/Graphics.h>
+#include <Rendering/Shader.h>
+#include <Rendering/Texture.h>
 #include <Script/Bindings/BindHelpers.h>
 #include <Script/Bindings/StandardWorldBindHelper.h>
 #include <Script/ScriptExecutor.h>
@@ -118,11 +120,9 @@ public:
 
             auto graphics = Engine::Get()->GetGraphics();
 
-            auto shader = graphics->LoadShaderByName("background.bsl");
-
             m_MicrobeBackgroundMaterial =
                 Leviathan::Material::MakeShared<Leviathan::Material>(
-                    Leviathan::Shader::MakeShared<Leviathan::Shader>(shader));
+                    graphics->LoadShaderByName("background.bsl"));
         }
 
         if(m_cellStage) {
@@ -1135,9 +1135,8 @@ void
             const auto layer = "gTexLayer" + std::to_string(i);
             if(i < background.layers.size()) {
 
-                m_impl->m_MicrobeBackgroundMaterial->SetTexture(layer,
-                    Leviathan::Texture::MakeShared<Leviathan::Texture>(
-                        graphics->LoadTextureByName(background.layers[i])));
+                m_impl->m_MicrobeBackgroundMaterial->SetTexture(
+                    layer, graphics->LoadTextureByName(background.layers[i]));
             } else {
                 m_impl->m_MicrobeBackgroundMaterial->SetTexture(layer, nullptr);
             }

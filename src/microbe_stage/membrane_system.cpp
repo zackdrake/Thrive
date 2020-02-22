@@ -2,9 +2,9 @@
 #include "engine/typedefs.h"
 
 #include <Engine.h>
+#include <Rendering/GeometryHelpers.h>
 #include <Rendering/Graphics.h>
-#include <bsfCore/Mesh/BsMesh.h>
-#include <bsfCore/RenderAPI/BsVertexDataDesc.h>
+
 
 #include <algorithm>
 #include <atomic>
@@ -207,8 +207,7 @@ Float4
 // ------------------------------------ //
 void
     MembraneComponent::Update(Leviathan::Scene* scene,
-        const Leviathan::SceneNode::pointer& parentComponentPos,
-        const bs::SPtr<bs::VertexDataDesc>& vertexDesc)
+        const Leviathan::SceneNode::pointer& parentComponentPos)
 {
     if(clearNeeded) {
 
@@ -227,63 +226,54 @@ void
     if(!Engine::Get()->IsInGraphicalMode())
         return;
 
+    // Dynamic memory used here to build this. There might be some fancier way
+    // to do this more efficiently like stack based storage
+    std::vector<Leviathan::DefaultVertex> generatedVertices;
+    std::vector<uint16_t> generatedIndices;
+
+
     // This is a triangle fan so we only need 2 + n vertices
     // This is actually a triangle list, but the index buffer is used to build
     // the indices (to emulate a triangle fan)
-    const auto bufferSize = vertices2D.size() + 2;
-    const auto indexSize = vertices2D.size() * 3;
-
-    bs::MESH_DESC meshDesc;
-    meshDesc.numVertices = bufferSize;
-    meshDesc.numIndices = bufferSize;
-
-    meshDesc.indexType = bs::IT_32BIT;
-    // This is static as logic for detecting just moved vertices (no new
-    // created) isn't done. This is recreated every time
-    meshDesc.usage = bs::MU_STATIC;
-    meshDesc.subMeshes.push_back(
-        bs::SubMesh(0, indexSize, bs::DOT_TRIANGLE_LIST));
-
-    meshDesc.vertexDesc = vertexDesc;
-
-    // TODO: 16 bit indices would save memory
-    bs::SPtr<bs::MeshData> meshData =
-        bs::MeshData::create(bufferSize, indexSize, vertexDesc, bs::IT_32BIT);
+    generatedVertices.resize(vertices2D.size() + 2);
+    generatedIndices.resize(vertices2D.size() * 3);
 
     // Index mapping to build all triangles
-    uint32_t* indexWrite = meshData->getIndices32();
+    uint16_t currentVertexIndex = 1;
 
-    std::remove_pointer_t<decltype(indexWrite)> currentVertexIndex = 1;
-
-    for(size_t i = 0; i < indexSize; i += 3) {
-        indexWrite[i] = 0;
-        indexWrite[i + 1] = currentVertexIndex + 1;
-        indexWrite[i + 2] = currentVertexIndex;
+    for(size_t i = 0; i < generatedIndices.size(); i += 3) {
+        generatedIndices[i] = 0;
+        generatedIndices[i + 1] = currentVertexIndex + 1;
+        generatedIndices[i + 2] = currentVertexIndex;
 
         ++currentVertexIndex;
     }
 
     // Write mesh data //
     size_t writeIndex = 0;
-    MembraneVertex* meshVertices =
-        reinterpret_cast<MembraneVertex*>(meshData->getStreamData(0));
 
-    writeIndex = InitializeCorrectMembrane(writeIndex, meshVertices);
+    writeIndex = InitializeCorrectMembrane(
+        writeIndex, generatedVertices.data() + writeIndex);
 
     // This can be commented out when this works correctly, or maybe a
     // different macro for debug builds to include this check could
     // work, but it has to also work on linux
-    LEVIATHAN_ASSERT(writeIndex == bufferSize, "Invalid array element math in "
-                                               "fill vertex buffer");
+    LEVIATHAN_ASSERT(writeIndex == generatedVertices.size(),
+        "Invalid array element math in "
+        "fill vertex buffer");
 
+    // This is static as logic for detecting just moved vertices (no new
+    // created) isn't done. This is recreated every time
+    m_mesh = Leviathan::GeometryHelpers::CreateMesh(generatedVertices.data(),
+        generatedVertices.size(), generatedIndices.data(),
+        generatedIndices.size());
 
-    m_mesh = Leviathan::Mesh::MakeShared<Leviathan::Mesh>(
-        bs::Mesh::create(meshData, meshDesc));
     // // Set the bounds to get frustum culling and LOD to work correctly.
     // // TODO: make this more accurate by calculating the actual extents
     // m_mesh->_setBounds(Ogre::Aabb(Float3::ZERO, Float3::UNIT_SCALE * 50)
     //     /*, false*/);
     // m_mesh->_setBoundingSphereRadius(50);
+
 
     // TODO: the material needs to be only recreated when the species properties
     // change, not every time an organelle is added or removed
@@ -307,7 +297,6 @@ void
 
     m_item->SetMaterial(coloredMaterial);
     m_item->SetMesh(m_mesh);
-    // m_item->setLayer(1 << scene->GetInternal());
 }
 
 void
@@ -322,7 +311,7 @@ void
 
 size_t
     MembraneComponent::InitializeCorrectMembrane(size_t writeIndex,
-        MembraneVertex* meshVertices)
+        Leviathan::DefaultVertex* meshVertices)
 {
     // All of these floats were originally doubles. But to have more
     // performance they are now floats
@@ -371,29 +360,22 @@ size_t
 Leviathan::Material::pointer
     MembraneComponent::chooseMaterialByType()
 {
-    auto shader = Leviathan::Shader::MakeShared<Leviathan::Shader>(
-        Engine::Get()->GetGraphics()->LoadShaderByName("membrane.bsl"));
+    auto shader =
+        Engine::Get()->GetGraphics()->LoadShaderByName("membrane.bsl");
 
     auto material =
         Leviathan::Material::MakeShared<Leviathan::Material>(shader);
 
-    // This is just a tiny bit of graphics engine specific code so this is left
-    // as is
-    bs::HTexture normal;
-    bs::HTexture damaged;
-
-    normal = Engine::Get()->GetGraphics()->LoadTextureByName(
+    auto normal = Engine::Get()->GetGraphics()->LoadTextureByName(
         rawMembraneType->normalTexture);
-    damaged = Engine::Get()->GetGraphics()->LoadTextureByName(
+    auto damaged = Engine::Get()->GetGraphics()->LoadTextureByName(
         rawMembraneType->damagedTexture);
 
     LEVIATHAN_ASSERT(
         normal && damaged && shader, "failed to load some membrane resource");
 
-    material->SetTexture("gAlbedoTex",
-        Leviathan::Texture::MakeShared<Leviathan::Texture>(normal));
-    material->SetTexture("gDamagedTex",
-        Leviathan::Texture::MakeShared<Leviathan::Texture>(damaged));
+    material->SetTexture("gAlbedoTex", normal);
+    material->SetTexture("gDamagedTex", damaged);
 
     material->SetVariation("WIGGLY", !rawMembraneType->cellWall);
 
@@ -618,14 +600,7 @@ void
 // MembraneSystem
 struct MembraneSystem::Implementation {
 
-    Implementation()
-    {
-        m_vertexDesc = bs::VertexDataDesc::create();
-        m_vertexDesc->addVertElem(bs::VET_FLOAT3, bs::VES_POSITION);
-        m_vertexDesc->addVertElem(bs::VET_FLOAT2, bs::VES_TEXCOORD);
-    }
-
-    bs::SPtr<bs::VertexDataDesc> m_vertexDesc;
+    Implementation() {}
 };
 
 MembraneSystem::MembraneSystem() : m_impl(std::make_unique<Implementation>()) {}
@@ -636,5 +611,5 @@ void
         Leviathan::Scene* scene,
         const Leviathan::SceneNode::pointer& parentComponentPos)
 {
-    component.Update(scene, parentComponentPos, m_impl->m_vertexDesc);
+    component.Update(scene, parentComponentPos);
 }

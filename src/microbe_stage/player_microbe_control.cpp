@@ -12,8 +12,6 @@
 #include <Entities/ScriptComponentHolder.h>
 #include <Window.h>
 
-#include <bsfUtility/Math/BsRay.h>
-
 using namespace thrive;
 // ------------------------------------ //
 PlayerMicrobeControl::PlayerMicrobeControl(KeyConfiguration& keys) :

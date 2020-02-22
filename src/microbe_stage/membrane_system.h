@@ -11,6 +11,10 @@
 
 #include <atomic>
 
+namespace Leviathan {
+struct DefaultVertex;
+}
+
 namespace thrive {
 
 /**
@@ -20,14 +24,6 @@ namespace thrive {
  * @todo All the processing functions from this should be moved to the system.
  */
 class MembraneComponent : public Leviathan::Component {
-    struct MembraneVertex {
-
-        Float3 m_pos;
-        Float2 m_uv;
-    };
-
-    static_assert(sizeof(MembraneVertex) == 5 * sizeof(float));
-
 public:
     MembraneComponent(MembraneTypeId type);
     virtual ~MembraneComponent();
@@ -89,7 +85,7 @@ public:
 
     size_t
         InitializeCorrectMembrane(size_t writeIndex,
-            MembraneVertex* meshVertices);
+            Leviathan::DefaultVertex* meshVertices);
 
     //! Sees if the given point is inside the membrane.
     //! \note This is quite an expensive method as this loops all the vertices
@@ -103,15 +99,16 @@ public:
     float
         calculateEncompassingCircleRadius() const;
 
-    //! \param parentcomponentpos The mesh is attached to this node when the
-    //! mesh is created \todo As this is currently only executed once (when
-    //! isInitialized is false) this should be changed to directly upload the
-    //! fully created data, instead of creating the buffers first and then
-    //! filling them with data
+    //! \param parentComponentPos The mesh is attached to this node when the
+    //! mesh is created
+    //! \param meshType used to get info about the properties of the mesh to
+    //! setup rendering
+    //! \todo As this is currently only executed once (when isInitialized is
+    //! false) this should be changed to directly upload the fully created data,
+    //! instead of creating the buffers first and then filling them with data
     void
         Update(Leviathan::Scene* scene,
-            const Leviathan::SceneNode::pointer& parentComponentPos,
-            const bs::SPtr<bs::VertexDataDesc>& vertexDesc);
+            const Leviathan::SceneNode::pointer& parentComponentPos);
 
     // Adds absorbed compound to the membrane.
     // These are later queried and added to the vacuoles.
