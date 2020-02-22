@@ -181,6 +181,10 @@ export function setupMicrobeEditor(){
     document.getElementById("SymmetryButton").addEventListener("click",
         onSymmetryClicked, true);
 
+    // New Cell Button Clicked
+    document.getElementById("newButton").addEventListener("click",
+        onNewCellClicked, true);
+
     // Undo Button Clicked
     document.getElementById("Undo").addEventListener("click",
         onUndoClicked, true);
@@ -1053,6 +1057,17 @@ function onSymmetryClicked(event){
     }
 
     event.stopPropagation();
+}
+
+function onNewCellClicked(event){
+    if (!document.getElementById("newButton").classList.contains("DisabledButton")){
+        common.playButtonPressSound();
+        if (common.isInEngine()){
+            Leviathan.CallGenericEvent("NewCellClicked", {});
+        }
+        onCloseTemplateClicked(event);
+        event.stopPropagation();
+    }
 }
 
 function onCellTemplateClicked(event){

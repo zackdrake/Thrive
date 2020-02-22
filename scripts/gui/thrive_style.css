@@ -1506,7 +1506,7 @@ div::-webkit-scrollbar-thumb:hover {
   background-image: url("../../Textures/gui/bevel/NewIcon.png");
   width: 40px;
   height: 40px;
-  top: 0;
+  top: 0px;
   left: 0;
   position: absolute;
 }
@@ -1794,12 +1794,21 @@ div::-webkit-scrollbar-thumb:hover {
   height: 25px;
   width: 100%;
   margin-bottom: 5px;
+  border-radius: 3px;
   font-size: 15pt;
   background-color: rgb(0, 125, 125);
 }
 
 .CellTemplateItem.Selected {
   background-color: rgb(0, 173, 173, 0.9);
+}
+
+.CellTemplateItem.DisabledButton {
+  background-color: rgb(0, 105, 105);
+}
+
+.CellTemplateItem.DisabledButton:hover {
+  background-color: rgb(0, 105, 105);
 }
 
 .CellTemplateItem:hover {

@@ -48,6 +48,7 @@ class MicrobeEditor{
         eventListener.RegisterForEvent("MicrobeEditorExited");
         eventListener.RegisterForEvent("PressedRightRotate");
         eventListener.RegisterForEvent("PressedLeftRotate");
+        eventListener.RegisterForEvent("NewCellClicked");
         eventListener.RegisterForEvent("RedoClicked");
         eventListener.RegisterForEvent("UndoClicked");
         eventListener.RegisterForEvent("SaveMicrobeClicked");

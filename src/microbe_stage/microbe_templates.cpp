@@ -78,20 +78,24 @@ void
     std::string path =
         MICROBE_TEMPLATE_DIRECTORY + data.name + "." + TEMPLATE_FILE_EXTENSION;
 
-    Json::Value chromosome;
-    Json::StyledWriter styledWriter;
+    Json::Value chromosomes;
 
-    chromosome["name"] = data.name;
-    chromosome["organelles"] = data.organelles;
-    chromosome["membrane"] = data.membrane;
-    chromosome["rigidity"] = data.rigidity;
+    chromosomes["name"] = data.name;
+    chromosomes["organelles"] = data.organelles;
+    chromosomes["membrane"] = data.membrane;
+    chromosomes["rigidity"] = data.rigidity;
 
-    chromosome["colourR"] = data.colour.X;
-    chromosome["colourG"] = data.colour.Y;
-    chromosome["colourB"] = data.colour.Z;
+    chromosomes["colourR"] = data.colour.X;
+    chromosomes["colourG"] = data.colour.Y;
+    chromosomes["colourB"] = data.colour.Z;
 
-    if(Engine::Get()->GetFileSystem()->WriteToFile(
-           styledWriter.write(chromosome), path)) {
+    std::stringstream sstream;
+    Json::StreamWriterBuilder builder;
+    std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
+
+    writer->write(chromosomes, &sstream);
+
+    if(Engine::Get()->GetFileSystem()->WriteToFile(sstream.str(), path)) {
         LOG_INFO("Saved player microbe");
 
         // Load the template right after saving so it will appear
