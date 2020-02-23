@@ -4,6 +4,7 @@
 #include "membrane_types.h"
 #include "simulation_parameters.h"
 
+#include <Common/ReferenceCounted.h>
 #include <Entities/Component.h>
 #include <Entities/Components.h>
 #include <Entities/System.h>
@@ -142,7 +143,7 @@ public:
     code for generic things
     */
 
-    Leviathan::Material::pointer
+    CountedPtr<Leviathan::Material>
         chooseMaterialByType();
 
     void
@@ -199,10 +200,10 @@ protected:
     //! Actual object that is attached to a scenenode
     Leviathan::Renderable::pointer m_item;
 
-    Leviathan::Mesh::pointer m_mesh;
+    CountedPtr<Leviathan::Mesh> m_mesh;
 
     //! A material created from the base material that can be colored
-    Leviathan::Material::pointer coloredMaterial;
+    CountedPtr<Leviathan::Material> coloredMaterial;
 
     // The health percentage of a cell, in the range [0.0, 1.0], used to get
     // damage effects in the membrane.
@@ -263,7 +264,7 @@ private:
     void
         UpdateComponent(MembraneComponent& component,
             Leviathan::Scene* scene,
-            const Leviathan::SceneNode::pointer& parentComponentPos);
+            const CountedPtr<Leviathan::SceneNode>& parentComponentPos);
 
 private:
     std::unique_ptr<Implementation> m_impl;

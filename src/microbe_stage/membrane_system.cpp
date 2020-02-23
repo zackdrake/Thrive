@@ -4,6 +4,7 @@
 #include <Engine.h>
 #include <Rendering/GeometryHelpers.h>
 #include <Rendering/Graphics.h>
+#include <Rendering/Material.h>
 
 
 #include <algorithm>

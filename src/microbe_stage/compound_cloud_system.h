@@ -8,11 +8,15 @@
 
 #include <Entities/Component.h>
 #include <Entities/System.h>
+#include <Rendering/Mesh.h>
 #include <Rendering/Renderable.h>
 #include <Rendering/SceneNode.h>
 
 #include <vector>
 
+namespace Leviathan {
+class Texture;
+}
 
 namespace thrive {
 class FluidSystem;
@@ -273,8 +277,8 @@ protected:
     bool m_initialized = false;
 
     //! This is customized with the parameters of this cloud
-    Leviathan::Material::pointer m_planeMaterial;
-    Leviathan::Texture::pointer m_texture;
+    CountedPtr<Leviathan::Material> m_planeMaterial;
+    CountedPtr<Leviathan::Texture> m_texture;
 
     //! Intermediate data buffer for the texture data
     std::vector<uint8_t> m_intermediateTextureData;
@@ -539,9 +543,9 @@ private:
     //! one cloud
     std::vector<Compound> m_cloudTypes;
 
-    Leviathan::Mesh::pointer m_planeMesh;
+    CountedPtr<Leviathan::Mesh> m_planeMesh;
 
-    Leviathan::Texture::pointer m_perlinNoise;
+    CountedPtr<Leviathan::Texture> m_perlinNoise;
 
     //! This is here to not have to allocate memory every tick
     std::vector<CompoundCloudComponent*> m_tooFarAwayClouds;
