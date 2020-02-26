@@ -49,6 +49,7 @@ public:
     void
         Initialize();
 
+	// Write the microbe template data into a file
     void
         storeMicrobeTemplate(const MicrobeTemplateData& data);
 

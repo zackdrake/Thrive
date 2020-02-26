@@ -1177,6 +1177,22 @@
         <div id="atpConsumptionBar" style="width: 1px;"></div>
       </div>
 
+      <!-- Microbe save dialog -->
+      <div id="cellTemplateSaveOverlay" class="Overlay">
+        <div id="cellTemplateSaveDialog" class="CellTemplatePanel">
+          <div id="cellTemplateNameLabel">Name <div id="cellTemplateNameBox" class="TextBox">
+              <input id="templateName" type="text" spellcheck="false" placeholder="Microbe name"></div>
+          </div>
+          <br>
+          <div id="cellTemplateDescriptionLabel">Description <div id="cellTemplateDescriptionBox" class="TextBox">
+              <textarea id="templateDescription" placeholder="This doesn't work..."></textarea> </div>
+          </div>
+          <div id="cellTemplateConfirmButton" class="CellTemplateButton">Confirm</div>
+          <div id="cellTemplateCancelButton" class="CellTemplateButton">Cancel</div>
+        </div>
+      </div>
+
+      <!-- Microbe Templates -->
       <div id="cellTemplateOverlay" class="Overlay">
         <div id="cellTemplatePanel" class="CellTemplatePanel">
           <div id="cellTemplateLabel">Select a microbe template</div>
@@ -1186,8 +1202,8 @@
             </div>
             <!-- Microbe template items goes here -->
           </div>
-          <div id="cellTemplateLoadButton">Load</div>
-          <div id="cellTemplateCloseButton">Close</div>
+          <div id="cellTemplateLoadButton" class="CellTemplateButton">Load</div>
+          <div id="cellTemplateCloseButton" class="CellTemplateButton">Close</div>
         </div>
       </div>
 

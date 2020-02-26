@@ -236,6 +236,15 @@ export function setupMicrobeEditor(){
     document.getElementById("saveMicrobeButton").addEventListener("click",
         onSaveClicked, true);
 
+    document.getElementById("templateName").addEventListener("input",
+        onCellTemplateNameInput, true);
+
+    document.getElementById("cellTemplateConfirmButton").addEventListener("click",
+        onConfirmSaveClicked, true);
+
+    document.getElementById("cellTemplateCancelButton").addEventListener("click",
+        onCloseSaveClicked, true);
+
     document.getElementById("cellTemplateLoadButton").addEventListener("click",
         onLoadClicked, true);
 
@@ -410,9 +419,15 @@ export function setupMicrobeEditor(){
             updateEnergyBalanceBars(JSON.parse(vars.data));
         });
 
-        Leviathan.OnGeneric("MicrobeTemplateListUpdated", (event, vars) => {
-            updateMicrobeTemplatesList(vars.templateName);
+        Leviathan.OnGeneric("MicrobeTemplateListAdded", (event, vars) => {
+            // Add an item into the list with the given name
+            updateMicrobeTemplatesList(vars.templateName, true);
         });
+
+        Leviathan.OnGeneric("MicrobeTemplateListRemoved", (event, vars) => {
+            // Remove an item from the list with the given name
+            updateMicrobeTemplatesList(vars.templateName, false);
+        })
 
     } else {
         updateSelectedOrganelle("cytoplasm");
@@ -1107,15 +1122,39 @@ function onUndoClicked(event){
     event.stopPropagation();
 }
 
-function onSaveClicked(){
+function onSaveClicked(event){
     common.playButtonPressSound();
+    document.getElementById("cellTemplateSaveOverlay").style.display = "block";
+    event.stopPropagation();
+}
+
+function onCellTemplateNameInput(event){
+    if(common.isInEngine()){
+        Leviathan.CallGenericEvent("CellTemplateNameChanged", {value: event.target.value});
+    }
+    event.stopPropagation();
+}
+
+function onConfirmSaveClicked(event){
+    common.playButtonPressSound();
+    document.getElementById("cellTemplateSaveOverlay").style.display = "none";
     if(common.isInEngine()){
         Leviathan.CallGenericEvent("SaveMicrobeClicked", {});
     }
     event.stopPropagation();
 }
 
-function onLoadClicked(){
+function onCloseSaveClicked(event){
+    common.playButtonPressSound();
+    document.getElementById("cellTemplateSaveOverlay").style.display = "none";
+    document.getElementById("templateName").value = "";
+    if(common.isInEngine()){
+        Leviathan.CallGenericEvent("CellTemplateNameChanged", {value: ""});
+    }
+    event.stopPropagation();
+}
+
+function onLoadClicked(event){
     if (!document.getElementById("cellTemplateLoadButton").
         classList.contains("DisabledButton"))
     {
@@ -1882,32 +1921,44 @@ function updateEnergyBalanceBars(data){
     consumptionBar.textContent = data.total.consumption.toFixed(1);
 }
 
-function updateMicrobeTemplatesList(name){
+function updateMicrobeTemplatesList(name, add){
     const list = document.getElementById("cellTemplateList");
 
-    for(const element of microbeTemplateSelectionElements){
-        if(element.id == name){
-            list.removeChild(element);
-        }
-    }
-
-    const item = document.createElement("item");
-    item.innerHTML = name;
-    item.setAttribute("class", "CellTemplateItem")
-    item.setAttribute("id", name);
-
-    microbeTemplateSelectionElements.push(item);
-
-    item.addEventListener("click", () => {
-        Leviathan.CallGenericEvent("TemplateSelected", {templateName: name});
+    if(add){
+        // Remove if the element already exist
         for(const element of microbeTemplateSelectionElements){
             if(element.id == name){
-                element.classList.add("Selected");
-            } else {
-                element.classList.remove("Selected");
+                if(list.contains(element))
+                    list.removeChild(element);
             }
         }
-    }, false)
-
-    list.appendChild(item);
+    
+        // Create the element
+        const item = document.createElement("item");
+        item.innerHTML = name;
+        item.setAttribute("class", "CellTemplateItem")
+        item.setAttribute("id", name);
+    
+        microbeTemplateSelectionElements.push(item);
+    
+        item.addEventListener("click", () => {
+            Leviathan.CallGenericEvent("TemplateSelected", {templateName: name});
+            for(const element of microbeTemplateSelectionElements){
+                if(element.id == name){
+                    element.classList.add("Selected");
+                } else {
+                    element.classList.remove("Selected");
+                }
+            }
+        }, false)
+    
+        list.appendChild(item);
+    } else {
+        for(const element of microbeTemplateSelectionElements){
+            if(element.id == name){
+                if(list.contains(element))
+                    list.removeChild(element);
+            }
+        }
+    }
 }

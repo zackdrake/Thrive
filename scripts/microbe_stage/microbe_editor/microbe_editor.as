@@ -53,6 +53,7 @@ class MicrobeEditor{
         eventListener.RegisterForEvent("UndoClicked");
         eventListener.RegisterForEvent("SaveMicrobeClicked");
         eventListener.RegisterForEvent("LoadMicrobeClicked");
+        eventListener.RegisterForEvent("CellTemplateNameChanged");
         eventListener.RegisterForEvent("TemplateSelected");
         eventListener.RegisterForEvent("MicrobeEditorSelectedTab");
         eventListener.RegisterForEvent("MicrobeEditorSelectedNewPatch");
@@ -792,7 +793,7 @@ class MicrobeEditor{
         }
 
         MicrobeTemplateData@ templateData = MicrobeTemplateData(
-            newName, genes, membrane, rigidity, colour);
+            newTemplateName, genes, membrane, rigidity, colour);
 
         GetThriveGame().microbeTemplates().storeMicrobeTemplate(templateData);
     }
@@ -800,9 +801,11 @@ class MicrobeEditor{
     void loadMicrobe()
     {
         if(selectedTemplate == ""){
+            LOG_ERROR("Microbe template is not selected");
             return;
         }
 
+        // Get all of the available template datas
         auto@ templates = GetThriveGame().microbeTemplates().getTemplates();
 
         for(uint i = 0; i < templates.length(); ++i){
@@ -811,12 +814,24 @@ class MicrobeEditor{
                 positionOrganelles(templates[i].organelles);
 
                 // Set the cell properties
-                newName = templates[i].name;
+                newTemplateName = templates[i].name;
                 membrane = templates[i].membrane;
                 rigidity = templates[i].rigidity;
                 colour = templates[i].colour;
 
-                // This doesnt feel right
+                editedMicrobeOrganelles.resize(0);
+
+                // Place the right organelles
+                for(uint i = 0; i < templateOrganelles.length(); ++i){
+                    auto organelle = cast<PlacedOrganelle>(templateOrganelles[i]);
+                    editedMicrobeOrganelles.insertLast(organelle);
+                }
+
+                _onEditedCellChanged();
+
+                updateGuiButtonStatus(checkIsNucleusPresent());
+
+                // This a bit weird using this here
                 GenericEvent@ event = GenericEvent("MicrobeEditorActivated");
                 NamedVars@ vars = event.GetNamedVars();
 
@@ -829,16 +844,7 @@ class MicrobeEditor{
 
                 GetEngine().GetEventHandler().CallEvent(event);
 
-                // Place the right organelles
-                editedMicrobeOrganelles.resize(0);
-
-                for(uint i = 0; i < templateOrganelles.length(); ++i){
-                    auto organelle = cast<PlacedOrganelle>(templateOrganelles[i]);
-                    editedMicrobeOrganelles.insertLast(organelle);
-                }
-
-                _onEditedCellChanged();
-
+                // Clear action history
                 mutationPoints = BASE_MUTATION_POINTS;
                 actionHistory.resize(0);
 
@@ -1450,6 +1456,10 @@ class MicrobeEditor{
             }
 
             return 1;
+        } else if(type == "CellTemplateNameChanged"){
+            NamedVars@ vars = event.GetNamedVars();
+            newTemplateName = string(vars.GetSingleValueByName("value"));
+            return 1;
         } else if(type == "SaveMicrobeClicked"){
             saveMicrobe();
             return 1;
@@ -1529,6 +1539,8 @@ class MicrobeEditor{
 
     private Material@ invalidMaterial;
     private Material@ validMaterial;
+
+    private string newTemplateName;
 
     private string selectedTemplate;
 };

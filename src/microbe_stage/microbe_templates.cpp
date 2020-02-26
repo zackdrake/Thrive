@@ -130,7 +130,7 @@ void
 
     // Send data to GUI
     auto event =
-        GenericEvent::MakeShared<GenericEvent>("MicrobeTemplateListUpdated");
+        GenericEvent::MakeShared<GenericEvent>("MicrobeTemplateListAdded");
 
     auto vars = event->GetVariables();
 
@@ -171,10 +171,8 @@ MicrobeTemplateData::pointer
     colourData.Y = chromosomes["colourG"].asFloat();
     colourData.Z = chromosomes["colourB"].asFloat();
 
-    auto data = MicrobeTemplateData::MakeShared<MicrobeTemplateData>(
+    return MicrobeTemplateData::MakeShared<MicrobeTemplateData>(
         chromosomes["name"].asString(), chromosomes["organelles"].asString(),
         chromosomes["membrane"].asInt(), chromosomes["rigidity"].asFloat(),
         colourData);
-
-    return data;
 }

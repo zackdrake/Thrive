@@ -1436,7 +1436,7 @@ div::-webkit-scrollbar-thumb:hover {
   height: 40px;
   width: 80px;
   top: 0;
-  left: calc(559px + 386px);
+  left: calc(558px + 386px);
   background-image: url("../../Textures/gui/bevel/SmallThreeNormal.png");
   font-size: 8pt;
   line-height: 40px;
@@ -1738,7 +1738,7 @@ div::-webkit-scrollbar-thumb:hover {
 .ATPBalanceContainer {
   position: absolute;
   height: 60px;
-  width: calc(100% - (513px + 386px + 120px + 6px));
+  width: calc(100% - (512px + 386px + 120px + 6px));
   top: 0;
   right: 0;
   border: 3px solid rgb(112, 159, 159, 0.6);
@@ -1762,6 +1762,16 @@ div::-webkit-scrollbar-thumb:hover {
   color: #f33;
 }
 
+#cellTemplateOverlay {
+  display: none;
+  background: none;
+}
+
+#cellTemplateSaveOverlay {
+  display: none;
+  background: none;
+}
+
 .CellTemplatePanel {
   position: absolute;
   height: 400px;
@@ -1771,14 +1781,46 @@ div::-webkit-scrollbar-thumb:hover {
   padding: 5px;
   -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
-  border: 3px solid rgb(112, 159, 159, 0.6);
+  border: 3px solid rgb(112, 159, 159, 0.8);
   background: rgb(0, 125, 125, 0.6);
   box-sizing: border-box;
 }
 
-#cellTemplateOverlay {
-  display: none;
+#cellTemplateSaveDialog {
+  width: 350px;
+  height: 230px;
+  background: rgb(0, 125, 125, 0.9);
+  padding-left: 15px;
+}
+
+#cellTemplateNameBox {
+  width: 250px;
+  margin-left: 5px;
+}
+
+#cellTemplateDescriptionBox {
+  width: 300px;
+  height: 100px;
+  margin-left: 5px;
+}
+
+#templateName {
+  border: none;
+  width: 230px;
   background: none;
+  font-size: 12pt;
+  color: white;
+  font-family: "Jura";
+}
+
+#templateDescription {
+  border: none;
+  height: 95px;
+  width: 280px;
+  background: none;
+  font-size: 12pt;
+  color: white;
+  font-family: "Jura";
 }
 
 .CellTemplateList {
@@ -1786,21 +1828,24 @@ div::-webkit-scrollbar-thumb:hover {
   padding: 5px;
   list-style-type: none;
   overflow-y: auto;
-  background-color: rgb(0, 120, 120, 0.5);
+  background-color: rgb(0, 120, 120, 0.6);
 }
 
 .CellTemplateItem {
-  display: inline-block;
-  height: 25px;
+  display: block;
+  height: 40px;
   width: 100%;
-  margin-bottom: 5px;
+  line-height: 25px;
+  text-indent: 10px;
+  margin-bottom: 3px;
   border-radius: 3px;
-  font-size: 15pt;
-  background-color: rgb(0, 125, 125);
+  font-size: 13pt;
+  background-color: rgb(0, 135, 135, 0.6);
 }
 
 .CellTemplateItem.Selected {
-  background-color: rgb(0, 173, 173, 0.9);
+  background-color: rgb(0, 173, 173, 0.6);
+  border: 2px solid rgb(17, 255, 213);
 }
 
 .CellTemplateItem.DisabledButton {
@@ -1812,49 +1857,58 @@ div::-webkit-scrollbar-thumb:hover {
 }
 
 .CellTemplateItem:hover {
-  background-color: rgb(0, 173, 173, 0.9);
+  background-color: rgb(0, 173, 173, 0.6);
+}
+
+.CellTemplateButton {
+  position: fixed;
+  width: 95px;
+  height: 25px;
+  text-align: center;
+  line-height: 25px;
+  border: 2px solid rgb(0, 179, 179, 0.8);
+  border-radius: 5px;
+  background-color: #006666;
+}
+
+#cellTemplateConfirmButton {
+  right: 10px;
+  bottom: 5px;
+}
+
+#cellTemplateCancelButton {
+  right: 115px;
+  bottom: 5px;
 }
 
 #cellTemplateLoadButton {
-  position: fixed;
-  width: 95px;
-  height: 25px;
-  right: 115px;
+  right: 10px;
   bottom: 5px;
-  text-align: center;
-  vertical-align: middle;
-  border: 2px solid rgb(0, 179, 179, 0.8);
-  border-radius: 5px;
-  background-color: #006666;
 }
 
 #cellTemplateCloseButton {
-  position: fixed;
-  width: 95px;
-  height: 25px;
-  right: 10px;
+  right: 115px;
   bottom: 5px;
-  text-align: center;
-  vertical-align: middle;
-  border: 2px solid rgb(0, 179, 179, 0.8);
-  border-radius: 5px;
-  background-color: #006666;
 }
 
-#cellTemplateLoadButton:hover {
+#newButton {
+  background-color: rgb(20, 165, 165);
+}
+
+.CellTemplateButton:hover {
   background-color: rgb(0, 153, 153, 0.9);
 }
 
-#cellTemplateLoadButton.DisabledButton {
+.CellTemplateButton.DisabledButton {
   background-color: rgb(0, 100, 100, 0.9);
 }
 
-#cellTemplateLoadButton.DisabledButton:hover {
+.CellTemplateButton.DisabledButton:hover {
   background-color: rgb(0, 100, 100, 0.9);
 }
 
-#cellTemplateCloseButton:hover {
-  background-color: rgb(0, 153, 153, 0.9);
+#newButton:hover {
+  background-color: rgb(20, 185, 185);
 }
 
 
