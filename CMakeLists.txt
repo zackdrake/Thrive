@@ -136,9 +136,9 @@ file(GLOB THRIVE_MATERIALS "materials/*")
 file(COPY ${THRIVE_MATERIALS} DESTINATION "${PROJECT_BINARY_DIR}/bin/Data/Materials/")
 InstallContentsOfFolder("materials" "bin/Data/Materials")
 
-file(GLOB THRIVE_SHADERS "assets/Shaders/*")
+file(GLOB THRIVE_SHADERS "shaders/*")
 file(COPY ${THRIVE_SHADERS} DESTINATION "${PROJECT_BINARY_DIR}/bin/Data/Shaders/")
-InstallContentsOfFolder("assets/Shaders" "bin/Data/Shaders")
+InstallContentsOfFolder("shaders" "bin/Data/Shaders")
 
 # Copy other data assets
 file(GLOB THRIVE_TEXTURES "assets/textures/*")
