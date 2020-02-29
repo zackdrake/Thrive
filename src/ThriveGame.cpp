@@ -120,6 +120,9 @@ public:
 
             auto graphics = Engine::Get()->GetGraphics();
 
+            LOG_WRITE("TODO: redo background item");
+            return;
+
             m_MicrobeBackgroundMaterial =
                 Leviathan::Material::MakeShared<Leviathan::Material>(
                     graphics->LoadShaderByName("background.bsl"));
@@ -1116,6 +1119,8 @@ void
 void
     ThriveGame::setBackgroundMaterial(const std::string& material)
 {
+    LOG_WRITE("TODO: redo background set: " + material);
+    return;
     LEVIATHAN_ASSERT(m_impl->m_MicrobeBackgroundMaterial, "no material yet");
 
     auto graphics = Engine::Get()->GetGraphics();

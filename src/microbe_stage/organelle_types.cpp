@@ -17,7 +17,9 @@ OrganelleType::OrganelleType(Json::Value value)
 {
     name = value["name"].asString();
     gene = value["gene"].asString();
-    mesh = value["mesh"].asString();
+    // mesh = value["mesh"].asString();
+    LOG_WRITE("Debug overriding organelle mesh");
+    mesh = "mitochontransparent.glb";
     texture = value["texture"].asString();
     mass = value["mass"].asFloat();
     chanceToCreate = value["chanceToCreate"].asFloat();

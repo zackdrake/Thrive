@@ -870,6 +870,9 @@ void
     cloud.m_texture = Engine::Get()->GetGraphics()->CreateDynamicTexture(
         CLOUD_SIMULATION_WIDTH, CLOUD_SIMULATION_HEIGHT, CLOUD_PIXEL_FORMAT);
 
+    LOG_WRITE("TODO: fix compound cloud");
+    return;
+
     // TODO: this should be loaded just once to be more efficient
     auto material = Leviathan::Material::MakeShared<Leviathan::Material>(
         Engine::Get()->GetGraphics()->LoadShaderByName("compound_cloud.bsl"));

@@ -234,6 +234,7 @@ const float MEMBRANE_RIGIDITY_MOBILITY_MODIFIER = 0.1f;
 //! Returns a material with a basic texture on it. For use on non-organelle models
 Material@ getBasicMaterialWithTexture(const string &in textureName)
 {
+    assert(false, "hasn't been fixed to work again");
     Material@ material = Material(Shader("BuiltinShader::Standard"));
     material.SetTexture("gAlbedoTex", Texture(textureName));
 
@@ -243,6 +244,7 @@ Material@ getBasicMaterialWithTexture(const string &in textureName)
 //! Returns a material with a basic texture on it. Supports transparency
 Material@ getBasicTransparentMaterialWithTexture(const string &in textureName)
 {
+    assert(false, "hasn't been fixed to work again");
     Material@ material = Material(Shader("BuiltinShader::Transparent"));
     material.SetTexture("gAlbedoTex", Texture(textureName));
 
@@ -253,6 +255,7 @@ Material@ getBasicTransparentMaterialWithTexture(const string &in textureName)
 Material@ getOrganelleMaterialWithTexture(const string &in textureName,
     const Float4 &in tint = Float4(1, 1, 1, 1))
 {
+    assert(false, "hasn't been fixed to work again");
     // TODO: loading the shader just once would be nice
     Shader@ shader = Shader("organelle.bsl");
     Material@ material = Material(shader);

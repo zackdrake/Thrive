@@ -78,8 +78,9 @@ class MicrobeEditor{
             {"remove", PlacementFunctionType(this.removeOrganelle)}
         };
 
-        @invalidMaterial = getBasicTransparentMaterialWithTexture("single_hex_invalid.png");
-        @validMaterial = getBasicTransparentMaterialWithTexture("single_hex.png");
+        LOG_WRITE("TODO: redo editor hex materials");
+        // @invalidMaterial = getBasicTransparentMaterialWithTexture("single_hex_invalid.png");
+        // @validMaterial = getBasicTransparentMaterialWithTexture("single_hex.png");
     }
 
     //! This is called each time the editor is entered so this needs to properly reset state
@@ -338,8 +339,8 @@ class MicrobeEditor{
 
                 if(model.MeshName != organelle.organelle.mesh){
                     model.MeshName = organelle.organelle.mesh;
-                    @model.ObjectMaterial = getOrganelleMaterialWithTexture(
-                        organelle.organelle.texture);
+                    // @model.ObjectMaterial = getOrganelleMaterialWithTexture(
+                    //     organelle.organelle.texture);
                     model.Marked = true;
                 }
             }
@@ -1032,8 +1033,8 @@ class MicrobeEditor{
 
             if(model.MeshName != toBePlacedOrganelle.mesh){
                 model.MeshName = toBePlacedOrganelle.mesh;
-                @model.ObjectMaterial = getOrganelleMaterialWithTexture(
-                    toBePlacedOrganelle.texture);
+                // @model.ObjectMaterial = getOrganelleMaterialWithTexture(
+                //     toBePlacedOrganelle.texture);
                 model.Marked = true;
             }
         }
@@ -1044,7 +1045,8 @@ class MicrobeEditor{
     {
         ObjectID hex = hudSystem.world.CreateEntity();
         auto node = hudSystem.world.Create_RenderNode(hex);
-        hudSystem.world.Create_Model(hex, "hex.fbx", validMaterial);
+        // hudSystem.world.Create_Model(hex, "hex.fbx", validMaterial);
+        hudSystem.world.Create_Model(hex, "mitochontransparent.glb", validMaterial);
         node.Scale = Float3(HEX_SIZE, HEX_SIZE, HEX_SIZE);
         node.Hidden = true;
         node.Marked = true;

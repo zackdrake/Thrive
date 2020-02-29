@@ -280,6 +280,7 @@ void
     // change, not every time an organelle is added or removed
     // Set the membrane material //
     auto baseMaterial = chooseMaterialByType();
+    return;
 
     LEVIATHAN_ASSERT(baseMaterial, "no material for membrane");
 
@@ -361,6 +362,9 @@ size_t
 Leviathan::Material::pointer
     MembraneComponent::chooseMaterialByType()
 {
+    LOG_WRITE("TODO: redo membrane component material");
+    return nullptr;
+
     auto shader =
         Engine::Get()->GetGraphics()->LoadShaderByName("membrane.bsl");
 

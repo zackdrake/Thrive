@@ -355,8 +355,10 @@ class PlacedOrganelle : SpeciesStoredOrganelleType{
             // Adding a mesh for the organelle.
             if(organelle.mesh != ""){
                 auto model = world.Create_Model(organelleEntity, organelle.mesh,
-                    getOrganelleMaterialWithTexture(organelle.texture,
-                        calculateHSLForOrganelle(this.species.colour)));
+                    // getOrganelleMaterialWithTexture(organelle.texture,
+                        // calculateHSLForOrganelle(this.species.colour))
+                    Material()
+                    );
             }
         }
 
