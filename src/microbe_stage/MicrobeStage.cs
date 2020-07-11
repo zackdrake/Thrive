@@ -396,11 +396,25 @@ public class MicrobeStage : Node, ILoadableGameState
     private void HandlePlayerRespawn()
     {
         var playerSpecies = GameWorld.PlayerSpecies;
+        var remainingKills = playerSpecies.Population * (1 - Constants.PLAYER_DEATH_POPULATION_LOSS_COEFFICIENT) - Constants.PLAYER_DEATH_POPULATION_LOSS_CONSTANT;
+        if (GameWorld.Map.CurrentPatch.GetSpeciesPopulation(playerSpecies) - remainingKills > 0)
+        {
+            // Decrease the population by the constant for the player dying
+            GameWorld.AlterSpeciesPopulation(
+                playerSpecies, Constants.PLAYER_DEATH_POPULATION_LOSS_CONSTANT,
+                "player died", true, Constants.PLAYER_DEATH_POPULATION_LOSS_COEFFICIENT);
+        }else
+        {
+            if (GameWorld.Map.CurrentPatch.GetSpeciesPopulation(playerSpecies) > 1)
+            {
+                remainingKills -= GameWorld.Map.CurrentPatch.GetSpeciesPopulation(playerSpecies) - 1;
+                GameWorld.AlterSpeciesPopulation(
+                    playerSpecies, 1 - GameWorld.Map.CurrentPatch.GetSpeciesPopulation(playerSpecies),
+                    "player died", true, 1);
+            }
+        }
 
-        // Decrease the population by the constant for the player dying
-        GameWorld.AlterSpeciesPopulation(
-            playerSpecies, Constants.PLAYER_DEATH_POPULATION_LOSS_CONSTANT,
-            "player died", true, Constants.PLAYER_DEATH_POPULATION_LOSS_COEFFICIENT);
+        //TODO: Logic to remove population from other patches
 
         // Respawn if not extinct (or freebuild)
         if (playerSpecies.Population <= 0 && !CurrentGame.FreeBuild)
