@@ -401,21 +401,37 @@ public class MicrobeStage : Node, ILoadableGameState
 
         if (currentPatchPopulation - remainingKills > 0)
         {
-            // Decrease the population by the constant for the player dying
+            // If the population of the current patch is enough to satisfy the amount of player cells to kill
             GameWorld.AlterSpeciesPopulation(
                 playerSpecies, Constants.PLAYER_DEATH_POPULATION_LOSS_CONSTANT,
                 "player died", true, Constants.PLAYER_DEATH_POPULATION_LOSS_COEFFICIENT);
         }else
         {
+            // If the amount of player cells to kill exceeds the current patch's population of the player's species
+
+            // Subtract all but 1 cell from the current patch's population
             if (currentPatchPopulation > 1)
             {
                 remainingKills -= currentPatchPopulation - 1;
-                GameWorld.Map.CurrentPatch.UpdateSpeciesPopulation(playerSpecies, 1);
                 playerSpecies.ApplyImmediatePopulationChange(1 - currentPatchPopulation, 1);
+                GameWorld.Map.CurrentPatch.UpdateSpeciesPopulation(playerSpecies, 1);
+            }
+
+            while (remainingKills > 0)
+            {
+                foreach (var patch in GameWorld.Map.Patches)
+                {
+                    currentPatchPopulation = patch.Value.GetSpeciesPopulation(playerSpecies);
+
+                    if (currentPatchPopulation > 1)
+                    {
+                        remainingKills -= 1;
+                        playerSpecies.ApplyImmediatePopulationChange(-1, 1);
+                        patch.Value.UpdateSpeciesPopulation(playerSpecies, currentPatchPopulation - 1);
+                    }
+                }
             }
         }
-
-        //TODO: Logic to remove population from other patches
 
         // Respawn if not extinct (or freebuild)
         if (playerSpecies.Population <= 0 && !CurrentGame.FreeBuild)
