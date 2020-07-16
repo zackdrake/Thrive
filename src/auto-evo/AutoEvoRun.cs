@@ -205,17 +205,27 @@ public class AutoEvoRun
     {
         if (ExternalEffects.Count > 0)
         {
-            // Effects are applied in the current patch
-            var currentPatch = parameters.World.Map.CurrentPatch;
+            Patch patch;
 
             foreach (var entry in ExternalEffects)
             {
+                // Effects are defaulted to the current patch unless specified otherwise via ExternalEffect parameters
+                // Currently a patch index of 100 just means to use the current patch
+                if (entry.PatchIndex == 100)
+                {
+                    patch = parameters.World.Map.CurrentPatch;
+                }
+                else
+                {
+                    patch = parameters.World.Map.Patches[entry.PatchIndex];
+                }
+
                 try
                 {
-                    int currentPop = results.GetPopulationInPatch(entry.Species, currentPatch);
+                    int currentPop = results.GetPopulationInPatch(entry.Species, patch);
 
                     results.AddPopulationResultForSpecies(
-                        entry.Species, currentPatch, (int)(currentPop * entry.Coefficient) + entry.Constant);
+                        entry.Species, patch, (int)(currentPop * entry.Coefficient) + entry.Constant);
                 }
                 catch (Exception e)
                 {
@@ -234,9 +244,9 @@ public class AutoEvoRun
     /// <param name="constant">The constant amount of population to modify.</param>
     /// <param name="coefficient">Multiplier to apply to the current population.</param>
     /// <param name="eventType">The external event type.</param>
-    public void AddExternalPopulationEffect(Species species, int constant, float coefficient, string eventType)
+    public void AddExternalPopulationEffect(Species species, int constant, float coefficient, string eventType, int patchIndex)
     {
-        ExternalEffects.Add(new ExternalEffect(species, constant, coefficient, eventType));
+        ExternalEffects.Add(new ExternalEffect(species, constant, coefficient, eventType, patchIndex));
     }
 
     /// <summary>

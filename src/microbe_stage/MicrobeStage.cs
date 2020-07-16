@@ -396,8 +396,8 @@ public class MicrobeStage : Node, ILoadableGameState
     private void HandlePlayerRespawn()
     {
         var playerSpecies = GameWorld.PlayerSpecies;
-        var remainingKills = playerSpecies.Population * (1 - Constants.PLAYER_DEATH_POPULATION_LOSS_COEFFICIENT) - Constants.PLAYER_DEATH_POPULATION_LOSS_CONSTANT;
         var currentPatchPopulation = GameWorld.Map.CurrentPatch.GetSpeciesPopulation(playerSpecies);
+        int remainingKills = (int)Math.Round(playerSpecies.Population * (1 - Constants.PLAYER_DEATH_POPULATION_LOSS_COEFFICIENT) - Constants.PLAYER_DEATH_POPULATION_LOSS_CONSTANT);
 
         if (currentPatchPopulation - remainingKills > 0)
         {
@@ -412,9 +412,8 @@ public class MicrobeStage : Node, ILoadableGameState
             // Subtract all but 1 cell from the current patch's population
             if (currentPatchPopulation > 1)
             {
+                GameWorld.AlterSpeciesPopulation(playerSpecies, 1 - currentPatchPopulation, "player died", true, 1);
                 remainingKills -= currentPatchPopulation - 1;
-                playerSpecies.ApplyImmediatePopulationChange(1 - currentPatchPopulation, 1);
-                GameWorld.Map.CurrentPatch.UpdateSpeciesPopulation(playerSpecies, 1);
             }
 
             while (remainingKills > 0)
@@ -425,9 +424,9 @@ public class MicrobeStage : Node, ILoadableGameState
 
                     if (currentPatchPopulation > 1)
                     {
-                        remainingKills -= 1;
-                        playerSpecies.ApplyImmediatePopulationChange(-1, 1);
-                        patch.Value.UpdateSpeciesPopulation(playerSpecies, currentPatchPopulation - 1);
+                        //This is just testing
+                        GameWorld.AlterSpeciesPopulation(playerSpecies, -remainingKills, "player died", true, 1, patch.Value.ID);
+                        remainingKills = 0;
                     }
                 }
             }

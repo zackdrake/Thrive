@@ -216,7 +216,7 @@ public class GameWorld
     ///   If true applied immediately. Should only be used for the player dying
     /// </param>
     public void AlterSpeciesPopulation(Species species, int constant, string description,
-        bool immediate = false, float coefficient = 1)
+        bool immediate = false, float coefficient = 1, int patchIndex = 100)
     {
         if (constant == 0 || coefficient == 0)
             return;
@@ -237,7 +237,7 @@ public class GameWorld
 
         CreateRunIfMissing();
 
-        autoEvo.AddExternalPopulationEffect(species, constant, coefficient, description);
+        autoEvo.AddExternalPopulationEffect(species, constant, coefficient, description, patchIndex);
     }
 
     public Species GetSpecies(uint id)
