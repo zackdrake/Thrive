@@ -416,18 +416,56 @@ public class MicrobeStage : Node, ILoadableGameState
                 remainingKills -= currentPatchPopulation - 1;
             }
 
+            // Logic for removing from other patches
+            int availablePatchesCount = 0;
+            int amountToTake;
+
             while (remainingKills > 0)
             {
                 foreach (var patch in GameWorld.Map.Patches)
                 {
+                    if (patch.Value == GameWorld.Map.CurrentPatch)
+                    {
+                        continue;
+                    }
+
+                    if (patch.Value.GetSpeciesPopulation(playerSpecies) > 1)
+                    {
+                        availablePatchesCount++;
+                    }
+                }
+
+                if (availablePatchesCount <= 0)
+                {
+                    playerSpecies.Population = 0;
+                    break;
+                }
+
+                foreach (var patch in GameWorld.Map.Patches)
+                {
+                    if (availablePatchesCount <= 0)
+                    {
+                        break;
+                    }
+
+                    amountToTake = (int)Math.Ceiling((double)(remainingKills / availablePatchesCount));
                     currentPatchPopulation = patch.Value.GetSpeciesPopulation(playerSpecies);
 
-                    if (currentPatchPopulation > 1)
+                    if (currentPatchPopulation <= 1 || patch.Value == GameWorld.Map.CurrentPatch)
                     {
-                        //This is just testing
-                        GameWorld.AlterSpeciesPopulation(playerSpecies, -remainingKills, "player died", true, 1, patch.Value.ID);
-                        remainingKills = 0;
+                        continue;
                     }
+
+                    // This is to check if the amount being taken from the specific patch would make the final population
+                    // less than or equal to 1
+                    if (amountToTake + 1 >= currentPatchPopulation)
+                    {
+                        amountToTake = currentPatchPopulation - 1;
+                    }
+
+                    GameWorld.AlterSpeciesPopulation(playerSpecies, -amountToTake, "player died", true, 1, patch.Value.ID);
+                    remainingKills -= amountToTake;
+                    availablePatchesCount--;
                 }
             }
         }
