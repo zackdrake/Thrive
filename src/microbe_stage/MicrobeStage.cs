@@ -411,6 +411,7 @@ public class MicrobeStage : Node, ILoadableGameState
 
             while (remainingKills > 0)
             {
+                // This counts the number of patches with populations of the player species that exceed 1
                 foreach (var patch in GameWorld.Map.Patches)
                 {
                     if (patch.Value == GameWorld.Map.CurrentPatch)
@@ -424,20 +425,23 @@ public class MicrobeStage : Node, ILoadableGameState
                     }
                 }
 
+                // This section is reached if there are no more available patches to subtract from but the remaining
+                // kills has not been satisfied yet
                 if (availablePatchesCount <= 0)
                 {
                     playerSpecies.Population = 0;
                     break;
                 }
 
+                // Starts removing from other patches
                 foreach (var patch in GameWorld.Map.Patches)
                 {
+                    // If there are no more patches to take from exit the loop because it would be pointless otherwise
                     if (availablePatchesCount <= 0)
                     {
                         break;
                     }
 
-                    amountToTake = (int)Math.Ceiling((double)(remainingKills / availablePatchesCount));
                     currentPatchPopulation = patch.Value.GetSpeciesPopulation(playerSpecies);
 
                     if (currentPatchPopulation <= 1 || patch.Value == GameWorld.Map.CurrentPatch)
@@ -445,8 +449,18 @@ public class MicrobeStage : Node, ILoadableGameState
                         continue;
                     }
 
+                    /*
+                     * This system works as follow:
+                     * The amount of population to take from the current patch is the remaining kills divided by the
+                     * number of available patch to take from.
+                     * The system will try to subtract that number from the current patch's population, however if the
+                     * current patch's population is less than this number, there would be unsatisfied kills, so the
+                     * amount to take from each patch is recalculated for each iteration of the loop.
+                     */
+                    amountToTake = (int)Math.Ceiling((double)(remainingKills / availablePatchesCount));
+
                     // This is to check if the amount being taken from the specific patch would make the final population
-                    // less than or equal to 1
+                    // less than or equal to 1. If it does then modify the "amount to take" appropriately.
                     if (amountToTake + 1 >= currentPatchPopulation)
                     {
                         amountToTake = currentPatchPopulation - 1;
