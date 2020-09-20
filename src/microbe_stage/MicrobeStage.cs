@@ -470,6 +470,14 @@ public class MicrobeStage : Node, ILoadableGameState
     {
         var playerSpecies = GameWorld.PlayerSpecies;
         var currentPatchPopulation = GameWorld.Map.CurrentPatch.GetSpeciesPopulation(playerSpecies);
+        AutoEvoRun aer = new AutoEvoRun(GameWorld);
+
+        foreach (var effect in AutoEvoRun.ExternalEffects)
+        {
+                GD.Print(effect.Coefficient);
+                GD.Print(effect.Constant);
+        }
+
         int remainingKills = (int)Math.Round(playerSpecies.Population * (1 - Constants.PLAYER_DEATH_POPULATION_LOSS_COEFFICIENT) - Constants.PLAYER_DEATH_POPULATION_LOSS_CONSTANT);
 
         if (currentPatchPopulation - remainingKills > 0)
@@ -477,7 +485,7 @@ public class MicrobeStage : Node, ILoadableGameState
             // If the population of the current patch is enough to satisfy the amount of player cells to kill
             GameWorld.AlterSpeciesPopulation(
                 playerSpecies, Constants.PLAYER_DEATH_POPULATION_LOSS_CONSTANT,
-                "player died", true, Constants.PLAYER_DEATH_POPULATION_LOSS_COEFFICIENT);
+                "player died", true, Constants.PLAYER_DEATH_POPULATION_LOSS_COEFFICIENT, GameWorld.Map.CurrentPatch.ID);
         }else
         {
             // If the amount of player cells to kill exceeds the current patch's population of the player's species
@@ -485,14 +493,16 @@ public class MicrobeStage : Node, ILoadableGameState
             // Subtract all but 1 cell from the current patch's population
             if (currentPatchPopulation > 1)
             {
+                GD.Print(currentPatchPopulation-1);
                 GameWorld.AlterSpeciesPopulation(playerSpecies, 1 - currentPatchPopulation, "player died", true, 1);
                 remainingKills -= currentPatchPopulation - 1;
+                GD.Print(currentPatchPopulation-1);
+                GD.Print("======================== End of initial");
             }
 
-            // Logic for removing from other patches
             int availablePatchesCount = 0;
-            int amountToTake;
 
+            // Logic for removing from other patches
             while (remainingKills > 0)
             {
                 // This counts the number of patches with populations of the player species that exceed 1
@@ -503,14 +513,17 @@ public class MicrobeStage : Node, ILoadableGameState
                         continue;
                     }
 
-                    if (patch.Value.GetSpeciesPopulation(playerSpecies) > 1)
+                    // Current as in the patch of this iteration of the loop
+                    currentPatchPopulation = patch.Value.GetSpeciesPopulation(playerSpecies);
+
+                    if (currentPatchPopulation > 1)
                     {
                         availablePatchesCount++;
                     }
                 }
 
                 // This section is reached if there are no more available patches to subtract from but the remaining
-                // kills has not been satisfied yet
+                // kills has not been satisfied yet, in which case the player is extinct.
                 if (availablePatchesCount <= 0)
                 {
                     playerSpecies.Population = 0;
@@ -526,6 +539,7 @@ public class MicrobeStage : Node, ILoadableGameState
                         break;
                     }
 
+                    // Current as in the patch of this iteration of the loop
                     currentPatchPopulation = patch.Value.GetSpeciesPopulation(playerSpecies);
 
                     if (currentPatchPopulation <= 1 || patch.Value == GameWorld.Map.CurrentPatch)
@@ -536,16 +550,18 @@ public class MicrobeStage : Node, ILoadableGameState
                     /*
                      * This system works as follow:
                      * The amount of population to take from the current patch is the remaining kills divided by the
-                     * number of available patch to take from.
+                     * number of available patches to take from.
                      * The system will try to subtract that number from the current patch's population, however if the
-                     * current patch's population is less than this number, there would be unsatisfied kills, so the
-                     * amount to take from each patch is recalculated for each iteration of the loop.
+                     * current patch's population is less than this number, the next step will deal with the issue.
+                     * However there would be unsatisfied kills in this scenario, so the amount to take from each
+                     * patch is recalculated for each iteration of the loop.
                      */
-                    amountToTake = (int)Math.Ceiling((double)(remainingKills / availablePatchesCount));
+                    int amountToTake = (int)Math.Ceiling((double)(remainingKills / availablePatchesCount));
+                    GD.Print(amountToTake);
 
                     // This is to check if the amount being taken from the specific patch would make the final population
                     // less than or equal to 1. If it does then modify the "amount to take" appropriately.
-                    if (amountToTake + 1 >= currentPatchPopulation)
+                    if (amountToTake >= currentPatchPopulation - 1)
                     {
                         amountToTake = currentPatchPopulation - 1;
                     }
@@ -554,6 +570,14 @@ public class MicrobeStage : Node, ILoadableGameState
                     remainingKills -= amountToTake;
                     availablePatchesCount--;
                 }
+            }
+        }
+
+        foreach (var patch in GameWorld.Map.Patches)
+        {
+            if (patch.Value.GetSpeciesPopulation(playerSpecies) > 0)
+            {
+                GD.Print(patch.Value.GetSpeciesPopulation(playerSpecies));
             }
         }
 
