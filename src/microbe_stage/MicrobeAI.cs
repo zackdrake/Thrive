@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Godot;
 using Newtonsoft.Json;
 
@@ -108,8 +109,48 @@ public class MicrobeAI
     {
         _ = delta;
 
-        // SetRandomTargetAndSpeed(random);
+        //if you are out of energy then stop moving
+        if (microbe.Compounds.GetCompoundAmount(atp) < 1.0f)
+        {
+            microbe.MovementDirection = new Vector3(0, 0, 0);
+            return;
+        }
 
+        //if there are any threatening cells close by then move away from them
+        //get the closest microbe
+        float closestMicrobeDistance = 1000.0f;
+        Vector3 closestMicrobePosition = new Vector3(0, 0, 0);
+        foreach (var otherMicrobe in data.AllMicrobes)
+        {
+            float currentMicrobeDistance = (otherMicrobe.Translation - microbe.Translation).LengthSquared();
+            if (currentMicrobeDistance < closestMicrobeDistance && otherMicrobe != microbe)
+            {
+                closestMicrobeDistance = currentMicrobeDistance;
+                closestMicrobePosition = otherMicrobe.Translation;
+            }
+        }
+        //if they are too close
+        if (closestMicrobeDistance < 200.0f)
+        {
+            //run away
+            Vector3 runAwayVector = 200.0f*(microbe.Translation - closestMicrobePosition).Normalized();
+            microbe.LookAtPoint = microbe.Translation + runAwayVector;
+
+            // And random movement speed
+            microbe.MovementDirection = new Vector3(0, 0, -1.0f);
+            return;
+        }
+
+        //if you are safe and if there is prey close by then hunt it
+
+        //if you have energy and no one is around, move randomly
+        if (random.NextFloat() < 0.2f)
+        {
+            SetRandomTargetAndSpeed(random);
+        }
+
+
+        /*
         // Clear the lists
         predatoryMicrobes.Clear();
         preyMicrobes.Clear();
@@ -283,8 +324,10 @@ public class MicrobeAI
 
         // Clear the absorbed compounds for run and rumble
         microbe.TotalAbsorbedCompounds.Clear();
-    }
 
+        */
+    }
+    
     /// <summary>
     ///   Clears all the found targets. Currently used for loading from saves
     /// </summary>
