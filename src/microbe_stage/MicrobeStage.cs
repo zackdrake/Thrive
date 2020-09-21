@@ -470,9 +470,8 @@ public class MicrobeStage : Node, ILoadableGameState
     {
         var playerSpecies = GameWorld.PlayerSpecies;
         var currentPatchPopulation = GameWorld.Map.CurrentPatch.GetSpeciesPopulation(playerSpecies);
-        AutoEvoRun aer = new AutoEvoRun(GameWorld);
 
-        foreach (var effect in AutoEvoRun.ExternalEffects)
+        foreach (var effect in GameWorld.GetAutoEvoRun().ExternalEffects)
         {
                 GD.Print(effect.Coefficient);
                 GD.Print(effect.Constant);
