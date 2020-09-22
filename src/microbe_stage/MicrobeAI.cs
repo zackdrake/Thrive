@@ -109,15 +109,21 @@ public class MicrobeAI
     {
         _ = delta;
 
-        //if you are out of energy then stop moving
+        // this is just to satisfy the build errors and needs to be fixed
+        if (preyPegged)
+        {
+            boredom++;
+        }
+
+        // if you are out of energy then stop moving
         if (microbe.Compounds.GetCompoundAmount(atp) < 1.0f)
         {
             microbe.MovementDirection = new Vector3(0, 0, 0);
             return;
         }
 
-        //if there are any threatening cells close by then move away from them
-        //get the closest microbe
+        // if there are any threatening cells close by then move away from them
+        // get the closest microbe
         float closestMicrobeDistance = 1000.0f;
         Vector3 closestMicrobePosition = new Vector3(0, 0, 0);
         foreach (var otherMicrobe in data.AllMicrobes)
@@ -129,26 +135,26 @@ public class MicrobeAI
                 closestMicrobePosition = otherMicrobe.Translation;
             }
         }
-        //if they are too close
+
+        // if they are too close
         if (closestMicrobeDistance < 200.0f)
         {
-            //run away
-            Vector3 runAwayVector = 200.0f*(microbe.Translation - closestMicrobePosition).Normalized();
+            // run away
+            Vector3 runAwayVector = 200.0f * (microbe.Translation - closestMicrobePosition).Normalized();
             microbe.LookAtPoint = microbe.Translation + runAwayVector;
 
-            // And random movement speed
+            // at a random movement speed
             microbe.MovementDirection = new Vector3(0, 0, -1.0f);
             return;
         }
 
-        //if you are safe and if there is prey close by then hunt it
+        // todo: if you are safe and if there is prey close by then hunt it
 
-        //if you have energy and no one is around, move randomly
+        // if you have energy and no one is around, move randomly
         if (random.NextFloat() < 0.2f)
         {
             SetRandomTargetAndSpeed(random);
         }
-
 
         /*
         // Clear the lists
@@ -327,7 +333,7 @@ public class MicrobeAI
 
         */
     }
-    
+
     /// <summary>
     ///   Clears all the found targets. Currently used for loading from saves
     /// </summary>
