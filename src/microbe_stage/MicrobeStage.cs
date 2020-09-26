@@ -271,6 +271,11 @@ public class MicrobeStage : Node, ILoadableGameState
             }
         };
 
+        Player.OnReportActiveProcesses = (microbe, process) =>
+        {
+            // TODO: send this info to the process panel
+        };
+
         Camera.ObjectToFollow = Player;
 
         if (spawnedPlayer)
