@@ -394,6 +394,7 @@ public class MicrobeEditorGUI : Node
         mutationPointsBar.Value = possibleMutationPoints;
         mutationPointsSubtractBar.MaxValue = Constants.BASE_MUTATION_POINTS;
         mutationPointsSubtractBar.Value = editor.MutationPoints;
+
         if (possibleMutationPoints != editor.MutationPoints)
         {
             mutationPointsLabel.Text =
@@ -761,6 +762,14 @@ public class MicrobeEditorGUI : Node
         SetRigiditySliderTooltip(value);
     }
 
+    internal void SendUndoToTutorial(TutorialState tutorial)
+    {
+        if (tutorial.EditorUndoTutorial == null)
+            return;
+
+        tutorial.EditorUndoTutorial.EditorUndoButtonControl = undoButton;
+    }
+
     private static void SetOrganelleButtonStatus(Button organelleItem, bool nucleus)
     {
         if (organelleItem.Name == "nucleus")
@@ -842,6 +851,8 @@ public class MicrobeEditorGUI : Node
         {
             GD.PrintErr("Invalid tab");
         }
+
+        editor.TutorialState.SendEvent(TutorialEventType.MicrobeEditorTabChanged, new StringEventArgs(tab), this);
     }
 
     private void GoToPatchTab()
@@ -1275,24 +1286,14 @@ public class MicrobeEditorGUI : Node
 
     private float GetPatchChunkTotalCompoundAmount(Patch patch, Compound compound)
     {
-        var result = 0.0f;
-
-        foreach (var chunkKey in patch.Biome.Chunks.Keys)
-        {
-            var chunk = patch.Biome.Chunks[chunkKey];
-
-            if (chunk.Density > 0 && chunk.Compounds.ContainsKey(compound))
-            {
-                result += chunk.Density * chunk.Compounds[compound].Amount;
-            }
-        }
-
-        return result;
+        return patch.GetTotalChunkCompoundAmount(compound);
     }
 
     private void UpdateShownPatchDetails()
     {
         var patch = mapDrawer.SelectedPatch;
+
+        editor.TutorialState.SendEvent(TutorialEventType.MicrobeEditorPatchSelected, new PatchEventArgs(patch), this);
 
         if (patch == null)
         {
