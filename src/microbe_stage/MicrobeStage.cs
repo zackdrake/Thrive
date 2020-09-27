@@ -492,11 +492,8 @@ public class MicrobeStage : Node, ILoadableGameState
             // Subtract all but 1 cell from the current patch's population
             if (currentPatchPopulation > 1)
             {
-                GD.Print(currentPatchPopulation-1);
                 GameWorld.AlterSpeciesPopulation(playerSpecies, 1 - currentPatchPopulation, "player died", true, 1);
                 remainingKills -= currentPatchPopulation - 1;
-                GD.Print(currentPatchPopulation-1);
-                GD.Print("======================== End of initial");
             }
 
             int availablePatchesCount = 0;
@@ -556,7 +553,6 @@ public class MicrobeStage : Node, ILoadableGameState
                      * patch is recalculated for each iteration of the loop.
                      */
                     int amountToTake = (int)Math.Ceiling((double)(remainingKills / availablePatchesCount));
-                    GD.Print(amountToTake);
 
                     // This is to check if the amount being taken from the specific patch would make the final population
                     // less than or equal to 1. If it does then modify the "amount to take" appropriately.
@@ -569,14 +565,6 @@ public class MicrobeStage : Node, ILoadableGameState
                     remainingKills -= amountToTake;
                     availablePatchesCount--;
                 }
-            }
-        }
-
-        foreach (var patch in GameWorld.Map.Patches)
-        {
-            if (patch.Value.GetSpeciesPopulation(playerSpecies) > 0)
-            {
-                GD.Print(patch.Value.GetSpeciesPopulation(playerSpecies));
             }
         }
 
