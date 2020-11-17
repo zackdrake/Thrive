@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://src/microbe_stage/particles/burst.tres" type="Material" id=1]
 [ext_resource path="res://assets/textures/background_particle_fuzzy.png" type="Texture" id=2]
+[ext_resource path="res://src/microbe_stage/ToxinCloud.cs" type="Script" id=3]
 
 [sub_resource type="SpatialMaterial" id=1]
 flags_transparent = true
@@ -21,3 +22,4 @@ lifetime = 2.0
 local_coords = false
 process_material = ExtResource( 1 )
 draw_pass_1 = SubResource( 2 )
+script = ExtResource( 3 )
