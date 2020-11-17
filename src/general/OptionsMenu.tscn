@@ -120,7 +120,6 @@ margin_bottom = 35.0
 rect_min_size = Vector2( 130, 35 )
 focus_mode = 0
 toggle_mode = true
-pressed = true
 action_mode = 0
 enabled_focus_mode = 0
 group = SubResource( 1 )
@@ -163,6 +162,8 @@ group = SubResource( 1 )
 text = "MISC"
 
 [node name="PanelContainer" type="PanelContainer" parent="CenterContainer/VBoxContainer"]
+anchor_top = -0.00147059
+anchor_bottom = -0.00147059
 margin_top = 40.0
 margin_right = 576.0
 margin_bottom = 640.0
