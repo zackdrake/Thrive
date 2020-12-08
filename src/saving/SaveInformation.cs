@@ -1,7 +1,4 @@
 using System;
-using System.ComponentModel;
-using Godot;
-using Newtonsoft.Json;
 
 /// <summary>
 ///   Info embedded in a save file
@@ -13,25 +10,21 @@ public class SaveInformation
         /// <summary>
         ///   Player initiated save
         /// </summary>
-        [Description("SAVE_MANUAL")]
         Manual,
 
         /// <summary>
         ///   Automatic save
         /// </summary>
-        [Description("SAVE_AUTOSAVE")]
         AutoSave,
 
         /// <summary>
         ///   Quick save, separate from manual to make it easier to keep a fixed number of quick saves
         /// </summary>
-        [Description("SAVE_QUICKSAVE")]
         QuickSave,
 
         /// <summary>
         ///   A broken save that (probably) cannot be loaded
         /// </summary>
-        [Description("SAVE_INVALID")]
         Invalid,
     }
 
@@ -57,10 +50,6 @@ public class SaveInformation
     public Guid ID { get; set; } = Guid.NewGuid();
 
     public SaveType Type { get; set; } = SaveType.Manual;
-
-    [JsonIgnore]
-    public string TranslatedSaveTypeString =>
-        TranslationServer.Translate(Type.GetAttribute<DescriptionAttribute>().Description);
 
     /// <summary>
     ///   Creates save information for an invalid save

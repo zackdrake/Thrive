@@ -545,7 +545,7 @@ public class MicrobeEditorGUI : Node, ISaveLoadedTracked
 
         if (editor.FreeBuilding)
         {
-            mutationPointsLabel.Text = TranslationServer.Translate("FREEBUILDING");
+            mutationPointsLabel.Text = "Freebuilding";
         }
         else
         {
@@ -605,12 +605,10 @@ public class MicrobeEditorGUI : Node, ISaveLoadedTracked
 
     public void UpdateTimeIndicator(double value)
     {
-        timeIndicator.Text = string.Format(CultureInfo.CurrentCulture, "{0:#,##0,,}", value) + " "
-            + TranslationServer.Translate("MEGA_YEARS");
+        timeIndicator.Text = string.Format(CultureInfo.CurrentCulture, "{0:#,##0,,}", value) + " Myr";
 
         ToolTipManager.Instance.GetToolTip("timeIndicator", "editor").Description = string.Format(
-                CultureInfo.CurrentCulture, "{0:#,#}", editor.CurrentGame.GameWorld.TotalPassedTime) + " "
-            + TranslationServer.Translate("YEARS");
+            CultureInfo.CurrentCulture, "{0:#,#}", editor.CurrentGame.GameWorld.TotalPassedTime) + " years";
     }
 
     public void SetInitialCellStats()
@@ -622,7 +620,7 @@ public class MicrobeEditorGUI : Node, ISaveLoadedTracked
 
     public void ResetStatisticsPanelSize()
     {
-        // Resets the statistics panel size to fit with the contents
+        // Resets the statistics panel size to fit
         statisticsPanel.RectSize = Vector2.Zero;
     }
 
@@ -678,7 +676,8 @@ public class MicrobeEditorGUI : Node, ISaveLoadedTracked
         atpProductionBar.UpdateAndMoveBars(SortBarData(energyBalance.Production));
         atpConsumptionBar.UpdateAndMoveBars(SortBarData(energyBalance.Consumption));
 
-        ResetStatisticsPanelSize();
+        // Resets the statistics panel size to fit
+        statisticsPanel.RectSize = Vector2.Zero;
 
         UpdateEnergyBalanceToolTips(energyBalance);
     }
@@ -845,17 +844,11 @@ public class MicrobeEditorGUI : Node, ISaveLoadedTracked
 
     internal void OnInvalidHexLocationSelected()
     {
-        if (selectedEditorTab != EditorTab.CellEditor)
-            return;
-
         GUICommon.Instance.PlayCustomSound(UnableToPlaceHexSound);
     }
 
     internal void OnInsufficientMPToPlaceHex()
     {
-        if (selectedEditorTab != EditorTab.CellEditor)
-            return;
-
         AnimationPlayer animationPlayer = mutationPointsBar.GetNode<AnimationPlayer>("FlashAnimation");
         animationPlayer.Play("FlashBar");
         GUICommon.Instance.PlayCustomSound(UnableToPlaceHexSound);
@@ -1304,7 +1297,8 @@ public class MicrobeEditorGUI : Node, ISaveLoadedTracked
             hpIndicator.Hide();
         }
 
-        ResetStatisticsPanelSize();
+        // Resets the statistics panel size to fit
+        statisticsPanel.RectSize = Vector2.Zero;
     }
 
     /// <remarks>
