@@ -89,22 +89,10 @@ public class GUICommon : Node
         element.Expand = true;
         element.RectMinSize = new Vector2(sizeX, sizeY);
 
-        element.Texture = GetCompoundIcon(compoundName);
-
-        return element;
-    }
-
-    /// <summary>
-    ///   Loads compund icon texture from file path
-    /// </summary>
-    public Texture GetCompoundIcon(string compoundName)
-    {
         var icon = GD.Load<Texture>("res://assets/textures/gui/bevel/" + compoundName + ".png");
 
-        // Just use a dummy icon instead if the requested icon is not found
-        if (icon == null)
-            icon = GD.Load<Texture>("res://assets/textures/gui/bevel/TestIcon.png");
+        element.Texture = icon;
 
-        return icon;
+        return element;
     }
 }
