@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Godot;
 using Newtonsoft.Json;
 
@@ -209,6 +210,9 @@ public class FloatingChunk : RigidBody, ISpawned, ISaveLoadedTracked
         if (ContainedCompounds != null)
             VentCompounds(delta);
 
+        if (Name == "FLOATING_HAZARD")
+            DissolveToxinCloud(delta);
+
         if (isDissolving)
             HandleDissolving(delta);
 
@@ -307,7 +311,16 @@ public class FloatingChunk : RigidBody, ISpawned, ISaveLoadedTracked
             isDissolving = true;
         }
     }
+    private void DissolveToxinCloud(float delta)
+    {
+        Stopwatch dissolveStopWatch = new Stopwatch();
+        dissolveStopWatch.Start();
 
+        if (dissolveStopWatch.ElapsedMilliseconds > 150 && Dissolves == true)
+        {
+            isDissolving = true;
+        }
+    }
     private void VentCompound(Vector3 pos, Compound compound, float amount)
     {
         compoundClouds.AddCloud(
